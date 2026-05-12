@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Modal from '../../components/Modal';
+import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
 const emptyForm = { student: '', course: '', semester: '', internalMarks: '', externalMarks: '', totalMarks: '', grade: '', remarks: '' };
 
+const gradeInfo = {
+  'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue',
+  'C+': 'yellow', 'C': 'yellow', 'D': 'yellow', 'F': 'red',
+};
+
 export default function AdminResults() {
-  const [results, setResults] = useState([]);
+  const [results, setResults]   = useState([]);
   const [students, setStudents] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [modal, setModal] = useState(null);
-  const [form, setForm] = useState(emptyForm);
+  const [courses, setCourses]   = useState([]);
+  const [modal, setModal]       = useState(null);
+  const [form, setForm]         = useState(emptyForm);
   const [selected, setSelected] = useState(null);
 
   const load = () => api.get('/admin/results').then(r => setResults(r.data));
@@ -21,8 +27,9 @@ export default function AdminResults() {
     api.get('/admin/courses').then(r => setCourses(r.data));
   }, []);
 
-  const openAdd = () => { setForm(emptyForm); setModal('add'); };
+  const openAdd  = () => { setForm(emptyForm); setModal('add'); };
   const openEdit = (r) => { setForm({ ...r, student: r.student?._id, course: r.course?._id }); setSelected(r); setModal('edit'); };
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -39,41 +46,41 @@ export default function AdminResults() {
     toast.success('Deleted'); load();
   };
 
-  const gradeColor = { 'A+': 'text-green-700 bg-green-50', A: 'text-green-700 bg-green-50', B: 'text-blue-700 bg-blue-50', C: 'text-yellow-700 bg-yellow-50', D: 'text-orange-700 bg-orange-50', F: 'text-red-700 bg-red-50' };
-
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <button onClick={openAdd} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700">
-          <Plus size={16} /> Add Result
-        </button>
+        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Result</PrimaryBtn>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <Card>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>{['Student', 'Course', 'Semester', 'Internal', 'External', 'Total', 'Grade', 'Actions'].map(h => (
-                <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
-              ))}</tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {results.length === 0 && <tr><td colSpan={8} className="text-center py-8 text-gray-400">No results yet</td></tr>}
-              {results.map(r => (
-                <tr key={r._id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-800">{r.student?.name}<br /><span className="text-xs text-gray-400">{r.student?.studentId}</span></td>
-                  <td className="px-4 py-3 text-gray-600">{r.course?.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.semester}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.internalMarks}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.externalMarks}</td>
-                  <td className="px-4 py-3 font-semibold text-gray-800">{r.totalMarks}</td>
-                  <td className="px-4 py-3">
-                    {r.grade && <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${gradeColor[r.grade] || 'bg-gray-100 text-gray-600'}`}>{r.grade}</span>}
+            <TableHead cols={['Student', 'Course', 'Semester', 'Internal', 'External', 'Total', 'Grade', 'Actions']} />
+            <tbody>
+              {results.length === 0 && <EmptyRow cols={8} message="No results yet" />}
+              {results.map((r, i) => (
+                <tr key={r._id} className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
+                  <td className="px-4 py-3.5">
+                    <div className="flex items-center gap-2">
+                      <Avatar name={r.student?.name} index={i} size="sm" />
+                      <div>
+                        <p className="font-semibold text-slate-700 text-[13px]">{r.student?.name}</p>
+                        <p className="text-[11px] text-slate-400">{r.student?.studentId}</p>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3.5 text-[13px] text-slate-600">{r.course?.name}</td>
+                  <td className="px-4 py-3.5"><Badge color="indigo">Sem {r.semester}</Badge></td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-700 font-medium">{r.internalMarks}</td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-700 font-medium">{r.externalMarks}</td>
+                  <td className="px-4 py-3.5 text-[15px] font-bold text-slate-800">{r.totalMarks}</td>
+                  <td className="px-4 py-3.5">
+                    {r.grade && <Badge color={gradeInfo[r.grade] || 'slate'}>{r.grade}</Badge>}
+                  </td>
+                  <td className="px-4 py-3.5">
                     <div className="flex gap-1">
-                      <button onClick={() => openEdit(r)} className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500"><Edit2 size={14} /></button>
-                      <button onClick={() => handleDelete(r._id)} className="p-1.5 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={14} /></button>
+                      <IconBtn icon={Edit2}  onClick={() => openEdit(r)}   color="slate" title="Edit" />
+                      <IconBtn icon={Trash2} onClick={() => handleDelete(r._id)} color="red" title="Delete" />
                     </div>
                   </td>
                 </tr>
@@ -81,53 +88,39 @@ export default function AdminResults() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {(modal === 'add' || modal === 'edit') && (
         <Modal title={modal === 'add' ? 'Add Result' : 'Edit Result'} onClose={() => setModal(null)}>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Student</label>
-                <select required value={form.student} onChange={e => setForm(f => ({ ...f, student: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Select --</option>
+              <FormField label="Student">
+                <select required value={form.student} onChange={f('student')} className={selectCls}>
+                  <option value="">Select student...</option>
                   {students.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Course</label>
-                <select required value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Select --</option>
+              </FormField>
+              <FormField label="Course">
+                <select required value={form.course} onChange={f('course')} className={selectCls}>
+                  <option value="">Select course...</option>
                   {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                 </select>
-              </div>
-              {[['semester', 'Semester'], ['internalMarks', 'Internal Marks'], ['externalMarks', 'External Marks'], ['totalMarks', 'Total Marks']].map(([key, label]) => (
-                <div key={key}>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-                  <input type="number" value={form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                </div>
-              ))}
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Grade</label>
-                <select value={form.grade} onChange={e => setForm(f => ({ ...f, grade: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Grade --</option>
-                  {['A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F'].map(g => <option key={g}>{g}</option>)}
+              </FormField>
+              <FormField label="Semester">      <input type="number" value={form.semester      || ''} onChange={f('semester')}      className={inputCls} /></FormField>
+              <FormField label="Internal Marks"><input type="number" value={form.internalMarks || ''} onChange={f('internalMarks')} className={inputCls} /></FormField>
+              <FormField label="External Marks"><input type="number" value={form.externalMarks || ''} onChange={f('externalMarks')} className={inputCls} /></FormField>
+              <FormField label="Total Marks">   <input type="number" value={form.totalMarks    || ''} onChange={f('totalMarks')}    className={inputCls} /></FormField>
+              <FormField label="Grade">
+                <select value={form.grade} onChange={f('grade')} className={selectCls}>
+                  <option value="">— Grade —</option>
+                  {['A+','A','B+','B','C+','C','D','F'].map(g => <option key={g}>{g}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Remarks</label>
-                <input value={form.remarks || ''} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              </div>
+              </FormField>
+              <FormField label="Remarks">
+                <input type="text" value={form.remarks || ''} onChange={f('remarks')} className={inputCls} placeholder="Optional remarks..." />
+              </FormField>
             </div>
-            <div className="flex gap-3 justify-end">
-              <button type="button" onClick={() => setModal(null)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
-              <button type="submit" className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save</button>
-            </div>
+            <ModalActions onCancel={() => setModal(null)} loading={false} saveLabel={modal === 'add' ? 'Add Result' : 'Save Changes'} />
           </form>
         </Modal>
       )}

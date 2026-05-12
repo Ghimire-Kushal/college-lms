@@ -1,0 +1,14 @@
+{
+  "name": "edutrack-lms",
+  "version": "1.0.0",
+  "description": "EduTrack College LMS – MERN Stack",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "cd server && npm run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

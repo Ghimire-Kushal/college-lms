@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Clock } from 'lucide-react';
 import Modal from '../../components/Modal';
+import { PrimaryBtn, SecondaryBtn, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_COLORS = ['bg-indigo-50 text-indigo-700 border-indigo-100', 'bg-sky-50 text-sky-700 border-sky-100', 'bg-emerald-50 text-emerald-700 border-emerald-100', 'bg-violet-50 text-violet-700 border-violet-100', 'bg-amber-50 text-amber-700 border-amber-100', 'bg-rose-50 text-rose-700 border-rose-100'];
 const emptyForm = { course: '', teacher: '', dayOfWeek: 'Monday', startTime: '', endTime: '', room: '', semester: '', section: '' };
 
 export default function Timetable() {
-  const [entries, setEntries] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [entries, setEntries]   = useState([]);
+  const [courses, setCourses]   = useState([]);
   const [teachers, setTeachers] = useState([]);
-  const [modal, setModal] = useState(null);
-  const [form, setForm] = useState(emptyForm);
+  const [modal, setModal]       = useState(null);
+  const [form, setForm]         = useState(emptyForm);
   const [selected, setSelected] = useState(null);
 
   const load = () => api.get('/admin/timetable').then(r => setEntries(r.data));
@@ -22,8 +24,9 @@ export default function Timetable() {
     api.get('/admin/teachers').then(r => setTeachers(r.data));
   }, []);
 
-  const openAdd = () => { setForm(emptyForm); setModal('add'); };
+  const openAdd  = () => { setForm(emptyForm); setModal('add'); };
   const openEdit = (e) => { setForm({ ...e, course: e.course?._id, teacher: e.teacher?._id }); setSelected(e); setModal('edit'); };
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -41,37 +44,44 @@ export default function Timetable() {
   };
 
   const byDay = DAYS.reduce((acc, d) => {
-    acc[d] = entries.filter(e => e.dayOfWeek === d);
+    acc[d] = entries.filter(e => e.dayOfWeek === d).sort((a, b) => a.startTime?.localeCompare(b.startTime));
     return acc;
   }, {});
 
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <button onClick={openAdd} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700">
-          <Plus size={16} /> Add Entry
-        </button>
+        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Entry</PrimaryBtn>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {DAYS.map(day => (
-          <div key={day} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="bg-indigo-50 px-4 py-3 border-b border-gray-100">
-              <h3 className="font-semibold text-indigo-700 text-sm">{day}</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        {DAYS.map((day, di) => (
+          <div key={day} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className={`px-4 py-3 border-b border-slate-100 flex items-center justify-between ${DAY_COLORS[di]}`}>
+              <h3 className="font-bold text-[14px]">{day}</h3>
+              <span className="text-[11px] font-medium opacity-60">{byDay[day].length} class{byDay[day].length !== 1 ? 'es' : ''}</span>
             </div>
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-slate-50">
               {byDay[day].length === 0 ? (
-                <p className="text-xs text-gray-400 px-4 py-3">No classes</p>
+                <div className="flex items-center gap-2 px-4 py-4 text-slate-300">
+                  <Clock size={14} />
+                  <p className="text-[12px]">No classes scheduled</p>
+                </div>
               ) : byDay[day].map(e => (
-                <div key={e._id} className="flex items-center gap-3 px-4 py-3">
-                  <div className="text-xs text-gray-500 w-24 shrink-0">{e.startTime} – {e.endTime}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">{e.course?.name}</p>
-                    <p className="text-xs text-gray-500">{e.teacher?.name} {e.room ? `· Room ${e.room}` : ''}</p>
+                <div key={e._id} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
+                  <div className="w-16 shrink-0">
+                    <p className="text-[11px] font-semibold text-slate-500">{e.startTime}</p>
+                    <p className="text-[10px] text-slate-400">{e.endTime}</p>
                   </div>
-                  <div className="flex gap-1">
-                    <button onClick={() => openEdit(e)} className="p-1 hover:bg-gray-100 rounded text-gray-400"><Edit2 size={13} /></button>
-                    <button onClick={() => handleDelete(e._id)} className="p-1 hover:bg-red-50 rounded text-red-400"><Trash2 size={13} /></button>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-slate-700 truncate">{e.course?.name}</p>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {e.teacher?.name}{e.room ? ` · Room ${e.room}` : ''}
+                    </p>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <IconBtn icon={Edit2}  onClick={() => openEdit(e)}    color="slate" title="Edit" />
+                    <IconBtn icon={Trash2} onClick={() => handleDelete(e._id)} color="red"   title="Delete" />
                   </div>
                 </div>
               ))}
@@ -85,45 +95,43 @@ export default function Timetable() {
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Course</label>
-                <select required value={form.course} onChange={e => setForm(f => ({ ...f, course: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Select course --</option>
-                  {courses.map(c => <option key={c._id} value={c._id}>{c.name} ({c.code})</option>)}
-                </select>
+                <FormField label="Course">
+                  <select required value={form.course} onChange={f('course')} className={selectCls}>
+                    <option value="">Select a course...</option>
+                    {courses.map(c => <option key={c._id} value={c._id}>{c.name} ({c.code})</option>)}
+                  </select>
+                </FormField>
               </div>
               <div className="col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Teacher</label>
-                <select required value={form.teacher} onChange={e => setForm(f => ({ ...f, teacher: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="">-- Select teacher --</option>
-                  {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
-                </select>
+                <FormField label="Teacher">
+                  <select required value={form.teacher} onChange={f('teacher')} className={selectCls}>
+                    <option value="">Select a teacher...</option>
+                    {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
+                  </select>
+                </FormField>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Day</label>
-                <select value={form.dayOfWeek} onChange={e => setForm(f => ({ ...f, dayOfWeek: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <FormField label="Day">
+                <select value={form.dayOfWeek} onChange={f('dayOfWeek')} className={selectCls}>
                   {DAYS.map(d => <option key={d}>{d}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Room</label>
-                <input value={form.room} onChange={e => setForm(f => ({ ...f, room: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              {[['startTime', 'Start Time', 'time'], ['endTime', 'End Time', 'time'], ['semester', 'Semester', 'number'], ['section', 'Section', 'text']].map(([key, label, type]) => (
-                <div key={key}>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-                  <input type={type} value={form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                </div>
-              ))}
+              </FormField>
+              <FormField label="Room">
+                <input type="text" value={form.room} onChange={f('room')} className={inputCls} placeholder="e.g. 101" />
+              </FormField>
+              <FormField label="Start Time">
+                <input type="time" value={form.startTime} onChange={f('startTime')} className={inputCls} />
+              </FormField>
+              <FormField label="End Time">
+                <input type="time" value={form.endTime} onChange={f('endTime')} className={inputCls} />
+              </FormField>
+              <FormField label="Semester">
+                <input type="number" value={form.semester} onChange={f('semester')} className={inputCls} placeholder="1" />
+              </FormField>
+              <FormField label="Section">
+                <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="A" />
+              </FormField>
             </div>
-            <div className="flex gap-3 justify-end">
-              <button type="button" onClick={() => setModal(null)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
-              <button type="submit" className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save</button>
-            </div>
+            <ModalActions onCancel={() => setModal(null)} loading={false} saveLabel={modal === 'add' ? 'Add Entry' : 'Save Changes'} />
           </form>
         </Modal>
       )}

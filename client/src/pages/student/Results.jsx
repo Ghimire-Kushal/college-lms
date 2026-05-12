@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
+import { BarChart3 } from 'lucide-react';
+import { Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
+
+const gradeColor = {
+  'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue',
+  'C+': 'yellow', 'C': 'yellow', 'D': 'yellow', 'F': 'red',
+};
 
 export default function StudentResults() {
   const [results, setResults] = useState([]);
@@ -13,7 +20,19 @@ export default function StudentResults() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600" /></div>;
+  if (loading) return (
+    <div className="space-y-4">
+      {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
+    </div>
+  );
+
+  if (results.length === 0) return (
+    <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
+      <BarChart3 size={36} className="mx-auto text-slate-200 mb-3" />
+      <p className="text-slate-500 font-medium">No results published yet</p>
+      <p className="text-sm text-slate-400 mt-1">Check back after your exams are graded.</p>
+    </div>
+  );
 
   const bySemester = results.reduce((acc, r) => {
     const key = r.semester;
@@ -22,45 +41,47 @@ export default function StudentResults() {
     return acc;
   }, {});
 
-  const gradeColor = { 'A+': 'text-green-700 bg-green-50', A: 'text-green-700 bg-green-50', 'B+': 'text-blue-700 bg-blue-50', B: 'text-blue-700 bg-blue-50', 'C+': 'text-yellow-700 bg-yellow-50', C: 'text-yellow-700 bg-yellow-50', D: 'text-orange-700 bg-orange-50', F: 'text-red-700 bg-red-50' };
-
-  if (results.length === 0) return (
-    <div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">
-      No results published yet
-    </div>
-  );
-
   return (
     <div className="space-y-6">
       {Object.entries(bySemester).sort(([a], [b]) => a - b).map(([sem, items]) => {
-        const avg = items.length ? (items.reduce((s, r) => s + (r.totalMarks || 0), 0) / items.length).toFixed(1) : 0;
+        const avg = items.length
+          ? (items.reduce((s, r) => s + (r.totalMarks || 0), 0) / items.length).toFixed(1)
+          : 0;
+        const passCount = items.filter(r => r.grade !== 'F').length;
+
         return (
-          <div key={sem} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-5 py-3 bg-indigo-50 border-b border-indigo-100 flex items-center justify-between">
-              <h2 className="font-semibold text-indigo-700">Semester {sem}</h2>
-              <span className="text-sm text-indigo-600">Average: <strong>{avg}</strong></span>
+          <div key={sem} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="px-5 py-4 bg-gradient-to-r from-indigo-50 to-violet-50 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <h2 className="font-bold text-indigo-700 text-[15px]">Semester {sem}</h2>
+                <Badge color="indigo">{items.length} subjects</Badge>
+              </div>
+              <div className="flex items-center gap-4 text-[12px]">
+                <span className="text-slate-600">Avg: <span className="font-bold text-indigo-700">{avg}</span></span>
+                <Badge color="green">{passCount}/{items.length} passed</Badge>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="border-b border-gray-50">
-                  <tr>
+                <thead>
+                  <tr className="border-b border-slate-50 bg-slate-50/50">
                     {['Course', 'Code', 'Internal', 'External', 'Total', 'Grade', 'Remarks'].map(h => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500">{h}</th>
+                      <th key={h} className="text-left px-4 py-3 text-[11px] font-semibold text-slate-500 uppercase tracking-widest">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody>
                   {items.map(r => (
-                    <tr key={r._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-gray-800">{r.course?.name}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">{r.course?.code}</td>
-                      <td className="px-4 py-3 text-gray-600">{r.internalMarks}</td>
-                      <td className="px-4 py-3 text-gray-600">{r.externalMarks}</td>
-                      <td className="px-4 py-3 font-semibold text-gray-800">{r.totalMarks}</td>
-                      <td className="px-4 py-3">
-                        {r.grade && <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${gradeColor[r.grade] || 'bg-gray-100 text-gray-600'}`}>{r.grade}</span>}
+                    <tr key={r._id} className="border-b border-slate-50 hover:bg-slate-50/40 last:border-0 transition-colors">
+                      <td className="px-4 py-3.5 font-semibold text-slate-700 text-[13px]">{r.course?.name}</td>
+                      <td className="px-4 py-3.5"><Badge color="slate">{r.course?.code}</Badge></td>
+                      <td className="px-4 py-3.5 text-[13px] font-medium text-slate-700">{r.internalMarks}</td>
+                      <td className="px-4 py-3.5 text-[13px] font-medium text-slate-700">{r.externalMarks}</td>
+                      <td className="px-4 py-3.5 text-[15px] font-bold text-slate-800">{r.totalMarks}</td>
+                      <td className="px-4 py-3.5">
+                        {r.grade ? <Badge color={gradeColor[r.grade] || 'slate'}>{r.grade}</Badge> : '—'}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">{r.remarks || '—'}</td>
+                      <td className="px-4 py-3.5 text-[12px] text-slate-400">{r.remarks || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

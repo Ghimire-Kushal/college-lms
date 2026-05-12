@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Eye, Edit2, Award } from 'lucide-react';
+import { Plus, Trash2, Eye, Award, Clock, CheckCircle, ClipboardList } from 'lucide-react';
 import Modal from '../../components/Modal';
+import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -8,12 +9,12 @@ const emptyForm = { title: '', description: '', courseId: '', dueDate: '', total
 
 export default function TeacherAssignments() {
   const [assignments, setAssignments] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [modal, setModal] = useState(null); // 'add' | 'submissions' | 'grade'
-  const [form, setForm] = useState(emptyForm);
-  const [selected, setSelected] = useState(null);
+  const [courses, setCourses]         = useState([]);
+  const [modal, setModal]             = useState(null);
+  const [form, setForm]               = useState(emptyForm);
+  const [selected, setSelected]       = useState(null);
   const [submissions, setSubmissions] = useState([]);
-  const [gradeForm, setGradeForm] = useState({ marks: '', feedback: '' });
+  const [gradeForm, setGradeForm]     = useState({ marks: '', feedback: '' });
   const [selectedSub, setSelectedSub] = useState(null);
 
   const load = () => api.get('/teacher/assignments').then(r => setAssignments(r.data));
@@ -60,106 +61,118 @@ export default function TeacherAssignments() {
     toast.success('Deleted'); load();
   };
 
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
   const isPast = (d) => new Date(d) < new Date();
 
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <button onClick={openAdd} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700">
-          <Plus size={16} /> Create Assignment
-        </button>
+        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Create Assignment</PrimaryBtn>
       </div>
+
+      {assignments.length === 0 && (
+        <Card>
+          <div className="flex flex-col items-center py-16 text-slate-300">
+            <ClipboardList size={40} className="mb-3" />
+            <p className="text-slate-500 font-medium">No assignments yet</p>
+            <p className="text-sm text-slate-400 mt-1">Create your first assignment for students.</p>
+          </div>
+        </Card>
+      )}
 
       <div className="space-y-3">
-        {assignments.length === 0 && <div className="bg-white rounded-xl p-8 text-center text-gray-400 shadow-sm border border-gray-100">No assignments created yet</div>}
-        {assignments.map(a => (
-          <div key={a._id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-gray-800">{a.title}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${isPast(a.dueDate) ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
-                    {isPast(a.dueDate) ? 'Expired' : 'Active'}
-                  </span>
+        {assignments.map(a => {
+          const past = isPast(a.dueDate);
+          return (
+            <div key={a._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors overflow-hidden">
+              <div className={`h-1 ${past ? 'bg-rose-400' : 'bg-gradient-to-r from-indigo-500 to-indigo-600'}`} />
+              <div className="p-5 flex items-start gap-4">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${past ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-600'}`}>
+                  {past ? <Clock size={18} /> : <CheckCircle size={18} />}
                 </div>
-                {a.description && <p className="text-sm text-gray-500 mb-2">{a.description}</p>}
-                <div className="flex items-center gap-4 text-xs text-gray-400">
-                  <span>{a.course?.name}</span>
-                  <span>Due: {new Date(a.dueDate).toLocaleDateString()}</span>
-                  <span>Max Marks: {a.totalMarks}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <h3 className="font-bold text-slate-800 text-[14px]">{a.title}</h3>
+                    <Badge color={past ? 'red' : 'green'}>{past ? 'Closed' : 'Active'}</Badge>
+                    <Badge color="indigo">{a.course?.name}</Badge>
+                  </div>
+                  {a.description && <p className="text-[12px] text-slate-500 mb-2 line-clamp-1">{a.description}</p>}
+                  <div className="flex items-center gap-4 text-[11px] text-slate-400">
+                    <span>Due: {new Date(a.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                    <span>Max Marks: <span className="font-semibold text-slate-600">{a.totalMarks}</span></span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-1 shrink-0">
-                <button onClick={() => openSubmissions(a)} className="flex items-center gap-1 px-2.5 py-1.5 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">
-                  <Eye size={12} /> Submissions
-                </button>
-                <button onClick={() => handleDelete(a._id)} className="p-1.5 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={14} /></button>
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => openSubmissions(a)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors">
+                    <Eye size={13} /> Submissions
+                  </button>
+                  <IconBtn icon={Trash2} onClick={() => handleDelete(a._id)} color="red" title="Delete" />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Create Modal */}
       {modal === 'add' && (
         <Modal title="Create Assignment" onClose={() => setModal(null)}>
           <form onSubmit={handleSave} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Course</label>
-              <select required value={form.courseId} onChange={e => setForm(f => ({ ...f, courseId: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="">-- Select --</option>
+            <FormField label="Course">
+              <select required value={form.courseId} onChange={f('courseId')} className={selectCls}>
+                <option value="">Select a course...</option>
                 {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
-            </div>
-            {[['title', 'Title', 'text', true], ['description', 'Description', 'text', false]].map(([key, label, type, req]) => (
-              <div key={key}>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-                <input type={type} required={req} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              </div>
-            ))}
+            </FormField>
+            <FormField label="Title">
+              <input required type="text" value={form.title} onChange={f('title')} className={inputCls} placeholder="Assignment title..." />
+            </FormField>
+            <FormField label="Description">
+              <input type="text" value={form.description} onChange={f('description')} className={inputCls} placeholder="Brief instructions..." />
+            </FormField>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Due Date</label>
-                <input type="datetime-local" required value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Total Marks</label>
-                <input type="number" value={form.totalMarks} onChange={e => setForm(f => ({ ...f, totalMarks: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-              </div>
+              <FormField label="Due Date">
+                <input required type="datetime-local" value={form.dueDate} onChange={f('dueDate')} className={inputCls} />
+              </FormField>
+              <FormField label="Total Marks">
+                <input type="number" value={form.totalMarks} onChange={f('totalMarks')} className={inputCls} />
+              </FormField>
             </div>
-            <div className="flex gap-3 justify-end">
-              <button type="button" onClick={() => setModal(null)} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
-              <button type="submit" className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Create</button>
-            </div>
+            <ModalActions onCancel={() => setModal(null)} loading={false} saveLabel="Create Assignment" />
           </form>
         </Modal>
       )}
 
-      {/* Submissions Modal */}
       {modal === 'submissions' && (
-        <Modal title={`Submissions – ${selected?.title}`} onClose={() => setModal(null)} size="xl">
-          <div className="space-y-3">
-            {submissions.length === 0 && <p className="text-center py-4 text-gray-400 text-sm">No submissions yet</p>}
-            {submissions.map(s => (
-              <div key={s._id} className="flex items-center gap-4 p-3 border border-gray-100 rounded-lg">
-                <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold">{s.student?.name[0]}</div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-700">{s.student?.name}</p>
-                  <p className="text-xs text-gray-400">{s.student?.studentId} · {new Date(s.submittedAt).toLocaleDateString()}</p>
-                  {s.content && <p className="text-xs text-gray-500 mt-1 line-clamp-1">{s.content}</p>}
+        <Modal title={`Submissions — ${selected?.title}`} onClose={() => setModal(null)} size="xl">
+          <div className="space-y-2.5">
+            {submissions.length === 0 && (
+              <div className="text-center py-8 text-slate-400">
+                <ClipboardList size={28} className="mx-auto mb-2" />
+                <p className="text-sm">No submissions yet</p>
+              </div>
+            )}
+            {submissions.map((s, i) => (
+              <div key={s._id} className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 hover:border-indigo-100 hover:bg-slate-50/40 transition-colors">
+                <Avatar name={s.student?.name} index={i} size="sm" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-slate-700">{s.student?.name}</p>
+                  <p className="text-[11px] text-slate-400">
+                    {s.student?.studentId} · Submitted {new Date(s.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </p>
+                  {s.content && <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{s.content}</p>}
                 </div>
-                <div className="flex items-center gap-2">
-                  {s.status === 'graded' ? (
-                    <span className="text-sm font-semibold text-green-600">{s.marks}/{selected?.totalMarks}</span>
-                  ) : (
-                    <span className="text-xs bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded-full">Pending</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  {s.status === 'graded'
+                    ? <Badge color="green">{s.marks}/{selected?.totalMarks}</Badge>
+                    : <Badge color="yellow">Pending</Badge>
+                  }
+                  {s.fileUrl && (
+                    <a href={s.fileUrl} target="_blank" rel="noreferrer"
+                      className="text-[11px] text-sky-600 hover:underline font-medium">File</a>
                   )}
-                  {s.fileUrl && <a href={s.fileUrl} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:underline">File</a>}
-                  <button onClick={() => openGrade(s)} className="flex items-center gap-1 px-2.5 py-1.5 text-xs bg-green-50 text-green-700 rounded-lg hover:bg-green-100">
+                  <button onClick={() => openGrade(s)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition-colors">
                     <Award size={12} /> Grade
                   </button>
                 </div>
@@ -169,23 +182,21 @@ export default function TeacherAssignments() {
         </Modal>
       )}
 
-      {/* Grade Modal */}
       {modal === 'grade' && (
-        <Modal title={`Grade – ${selectedSub?.student?.name}`} onClose={() => setModal('submissions')} size="sm">
+        <Modal title={`Grade — ${selectedSub?.student?.name}`} onClose={() => setModal('submissions')} size="sm">
           <form onSubmit={handleGrade} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Marks (out of {selected?.totalMarks})</label>
-              <input type="number" required max={selected?.totalMarks} value={gradeForm.marks} onChange={e => setGradeForm(f => ({ ...f, marks: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Feedback</label>
-              <textarea rows={3} value={gradeForm.feedback} onChange={e => setGradeForm(f => ({ ...f, feedback: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" />
-            </div>
-            <div className="flex gap-3 justify-end">
-              <button type="button" onClick={() => setModal('submissions')} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">Back</button>
-              <button type="submit" className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Save Grade</button>
+            <FormField label={`Marks (out of ${selected?.totalMarks})`}>
+              <input required type="number" max={selected?.totalMarks} value={gradeForm.marks}
+                onChange={e => setGradeForm(f => ({ ...f, marks: e.target.value }))} className={inputCls} />
+            </FormField>
+            <FormField label="Feedback">
+              <textarea rows={3} value={gradeForm.feedback}
+                onChange={e => setGradeForm(f => ({ ...f, feedback: e.target.value }))}
+                className={`${inputCls} resize-none`} placeholder="Optional feedback..." />
+            </FormField>
+            <div className="flex gap-3 justify-end pt-2">
+              <SecondaryBtn type="button" onClick={() => setModal('submissions')}>Back</SecondaryBtn>
+              <PrimaryBtn type="submit" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>Save Grade</PrimaryBtn>
             </div>
           </form>
         </Modal>
