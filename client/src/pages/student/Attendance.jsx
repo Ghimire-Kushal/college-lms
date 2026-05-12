@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
-import { Badge } from '../../components/UI';
+import { Badge, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -32,20 +32,24 @@ export default function StudentAttendance() {
   }, []);
 
   if (loading) return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {[...Array(3)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
+    <div className="space-y-5">
+      <PageHeader title="My Attendance" subtitle="Track your class attendance across all courses." />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(3)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
+      </div>
     </div>
   );
 
   return (
     <div className="space-y-5">
+      <PageHeader title="My Attendance" subtitle="Track your class attendance across all courses." />
       {summary.length === 0 && (
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm text-slate-400">
           No attendance data yet
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {summary.map((item, i) => {
           const pct = parseFloat(item.percentage) || 0;
           const isLow = pct < 75;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Eye, Award, Clock, CheckCircle, ClipboardList } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
+import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -66,9 +66,9 @@ export default function TeacherAssignments() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <PageHeader title="Assignments" subtitle="Create and review student assignment submissions.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Create Assignment</PrimaryBtn>
-      </div>
+      </PageHeader>
 
       {assignments.length === 0 && (
         <Card>

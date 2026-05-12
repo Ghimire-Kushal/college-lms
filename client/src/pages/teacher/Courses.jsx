@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
-import { Card, Badge, Avatar } from '../../components/UI';
+import { Card, Badge, Avatar, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -20,6 +20,7 @@ export default function TeacherCourses() {
 
   return (
     <div className="space-y-4">
+      <PageHeader title="My Courses" subtitle="Courses you are currently assigned to teach." />
       {courses.length === 0 && (
         <Card>
           <div className="flex flex-col items-center py-16 text-slate-300">

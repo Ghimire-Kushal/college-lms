@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Clock } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge } from '../../components/UI';
+import { PrimaryBtn, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -50,11 +50,11 @@ export default function Timetable() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <PageHeader title="Timetable" subtitle="Schedule and manage classes for each day of the week.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Entry</PrimaryBtn>
-      </div>
+      </PageHeader>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {DAYS.map((day, di) => (
           <div key={day} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className={`px-4 py-3 border-b border-slate-100 flex items-center justify-between ${DAY_COLORS[di]}`}>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Download, FileText, BookOpen } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge } from '../../components/UI';
+import { PrimaryBtn, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls, Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -45,13 +45,15 @@ export default function TeacherNotes() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Notes & Materials" subtitle="Share study materials and resources with students.">
+        <PrimaryBtn onClick={() => setModal(true)}><Plus size={15} /> Upload Note</PrimaryBtn>
+      </PageHeader>
       <div className="flex items-center gap-3">
         <select value={filterCourse} onChange={e => setFilter(e.target.value)}
           className="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
           <option value="">All Courses</option>
           {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
         </select>
-        <PrimaryBtn onClick={() => setModal(true)} className="ml-auto"><Plus size={15} /> Upload Note</PrimaryBtn>
       </div>
 
       {notes.length === 0 && (
@@ -62,7 +64,7 @@ export default function TeacherNotes() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {notes.map((n, i) => {
           const hue = (i * 67 + 200) % 360;
           return (

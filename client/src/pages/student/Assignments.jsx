@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Upload, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, FormField, inputCls, Badge } from '../../components/UI';
+import { PrimaryBtn, SecondaryBtn, FormField, PageHeader, inputCls, Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -102,6 +102,7 @@ export default function StudentAssignments() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Assignments" subtitle="Manage your pending, submitted, and overdue assignments." />
       {upcoming.length  > 0 && <Section title="Pending"   items={upcoming}  dotColor="bg-indigo-500"  showSubmit />}
       {submitted.length > 0 && <Section title="Submitted" items={submitted} dotColor="bg-emerald-500" />}
       {overdue.length   > 0 && <Section title="Overdue"   items={overdue}   dotColor="bg-rose-500"    urgent />}

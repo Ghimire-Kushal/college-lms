@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SearchBar, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, inputCls } from '../../components/UI';
+import { PrimaryBtn, SearchBar, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, PageHeader, inputCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -41,9 +41,11 @@ export default function Teachers() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Teachers" subtitle="Manage faculty members and course assignments.">
+        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Teacher</PrimaryBtn>
+      </PageHeader>
       <div className="flex flex-col sm:flex-row gap-3">
         <SearchBar value={search} onChange={setSearch} placeholder="Search teachers..." />
-        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Teacher</PrimaryBtn>
       </div>
 
       <Card>

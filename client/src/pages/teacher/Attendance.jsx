@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Eye, UserCheck } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, FormField, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
+import { PrimaryBtn, SecondaryBtn, FormField, PageHeader, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -60,6 +60,7 @@ export default function TeacherAttendance() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Attendance" subtitle="Take attendance and review class records." />
       {/* Controls */}
       <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
         <h3 className="text-[14px] font-semibold text-slate-700 mb-4">Take Attendance</h3>
@@ -80,8 +81,8 @@ export default function TeacherAttendance() {
       </div>
 
       {/* Course cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {courses.map((c, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {courses.map((c) => (
           <div key={c._id} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:border-sky-100 transition-colors">
             <div className="flex items-center justify-between mb-2">
               <div>

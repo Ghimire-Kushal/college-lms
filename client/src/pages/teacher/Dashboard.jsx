@@ -24,7 +24,7 @@ export default function TeacherDashboard() {
   if (loading) return (
     <div className="space-y-6">
       <Skeleton className="h-32" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -47,7 +47,7 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         <StatCard title="My Courses"        value={data?.totalCourses ?? 0}            icon={BookOpen}     color="sky"    gradient />
         <StatCard title="Total Students"    value={data?.totalStudents ?? 0}           icon={Users}        color="indigo" gradient />
         <StatCard title="Pending Reviews"   value={data?.pendingSubmissions ?? 0}      icon={ClipboardList} color="yellow" gradient />
@@ -128,7 +128,7 @@ export default function TeacherDashboard() {
         {data?.recentAttendance?.length === 0 ? (
           <p className="text-slate-400 text-sm">No attendance taken yet</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {data?.recentAttendance?.map(r => (
               <div key={r._id} className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />

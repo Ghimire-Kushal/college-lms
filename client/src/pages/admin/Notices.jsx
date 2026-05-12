@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Bell, Megaphone } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge } from '../../components/UI';
+import { PrimaryBtn, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls, Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -43,9 +43,9 @@ export default function AdminNotices() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <PageHeader title="Notices" subtitle="Post announcements to students and teachers.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Post Notice</PrimaryBtn>
-      </div>
+      </PageHeader>
 
       {notices.length === 0 && (
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
@@ -55,7 +55,7 @@ export default function AdminNotices() {
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         {notices.map((n) => {
           const info = roleInfo[n.targetRole] || roleInfo.all;
           return (

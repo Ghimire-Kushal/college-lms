@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BarChart3 } from 'lucide-react';
-import { Badge } from '../../components/UI';
+import { Badge, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -21,16 +21,22 @@ export default function StudentResults() {
   }, []);
 
   if (loading) return (
-    <div className="space-y-4">
-      {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
+    <div className="space-y-5">
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <div className="space-y-4">
+        {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
+      </div>
     </div>
   );
 
   if (results.length === 0) return (
-    <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
-      <BarChart3 size={36} className="mx-auto text-slate-200 mb-3" />
-      <p className="text-slate-500 font-medium">No results published yet</p>
-      <p className="text-sm text-slate-400 mt-1">Check back after your exams are graded.</p>
+    <div className="space-y-5">
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
+        <BarChart3 size={36} className="mx-auto text-slate-200 mb-3" />
+        <p className="text-slate-500 font-medium">No results published yet</p>
+        <p className="text-sm text-slate-400 mt-1">Check back after your exams are graded.</p>
+      </div>
     </div>
   );
 
@@ -42,7 +48,9 @@ export default function StudentResults() {
   }, {});
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <div className="space-y-6">
       {Object.entries(bySemester).sort(([a], [b]) => a - b).map(([sem, items]) => {
         const avg = items.length
           ? (items.reduce((s, r) => s + (r.totalMarks || 0), 0) / items.length).toFixed(1)
@@ -90,6 +98,7 @@ export default function StudentResults() {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

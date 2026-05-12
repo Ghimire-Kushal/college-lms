@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Filter, UserCheck } from 'lucide-react';
-import { PrimaryBtn, SecondaryBtn, FormField, Badge, inputCls, selectCls } from '../../components/UI';
+import { PrimaryBtn, FormField, Badge, PageHeader, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -32,6 +32,7 @@ export default function AdminAttendance() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Attendance Reports" subtitle="View and filter student attendance records." />
       {/* Filters */}
       <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
         <div className="flex items-center gap-2 mb-4">

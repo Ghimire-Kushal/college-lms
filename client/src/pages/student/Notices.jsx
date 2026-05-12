@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Bell, Megaphone } from 'lucide-react';
-import { Badge } from '../../components/UI';
+import { Badge, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -18,21 +18,29 @@ export default function StudentNotices() {
   }, []);
 
   if (loading) return (
-    <div className="space-y-3">
-      {[...Array(3)].map((_, i) => <div key={i} className="h-24 animate-pulse bg-slate-100 rounded-2xl" />)}
+    <div className="space-y-5">
+      <PageHeader title="Notices" subtitle="Announcements from admins and teachers." />
+      <div className="space-y-3">
+        {[...Array(3)].map((_, i) => <div key={i} className="h-24 animate-pulse bg-slate-100 rounded-2xl" />)}
+      </div>
     </div>
   );
 
   if (notices.length === 0) return (
-    <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
-      <Megaphone size={36} className="mx-auto text-slate-200 mb-3" />
-      <p className="text-slate-500 font-medium">No notices yet</p>
-      <p className="text-sm text-slate-400 mt-1">You'll be notified when admins or teachers post announcements.</p>
+    <div className="space-y-5">
+      <PageHeader title="Notices" subtitle="Announcements from admins and teachers." />
+      <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
+        <Megaphone size={36} className="mx-auto text-slate-200 mb-3" />
+        <p className="text-slate-500 font-medium">No notices yet</p>
+        <p className="text-sm text-slate-400 mt-1">You'll be notified when admins or teachers post announcements.</p>
+      </div>
     </div>
   );
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
+      <PageHeader title="Notices" subtitle="Announcements from admins and teachers." />
+      <div className="space-y-3">
       {notices.map((n, i) => (
         <div key={n._id} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors">
           <div className="flex items-start gap-3">
@@ -57,6 +65,7 @@ export default function StudentNotices() {
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }

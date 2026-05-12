@@ -3,14 +3,16 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
-  Pencil, UserCheck, ChevronRight, Sparkles,
+  Pencil, UserCheck, ChevronRight, Sparkles, X,
 } from 'lucide-react';
 
 const adminNav = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { section: 'Manage' },
   { to: '/admin/students', label: 'Students', icon: GraduationCap },
   { to: '/admin/teachers', label: 'Teachers', icon: Users },
   { to: '/admin/courses', label: 'Courses', icon: BookOpen },
+  { section: 'Academic' },
   { to: '/admin/timetable', label: 'Timetable', icon: CalendarDays },
   { to: '/admin/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/admin/notices', label: 'Notices', icon: Bell },
@@ -19,21 +21,25 @@ const adminNav = [
 
 const teacherNav = [
   { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { section: 'Teaching' },
   { to: '/teacher/courses', label: 'My Courses', icon: BookOpen },
   { to: '/teacher/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/teacher/notes', label: 'Notes & Materials', icon: FileText },
   { to: '/teacher/assignments', label: 'Assignments', icon: ClipboardList },
+  { section: 'Communication' },
   { to: '/teacher/results', label: 'Results', icon: BarChart3 },
   { to: '/teacher/notices', label: 'Notices', icon: Bell },
 ];
 
 const studentNav = [
   { to: '/student', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { section: 'Academics' },
   { to: '/student/courses', label: 'My Courses', icon: BookOpen },
   { to: '/student/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/student/notes', label: 'Notes & Materials', icon: BookMarked },
   { to: '/student/assignments', label: 'Assignments', icon: Pencil },
   { to: '/student/results', label: 'Results', icon: BarChart3 },
+  { section: 'Info' },
   { to: '/student/notices', label: 'Notices', icon: Bell },
 ];
 
@@ -45,7 +51,7 @@ const roleColors = {
   student: { bg: 'bg-emerald-500', ring: 'ring-emerald-400', label: 'bg-emerald-500/20 text-emerald-300' },
 };
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const navItems = navByRole[user?.role] || [];
@@ -55,16 +61,20 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="flex flex-col shrink-0"
+      className={[
+        'flex flex-col shrink-0 z-40',
+        'lg:relative lg:translate-x-0',
+        'fixed inset-y-0 left-0 transition-transform duration-300 ease-in-out',
+        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      ].join(' ')}
       style={{
         width: 'var(--sidebar-width)',
-        minHeight: '100vh',
         background: 'linear-gradient(180deg, #0f172a 0%, #111827 100%)',
         borderRight: '1px solid rgba(255,255,255,0.06)',
       }}
     >
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/5">
+      <div className="px-5 py-5 border-b border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
@@ -78,6 +88,12 @@ export default function Sidebar() {
             </p>
           </div>
         </div>
+        <button
+          onClick={onClose}
+          className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+        >
+          <X size={16} />
+        </button>
       </div>
 
       {/* Role badge */}
@@ -90,31 +106,40 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 px-3 mb-2">Menu</p>
         <ul className="space-y-0.5">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 ${
-                    isActive
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
-                      : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <Icon size={16} className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'} />
-                    <span className="flex-1">{label}</span>
-                    {isActive && <ChevronRight size={14} className="text-indigo-300" />}
-                  </>
-                )}
-              </NavLink>
-            </li>
-          ))}
+          {navItems.map((item, idx) => {
+            if (item.section) {
+              return (
+                <li key={`section-${idx}`} className="pt-4 pb-1.5 px-3">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-600">{item.section}</p>
+                </li>
+              );
+            }
+            const { to, label, icon: Icon, end } = item;
+            return (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                      isActive
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
+                        : 'text-slate-400 hover:bg-white/6 hover:text-slate-200'
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon size={16} className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'} />
+                      <span className="flex-1">{label}</span>
+                      {isActive && <ChevronRight size={13} className="text-indigo-300" />}
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 

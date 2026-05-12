@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { GraduationCap, Users, BookOpen, Bell, TrendingUp, ArrowRight } from 'lucide-react';
 import StatCard from '../../components/StatCard';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-
-const BAR_COLORS = ['#6366f1','#8b5cf6','#a78bfa','#818cf8','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -34,7 +32,7 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -72,14 +70,14 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="indigo"  gradient />
         <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="violet"  gradient />
         <StatCard title="Active Courses"  value={data?.totalCourses ?? 0}  icon={BookOpen}       color="sky"     gradient />
         <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}           color="purple"  gradient />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
         {/* Bar Chart */}
         <div className="lg:col-span-3 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
           <div className="flex items-center justify-between mb-5">
@@ -98,9 +96,7 @@ export default function AdminDashboard() {
                 <XAxis dataKey="semester" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} width={28} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc' }} />
-                <Bar dataKey="students" radius={[6, 6, 0, 0]}>
-                  {chartData.map((_, i) => <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />)}
-                </Bar>
+                <Bar dataKey="students" radius={[6, 6, 0, 0]} fill="#6366f1" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -151,7 +147,7 @@ export default function AdminDashboard() {
             View all <ArrowRight size={13} />
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {data?.recentNotices?.length === 0 && (
             <p className="text-slate-400 text-sm col-span-3">No notices yet</p>
           )}

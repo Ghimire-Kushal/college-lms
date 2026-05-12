@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, UserCheck, GraduationCap } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, SearchBar, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, inputCls, labelCls, selectCls } from '../../components/UI';
+import { PrimaryBtn, SecondaryBtn, SearchBar, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -53,15 +53,17 @@ export default function Students() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row gap-3">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search by name, email or ID..." />
+      <PageHeader title="Students" subtitle="Manage student accounts and course enrollments.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Student</PrimaryBtn>
+      </PageHeader>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <SearchBar value={search} onChange={setSearch} placeholder="Search by name, email or ID..." />
       </div>
 
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <TableHead cols={['Student', 'ID', 'Email', 'Semester', 'Section', 'Courses', 'Actions']} />
+            <TableHead cols={['Student', 'ID', 'Semester', 'Section', 'Courses', 'Actions']} />
             <tbody>
               {students.length === 0 && <EmptyRow cols={7} message="No students found" />}
               {students.map((s, i) => (
@@ -76,7 +78,6 @@ export default function Students() {
                     </div>
                   </td>
                   <td className="px-4 py-3.5"><Badge color="slate">{s.studentId || '—'}</Badge></td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-500">{s.email}</td>
                   <td className="px-4 py-3.5"><Badge color="indigo">Sem {s.semester || '—'}</Badge></td>
                   <td className="px-4 py-3.5 text-[13px] text-slate-500">{s.section || '—'}</td>
                   <td className="px-4 py-3.5"><Badge color="purple">{s.enrolledCourses?.length || 0} courses</Badge></td>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BookOpen, User } from 'lucide-react';
-import { Badge, Card } from '../../components/UI';
+import { Badge, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -18,13 +18,18 @@ export default function StudentCourses() {
   }, []);
 
   if (loading) return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {[...Array(3)].map((_, i) => <div key={i} className="h-44 animate-pulse bg-slate-100 rounded-2xl" />)}
+    <div className="space-y-5">
+      <PageHeader title="My Courses" subtitle="Courses you are enrolled in this semester." />
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {[...Array(3)].map((_, i) => <div key={i} className="h-44 animate-pulse bg-slate-100 rounded-2xl" />)}
+      </div>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="space-y-5">
+      <PageHeader title="My Courses" subtitle="Courses you are enrolled in this semester." />
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
       {courses.length === 0 && (
         <div className="col-span-3 bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
           <BookOpen size={36} className="mx-auto text-slate-200 mb-3" />
@@ -33,7 +38,7 @@ export default function StudentCourses() {
         </div>
       )}
       {courses.map((c, i) => (
-        <div key={c._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden card-hover">
+        <div key={c._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden card-hover" style={{ animationDelay: `${i * 0.05}s` }}>
           <div className={`h-1.5 bg-gradient-to-r ${COLORS[i % COLORS.length]}`} />
           <div className="p-5">
             <div className="flex items-center gap-3 mb-3">
@@ -68,6 +73,7 @@ export default function StudentCourses() {
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }

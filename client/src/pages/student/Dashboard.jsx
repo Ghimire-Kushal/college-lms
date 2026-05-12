@@ -46,10 +46,10 @@ export default function StudentDashboard() {
   if (loading) return (
     <div className="space-y-6">
       <Skeleton className="h-32" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <Skeleton className="h-64" />
         <Skeleton className="h-64" />
       </div>
@@ -83,14 +83,14 @@ export default function StudentDashboard() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         <StatCard title="Enrolled Courses"    value={data?.totalCourses ?? 0}             icon={BookOpen}     color="green"   gradient />
         <StatCard title="Attendance Rate"     value={`${attPct}%`}                        icon={UserCheck}    color={isLowAtt ? 'red' : 'sky'}     gradient />
         <StatCard title="Classes Attended"    value={`${data?.presentClasses ?? 0}/${data?.totalClasses ?? 0}`} icon={UserCheck} color="indigo"  gradient />
         <StatCard title="Due Assignments"     value={data?.upcomingAssignments?.length ?? 0} icon={ClipboardList} color="yellow" gradient />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Attendance ring */}
         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col items-center justify-center">
           <h2 className="text-[15px] font-semibold text-slate-800 mb-4">Attendance Summary</h2>
@@ -146,7 +146,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* My Courses */}
         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
           <h2 className="text-[15px] font-semibold text-slate-800 mb-4">My Courses</h2>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, inputCls, selectCls } from '../../components/UI';
+import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -48,9 +48,9 @@ export default function AdminResults() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <PageHeader title="Results" subtitle="Manage student exam results and grades.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Result</PrimaryBtn>
-      </div>
+      </PageHeader>
 
       <Card>
         <div className="overflow-x-auto">

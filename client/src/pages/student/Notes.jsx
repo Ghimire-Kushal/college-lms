@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FileText, Download, BookMarked } from 'lucide-react';
-import { Badge } from '../../components/UI';
+import { Badge, PageHeader } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -23,6 +23,7 @@ export default function StudentNotes() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Notes & Materials" subtitle="Study materials shared by your teachers." />
       <select value={filter} onChange={e => setFilter(e.target.value)}
         className="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
         <option value="">All Courses</option>
@@ -30,7 +31,7 @@ export default function StudentNotes() {
       </select>
 
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
         </div>
       )}
@@ -43,7 +44,7 @@ export default function StudentNotes() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {!loading && notes.map((n, i) => {
           const hue = (i * 67 + 200) % 360;
           return (

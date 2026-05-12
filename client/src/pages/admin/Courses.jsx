@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, UserPlus, BookOpen } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, inputCls, selectCls, Badge } from '../../components/UI';
+import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls, Badge } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -58,9 +58,9 @@ export default function Courses() {
 
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
+      <PageHeader title="Courses" subtitle="Manage academic courses and teacher assignments.">
         <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Course</PrimaryBtn>
-      </div>
+      </PageHeader>
 
       {courses.length === 0 && (
         <Card>
@@ -72,7 +72,7 @@ export default function Courses() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {courses.map((c, i) => (
           <div key={c._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden card-hover">
             {/* Color header */}

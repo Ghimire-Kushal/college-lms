@@ -23,9 +23,12 @@ body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f1f5f9;
   color: #1e293b;
   line-height: 1.5;
+  /* Subtle dot pattern background */
+  background-color: #f1f5f9;
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 #root {
@@ -35,8 +38,8 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -69,20 +72,40 @@ button, a, input, select, textarea {
 
 /* Page fade-in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-enter {
   animation: fadeIn 0.25s ease forwards;
 }
 
+/* Stagger children */
+.page-enter > * {
+  animation: fadeIn 0.3s ease forwards;
+}
+.page-enter > *:nth-child(2) { animation-delay: 0.04s; }
+.page-enter > *:nth-child(3) { animation-delay: 0.08s; }
+.page-enter > *:nth-child(4) { animation-delay: 0.12s; }
+.page-enter > *:nth-child(5) { animation-delay: 0.16s; }
+
 /* Slide-in for modal */
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+  from { opacity: 0; transform: scale(0.96) translateY(-6px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 .modal-enter {
-  animation: modalIn 0.2s ease forwards;
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Mobile modal slide up */
+@media (max-width: 639px) {
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-enter {
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
 }
 
 /* Gradient text utility */
@@ -95,11 +118,12 @@ button, a, input, select, textarea {
 
 /* Card hover lift */
 .card-hover {
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 .card-hover:hover {
-  box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.12);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.10), 0 4px 10px -6px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+  border-color: #e0e7ff !important;
 }
 
 /* Progress bar animation */
@@ -107,14 +131,38 @@ button, a, input, select, textarea {
   from { width: 0; }
 }
 .progress-fill {
-  animation: progressFill 0.8s ease forwards;
+  animation: progressFill 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Pulse dot */
 @keyframes pulseDot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
 .pulse-dot {
   animation: pulseDot 2s ease infinite;
+}
+
+/* Number counter shimmer on stat cards */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* Table row hover left accent */
+tbody tr {
+  position: relative;
+}
+tbody tr:hover td:first-child {
+  border-left: 2px solid #6366f1;
+}
+tbody tr td:first-child {
+  border-left: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+/* White base for main content — override the dot pattern */
+.bg-white {
+  background-color: white !important;
+  background-image: none !important;
 }

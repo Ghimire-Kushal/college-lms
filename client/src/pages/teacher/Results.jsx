@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit2 } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, inputCls, selectCls } from '../../components/UI';
+import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalActions, IconBtn, PageHeader, inputCls, selectCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
@@ -44,12 +44,14 @@ export default function TeacherResults() {
 
   return (
     <div className="space-y-5">
+      <PageHeader title="Results" subtitle="Enter and manage student grades for your courses.">
+        <PrimaryBtn onClick={openAdd}><Plus size={15} /> Add Result</PrimaryBtn>
+      </PageHeader>
       <div className="flex items-center gap-3">
         <select value={filterCourse} onChange={e => setFilterCourse(e.target.value)}
           className="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
           {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
         </select>
-        <PrimaryBtn onClick={openAdd} className="ml-auto"><Plus size={15} /> Add Result</PrimaryBtn>
       </div>
 
       <Card>

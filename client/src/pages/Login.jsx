@@ -42,7 +42,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex" style={{ background: '#f1f5f9' }}>
-      {/* Left hero panel */}
+      {/* Left hero panel — hidden on mobile/tablet, visible on lg+ */}
       <div
         className="hidden lg:flex lg:w-[55%] flex-col justify-between p-12 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)' }}
@@ -104,7 +104,7 @@ export default function Login() {
       </div>
 
       {/* Right form panel */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8">
+      <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8">
         <div className="w-full max-w-[400px]">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2.5 mb-8">
