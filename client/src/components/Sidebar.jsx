@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
-  Pencil, UserCheck, ChevronRight, Sparkles, X,
+  Pencil, UserCheck, ChevronRight, X,
 } from 'lucide-react';
 
 const adminNav = [
@@ -82,19 +82,16 @@ export default function Sidebar({ isOpen, onClose }) {
       }}
     >
       {/* Brand */}
-      <div className="px-5 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)' }}
-          >
-            <Sparkles size={19} className="text-white" />
+      <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-lg bg-white flex items-center justify-center">
+            <img src="/logo.png" alt="Apollo" className="w-full h-full object-contain p-0.5" />
           </div>
-          <div>
-            <p className="font-extrabold text-white text-[16px] leading-none tracking-tight">EduTrack</p>
-            <p className="text-[10px] mt-0.5 font-semibold uppercase tracking-[0.15em]"
+          <div className="min-w-0">
+            <p className="font-extrabold text-white text-[13px] leading-tight tracking-tight truncate">Apollo International</p>
+            <p className="text-[10px] mt-0.5 font-semibold uppercase tracking-[0.12em] truncate"
               style={{ color: 'rgba(148,163,184,0.7)' }}>
-              LMS Platform
+              College · LMS
             </p>
           </div>
         </div>

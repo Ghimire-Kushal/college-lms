@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Loader2, Sparkles, GraduationCap, BookOpen, Users, BarChart3 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, GraduationCap, BookOpen, Users, BarChart3 } from 'lucide-react';
 
 const features = [
   { icon: GraduationCap, label: 'Student Management', desc: 'Enroll & track every student' },
@@ -70,14 +70,14 @@ export default function Login() {
         </div>
 
         {/* Logo */}
-        <div className="relative flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
-            <Sparkles size={20} className="text-white" />
+        <div className="relative flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 shadow-lg bg-white flex items-center justify-center">
+            <img src="/logo.png" alt="Apollo International College" className="w-full h-full object-contain p-1" />
           </div>
           <div>
-            <p className="text-white font-bold text-lg leading-none">EduTrack</p>
-            <p className="text-sky-300 text-xs font-medium">Learning Management System</p>
+            <p className="text-white font-bold text-xl leading-tight">Apollo International</p>
+            <p className="text-white/90 font-semibold text-base leading-tight">College</p>
+            <p className="text-sky-300 text-xs font-medium mt-0.5">Learning Management System</p>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export default function Login() {
         </div>
 
         {/* Bottom text */}
-        <p className="relative text-slate-600 text-xs">© 2025 EduTrack LMS. All rights reserved.</p>
+        <p className="relative text-slate-600 text-xs">© 2025 Apollo International College. All rights reserved.</p>
       </div>
 
       {/* Right form panel */}
@@ -132,12 +132,14 @@ export default function Login() {
 
         <div className="w-full max-w-[400px]">
           {/* Mobile logo */}
-          <div className="flex lg:hidden items-center gap-2.5 mb-8">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
-              <Sparkles size={18} className="text-white" />
+          <div className="flex lg:hidden items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-white shadow-sm flex items-center justify-center border border-slate-200">
+              <img src="/logo.png" alt="Apollo" className="w-full h-full object-contain p-0.5" />
             </div>
-            <span className="font-bold text-lg" style={{ color: headingColor }}>EduTrack LMS</span>
+            <div>
+              <p className="font-bold text-[15px] leading-tight" style={{ color: headingColor }}>Apollo International College</p>
+              <p className="text-[11px]" style={{ color: subColor }}>Learning Management System</p>
+            </div>
           </div>
 
           <div className="mb-8">

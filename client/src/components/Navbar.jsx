@@ -38,7 +38,7 @@ export default function Navbar({ onMenuToggle }) {
   const { user } = useAuth();
   const { dark, toggle } = useTheme();
   const { pathname } = useLocation();
-  const meta = routeMeta[pathname] || { label: 'EduTrack LMS', section: '' };
+  const meta = routeMeta[pathname] || { label: 'Apollo International College', section: '' };
   const avatarGradient = roleColors[user?.role] || roleColors.student;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
