@@ -48,8 +48,8 @@ export default function TeacherDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="My Courses"        value={data?.totalCourses ?? 0}            icon={BookOpen}     color="sky"    gradient />
-        <StatCard title="Total Students"    value={data?.totalStudents ?? 0}           icon={Users}        color="indigo" gradient />
+        <StatCard title="My Courses"        value={data?.totalCourses ?? 0}            icon={BookOpen}     color="blue"   gradient />
+        <StatCard title="Total Students"    value={data?.totalStudents ?? 0}           icon={Users}        color="teal"   gradient />
         <StatCard title="Pending Reviews"   value={data?.pendingSubmissions ?? 0}      icon={ClipboardList} color="yellow" gradient />
         <StatCard title="Classes Recorded"  value={data?.recentAttendance?.length ?? 0} icon={Calendar}    color="green"  gradient />
       </div>

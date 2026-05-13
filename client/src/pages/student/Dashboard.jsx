@@ -84,9 +84,9 @@ export default function StudentDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="Enrolled Courses"    value={data?.totalCourses ?? 0}             icon={BookOpen}     color="green"   gradient />
-        <StatCard title="Attendance Rate"     value={`${attPct}%`}                        icon={UserCheck}    color={isLowAtt ? 'red' : 'sky'}     gradient />
-        <StatCard title="Classes Attended"    value={`${data?.presentClasses ?? 0}/${data?.totalClasses ?? 0}`} icon={UserCheck} color="indigo"  gradient />
+        <StatCard title="Enrolled Courses"    value={data?.totalCourses ?? 0}             icon={BookOpen}     color="blue"  gradient />
+        <StatCard title="Attendance Rate"     value={`${attPct}%`}                        icon={UserCheck}    color={isLowAtt ? 'red' : 'teal'} gradient />
+        <StatCard title="Classes Attended"    value={`${data?.presentClasses ?? 0}/${data?.totalClasses ?? 0}`} icon={UserCheck} color="green" gradient />
         <StatCard title="Due Assignments"     value={data?.upcomingAssignments?.length ?? 0} icon={ClipboardList} color="yellow" gradient />
       </div>
 

@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { pathname } = useLocation();
+  const { dark } = useTheme();
 
-  // Close sidebar on route change (mobile nav)
   useEffect(() => { setSidebarOpen(false); }, [pathname]);
 
-  // Close sidebar on ESC
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') setSidebarOpen(false); };
     document.addEventListener('keydown', handler);
@@ -18,11 +18,13 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#f1f5f9' }}>
+    <div className="flex min-h-screen transition-colors duration-300"
+      style={{ background: dark ? '#0d1117' : '#eef2f7' }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 lg:hidden transition-opacity duration-300"
+          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -31,7 +33,10 @@ export default function Layout() {
 
       <div className="flex-1 flex flex-col min-w-0">
         <Navbar onMenuToggle={() => setSidebarOpen(o => !o)} />
-        <main key={pathname} className="flex-1 p-4 sm:p-6 overflow-auto page-enter">
+        <main
+          key={pathname}
+          className="flex-1 p-5 sm:p-7 overflow-auto page-enter"
+        >
           <Outlet />
         </main>
       </div>

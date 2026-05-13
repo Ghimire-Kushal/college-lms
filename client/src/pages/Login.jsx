@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, Loader2, Sparkles, GraduationCap, BookOpen, Users, BarChart3 } from 'lucide-react';
 
@@ -22,6 +23,7 @@ export default function Login() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { dark, toggle } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -40,32 +42,42 @@ export default function Login() {
 
   const quickLogin = (email, pass) => setForm({ email, password: pass });
 
+  const panelBg = dark ? '#0d1117' : '#f1f5f9';
+  const cardBg  = dark ? '#161b22' : '#ffffff';
+  const cardBorder = dark ? '#30363d' : '#e2e8f0';
+  const labelColor = dark ? '#94a3b8' : '#374151';
+  const headingColor = dark ? '#f1f5f9' : '#1e293b';
+  const subColor = dark ? '#64748b' : '#64748b';
+  const inputBg = dark ? '#0d1117' : '#ffffff';
+  const inputBorder = dark ? '#30363d' : '#e2e8f0';
+  const inputText = dark ? '#e2e8f0' : '#1e293b';
+
   return (
-    <div className="min-h-screen flex" style={{ background: '#f1f5f9' }}>
+    <div className="min-h-screen flex" style={{ background: panelBg, transition: 'background 0.3s' }}>
       {/* Left hero panel — hidden on mobile/tablet, visible on lg+ */}
       <div
         className="hidden lg:flex lg:w-[55%] flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0c2340 50%, #0f3460 100%)' }}
       >
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #818cf8, transparent)' }} />
+            style={{ background: 'radial-gradient(circle, #60a5fa, transparent)' }} />
           <div className="absolute -bottom-40 -left-20 w-80 h-80 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #a78bfa, transparent)' }} />
+            style={{ background: 'radial-gradient(circle, #38bdf8, transparent)' }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5"
-            style={{ background: 'radial-gradient(circle, #6366f1, transparent)' }} />
+            style={{ background: 'radial-gradient(circle, #3b82f6, transparent)' }} />
         </div>
 
         {/* Logo */}
         <div className="relative flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+            style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
             <Sparkles size={20} className="text-white" />
           </div>
           <div>
             <p className="text-white font-bold text-lg leading-none">EduTrack</p>
-            <p className="text-indigo-300 text-xs font-medium">Learning Management System</p>
+            <p className="text-sky-300 text-xs font-medium">Learning Management System</p>
           </div>
         </div>
 
@@ -74,7 +86,7 @@ export default function Login() {
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight">
               Empowering education<br />
-              <span style={{ background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(135deg, #60a5fa, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 through technology
               </span>
             </h1>
@@ -87,8 +99,8 @@ export default function Login() {
             {features.map(({ icon: Icon, label, desc }) => (
               <div key={label} className="flex items-start gap-3 p-3.5 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0">
-                  <Icon size={15} className="text-indigo-300" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(59,130,246,0.2)' }}>
+                  <Icon size={15} className="text-blue-300" />
                 </div>
                 <div>
                   <p className="text-white text-[13px] font-semibold">{label}</p>
@@ -104,49 +116,65 @@ export default function Login() {
       </div>
 
       {/* Right form panel */}
-      <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8">
+      <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8 relative" style={{ background: panelBg, transition: 'background 0.3s' }}>
+        {/* Theme toggle */}
+        <button
+          onClick={toggle}
+          className="absolute top-5 right-5 w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+          style={{ background: dark ? '#21262d' : '#e2e8f0', color: dark ? '#f59e0b' : '#64748b' }}
+          title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {dark
+            ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/><style>{`path,circle{stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none;} circle{fill:currentColor;}`}</style></svg>
+            : <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+          }
+        </button>
+
         <div className="w-full max-w-[400px]">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2.5 mb-8">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+              style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
               <Sparkles size={18} className="text-white" />
             </div>
-            <span className="font-bold text-slate-800 text-lg">EduTrack LMS</span>
+            <span className="font-bold text-lg" style={{ color: headingColor }}>EduTrack LMS</span>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-800">Welcome back</h2>
-            <p className="text-slate-500 text-sm mt-1">Sign in to your account to continue</p>
+            <h2 className="text-2xl font-bold" style={{ color: headingColor }}>Welcome back</h2>
+            <p className="text-sm mt-1" style={{ color: subColor }}>Sign in to your account to continue</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Email Address</label>
+              <label className="block text-[13px] font-medium mb-1.5" style={{ color: labelColor }}>Email Address</label>
               <input
                 type="email"
                 required
                 value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                style={{ background: inputBg, border: `1px solid ${inputBorder}`, color: inputText }}
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Password</label>
+              <label className="block text-[13px] font-medium mb-1.5" style={{ color: labelColor }}>Password</label>
               <div className="relative">
                 <input
                   type={showPass ? 'text' : 'password'}
                   required
                   value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  className="w-full px-4 py-3 pr-11 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                  className="w-full px-4 py-3 pr-11 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                  style={{ background: inputBg, border: `1px solid ${inputBorder}`, color: inputText }}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(p => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: subColor }}
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -156,8 +184,8 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)', boxShadow: '0 4px 14px rgba(99,102,241,0.4)' }}
+              className="w-full py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)', boxShadow: '0 4px 14px rgba(59,130,246,0.4)' }}
             >
               {loading ? <><Loader2 size={16} className="animate-spin" /> Signing in...</> : 'Sign In'}
             </button>
@@ -165,22 +193,30 @@ export default function Login() {
 
           {/* Demo credentials */}
           <div className="mt-6">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-3">Quick access — demo accounts</p>
+            <p className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: subColor }}>Quick access — demo accounts</p>
             <div className="space-y-2">
-              {demo.map(({ role, email, pass, color }) => (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => quickLogin(email, pass)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left transition-all hover:shadow-sm ${color}`}
-                >
-                  <div>
-                    <p className="text-[13px] font-semibold">{role}</p>
-                    <p className="text-[11px] opacity-75">{email}</p>
-                  </div>
-                  <span className="text-[11px] font-mono opacity-60">{pass}</span>
-                </button>
-              ))}
+              {demo.map(({ role, email, pass }) => {
+                const demoColors = {
+                  Admin:   { bg: dark ? '#1e1b2e' : '#f3f0ff', border: dark ? '#4c1d95' : '#ddd6fe', text: dark ? '#a78bfa' : '#6d28d9' },
+                  Teacher: { bg: dark ? '#0c2340' : '#eff6ff', border: dark ? '#1e40af' : '#bfdbfe', text: dark ? '#60a5fa' : '#1d4ed8' },
+                  Student: { bg: dark ? '#052e16' : '#f0fdf4', border: dark ? '#14532d' : '#bbf7d0', text: dark ? '#4ade80' : '#15803d' },
+                }[role];
+                return (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => quickLogin(email, pass)}
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left transition-all hover:shadow-sm"
+                    style={{ background: demoColors.bg, borderColor: demoColors.border, color: demoColors.text }}
+                  >
+                    <div>
+                      <p className="text-[13px] font-semibold">{role}</p>
+                      <p className="text-[11px] opacity-75">{email}</p>
+                    </div>
+                    <span className="text-[11px] font-mono opacity-60">{pass}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

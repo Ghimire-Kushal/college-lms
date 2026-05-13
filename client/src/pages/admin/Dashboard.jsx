@@ -71,10 +71,10 @@ export default function AdminDashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="indigo"  gradient />
-        <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="violet"  gradient />
-        <StatCard title="Active Courses"  value={data?.totalCourses ?? 0}  icon={BookOpen}       color="sky"     gradient />
-        <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}           color="purple"  gradient />
+        <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="blue"   gradient />
+        <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="green"  gradient />
+        <StatCard title="Active Courses"  value={data?.totalCourses ?? 0}  icon={BookOpen}       color="sky"    gradient />
+        <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}           color="yellow" gradient />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">

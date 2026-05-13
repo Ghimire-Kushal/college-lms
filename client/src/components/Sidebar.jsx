@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
@@ -46,18 +47,25 @@ const studentNav = [
 const navByRole = { admin: adminNav, teacher: teacherNav, student: studentNav };
 
 const roleColors = {
-  admin:   { bg: 'bg-violet-500', ring: 'ring-violet-400', label: 'bg-violet-500/20 text-violet-300' },
-  teacher: { bg: 'bg-sky-500',    ring: 'ring-sky-400',    label: 'bg-sky-500/20 text-sky-300' },
-  student: { bg: 'bg-emerald-500', ring: 'ring-emerald-400', label: 'bg-emerald-500/20 text-emerald-300' },
+  admin:   { bg: 'bg-violet-500', ring: 'ring-violet-400', dot: 'bg-violet-400', label: 'bg-violet-500/15 text-violet-300' },
+  teacher: { bg: 'bg-sky-500',    ring: 'ring-sky-400',    dot: 'bg-sky-400',    label: 'bg-sky-500/15 text-sky-300' },
+  student: { bg: 'bg-emerald-500',ring: 'ring-emerald-400',dot: 'bg-emerald-400',label: 'bg-emerald-500/15 text-emerald-300' },
 };
 
 export default function Sidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
+  const { dark } = useTheme();
   const navigate = useNavigate();
   const navItems = navByRole[user?.role] || [];
   const rc = roleColors[user?.role] || roleColors.student;
 
   const handleLogout = () => { logout(); navigate('/login'); };
+
+  // Sidebar is always dark-ish; slightly different tones for light vs dark mode
+  const sidebarBg = dark
+    ? 'linear-gradient(180deg,#0d1117 0%,#0d1117 100%)'
+    : 'linear-gradient(180deg,#0f172a 0%,#111827 100%)';
+  const borderColor = dark ? 'rgba(48,54,61,0.7)' : 'rgba(255,255,255,0.06)';
 
   return (
     <aside
@@ -69,37 +77,40 @@ export default function Sidebar({ isOpen, onClose }) {
       ].join(' ')}
       style={{
         width: 'var(--sidebar-width)',
-        background: 'linear-gradient(180deg, #0f172a 0%, #111827 100%)',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
+        background: sidebarBg,
+        borderRight: `1px solid ${borderColor}`,
       }}
     >
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-white/5 flex items-center justify-between">
+      <div className="px-5 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
-            <Sparkles size={18} className="text-white" />
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)' }}
+          >
+            <Sparkles size={19} className="text-white" />
           </div>
           <div>
-            <p className="font-bold text-white text-[15px] leading-none tracking-tight">EduTrack</p>
-            <p className="text-[11px] mt-0.5 font-medium uppercase tracking-widest"
-              style={{ color: 'rgba(165,180,252,0.7)' }}>
+            <p className="font-extrabold text-white text-[16px] leading-none tracking-tight">EduTrack</p>
+            <p className="text-[10px] mt-0.5 font-semibold uppercase tracking-[0.15em]"
+              style={{ color: 'rgba(148,163,184,0.7)' }}>
               LMS Platform
             </p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+          className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)' }}
         >
-          <X size={16} />
+          <X size={15} />
         </button>
       </div>
 
       {/* Role badge */}
-      <div className="px-5 py-3 border-b border-white/5">
-        <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${rc.label}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${rc.bg} pulse-dot`} />
+      <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full ${rc.label}`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${rc.dot} pulse-dot`} />
           {user?.role} Panel
         </span>
       </div>
@@ -110,8 +121,10 @@ export default function Sidebar({ isOpen, onClose }) {
           {navItems.map((item, idx) => {
             if (item.section) {
               return (
-                <li key={`section-${idx}`} className="pt-4 pb-1.5 px-3">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-600">{item.section}</p>
+                <li key={`s-${idx}`} className="pt-4 pb-1.5 px-3">
+                  <p className="text-[9px] font-extrabold uppercase tracking-[0.18em]" style={{ color: '#374151' }}>
+                    {item.section}
+                  </p>
                 </li>
               );
             }
@@ -122,18 +135,24 @@ export default function Sidebar({ isOpen, onClose }) {
                   to={to}
                   end={end}
                   className={({ isActive }) =>
-                    `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 ${
+                    `group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] font-medium transition-all duration-150 ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
-                        : 'text-slate-400 hover:bg-white/6 hover:text-slate-200'
+                        ? 'text-white shadow-lg'
+                        : 'text-slate-400 hover:text-slate-200'
                     }`
                   }
+                  style={({ isActive }) => isActive
+                    ? { background: 'linear-gradient(135deg, #3b82f6, #2563eb)', boxShadow: '0 4px 14px rgba(59,130,246,0.35)' }
+                    : {}
+                  }
+                  onMouseEnter={e => { if (!e.currentTarget.className.includes('text-white')) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+                  onMouseLeave={e => { if (!e.currentTarget.className.includes('text-white')) e.currentTarget.style.background = ''; }}
                 >
                   {({ isActive }) => (
                     <>
                       <Icon size={16} className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'} />
                       <span className="flex-1">{label}</span>
-                      {isActive && <ChevronRight size={13} className="text-indigo-300" />}
+                      {isActive && <ChevronRight size={13} style={{ color: 'rgba(255,255,255,0.6)' }} />}
                     </>
                   )}
                 </NavLink>
@@ -144,9 +163,12 @@ export default function Sidebar({ isOpen, onClose }) {
       </nav>
 
       {/* User footer */}
-      <div className="px-3 py-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5 mb-1">
-          <div className={`w-8 h-8 rounded-full ${rc.bg} ring-2 ${rc.ring} ring-offset-1 ring-offset-slate-900 flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+      <div className="px-3 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-3 px-3 py-3 rounded-xl mb-1" style={{ background: 'rgba(255,255,255,0.05)' }}>
+          <div
+            className={`w-9 h-9 rounded-full ${rc.bg} ring-2 ${rc.ring} ring-offset-1 flex items-center justify-center text-white text-xs font-bold shrink-0`}
+            style={{ ringOffsetColor: '#0f172a' }}
+          >
             {user?.name?.[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -156,7 +178,9 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all font-medium"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-slate-400 hover:text-red-400 font-medium transition-all"
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
         >
           <LogOut size={15} />
           Sign Out

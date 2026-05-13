@@ -91,25 +91,26 @@ export default function Timetable() {
       </div>
 
       {(modal === 'add' || modal === 'edit') && (
-        <Modal title={modal === 'add' ? 'Add Timetable Entry' : 'Edit Entry'} onClose={() => setModal(null)}>
-          <form onSubmit={handleSave} className="space-y-4">
+        <Modal title={modal === 'add' ? 'Add Timetable Entry' : 'Edit Entry'} onClose={() => setModal(null)} size="lg">
+          <form onSubmit={handleSave} className="space-y-5">
+            {/* Course — full width */}
+            <FormField label="Course">
+              <select required value={form.course} onChange={f('course')} className={selectCls}>
+                <option value="">Select a course...</option>
+                {courses.map(c => <option key={c._id} value={c._id}>{c.name} ({c.code})</option>)}
+              </select>
+            </FormField>
+
+            {/* Teacher — full width */}
+            <FormField label="Teacher">
+              <select required value={form.teacher} onChange={f('teacher')} className={selectCls}>
+                <option value="">Select a teacher...</option>
+                {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
+              </select>
+            </FormField>
+
+            {/* Day + Room */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <FormField label="Course">
-                  <select required value={form.course} onChange={f('course')} className={selectCls}>
-                    <option value="">Select a course...</option>
-                    {courses.map(c => <option key={c._id} value={c._id}>{c.name} ({c.code})</option>)}
-                  </select>
-                </FormField>
-              </div>
-              <div className="col-span-2">
-                <FormField label="Teacher">
-                  <select required value={form.teacher} onChange={f('teacher')} className={selectCls}>
-                    <option value="">Select a teacher...</option>
-                    {teachers.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
-                  </select>
-                </FormField>
-              </div>
               <FormField label="Day">
                 <select value={form.dayOfWeek} onChange={f('dayOfWeek')} className={selectCls}>
                   {DAYS.map(d => <option key={d}>{d}</option>)}
@@ -118,19 +119,28 @@ export default function Timetable() {
               <FormField label="Room">
                 <input type="text" value={form.room} onChange={f('room')} className={inputCls} placeholder="e.g. 101" />
               </FormField>
+            </div>
+
+            {/* Start + End time */}
+            <div className="grid grid-cols-2 gap-4">
               <FormField label="Start Time">
-                <input type="time" value={form.startTime} onChange={f('startTime')} className={inputCls} />
+                <input type="time" value={form.startTime} onChange={f('startTime')} required className={inputCls} />
               </FormField>
               <FormField label="End Time">
-                <input type="time" value={form.endTime} onChange={f('endTime')} className={inputCls} />
-              </FormField>
-              <FormField label="Semester">
-                <input type="number" value={form.semester} onChange={f('semester')} className={inputCls} placeholder="1" />
-              </FormField>
-              <FormField label="Section">
-                <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="A" />
+                <input type="time" value={form.endTime} onChange={f('endTime')} required className={inputCls} />
               </FormField>
             </div>
+
+            {/* Semester + Section */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField label="Semester">
+                <input type="number" min="1" max="8" value={form.semester} onChange={f('semester')} className={inputCls} placeholder="e.g. 1" />
+              </FormField>
+              <FormField label="Section">
+                <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="e.g. A" />
+              </FormField>
+            </div>
+
             <ModalActions onCancel={() => setModal(null)} loading={false} saveLabel={modal === 'add' ? 'Add Entry' : 'Save Changes'} />
           </form>
         </Modal>

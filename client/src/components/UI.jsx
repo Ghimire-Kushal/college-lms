@@ -1,26 +1,56 @@
 import { Search } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-export const inputCls = 'w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm transition-shadow';
+/* ── String class constants ───────────────────────── */
+export const inputCls = [
+  'w-full px-4 py-3 rounded-xl text-[14px] text-slate-800 placeholder-slate-400',
+  'bg-white border border-slate-200 shadow-sm',
+  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+  'transition-shadow',
+].join(' ');
+
 export const selectCls = inputCls;
-export const labelCls = 'block text-[11px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wider';
+export const labelCls = 'block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider';
 
+/* ── Theme-aware input styles (inline style objects) ─ */
+export function useInputStyle() {
+  const { dark } = useTheme();
+  return {
+    background: dark ? '#21262d' : '#ffffff',
+    borderColor: dark ? '#30363d' : '#e2e8f0',
+    color: dark ? '#e2e8f0' : '#1e293b',
+  };
+}
+
+/* ── Page Header ──────────────────────────────────── */
 export function PageHeader({ title, subtitle, children }) {
+  const { dark } = useTheme();
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 mb-1">
+    <div
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-1 border-b"
+      style={{ borderColor: dark ? '#21262d' : '#e8edf3' }}
+    >
       <div>
-        <h1 className="text-[22px] font-bold text-slate-800 tracking-tight leading-none">{title}</h1>
-        {subtitle && <p className="text-[13px] text-slate-400 mt-1.5 leading-relaxed">{subtitle}</p>}
+        <h1 className="text-[22px] font-bold tracking-tight" style={{ color: dark ? '#e2e8f0' : '#0f172a' }}>
+          {title}
+        </h1>
+        {subtitle && (
+          <p className="text-[13px] mt-1.5 leading-relaxed" style={{ color: dark ? '#6e7681' : '#64748b' }}>
+            {subtitle}
+          </p>
+        )}
       </div>
       {children && <div className="flex items-center gap-2 flex-wrap shrink-0">{children}</div>}
     </div>
   );
 }
 
+/* ── Buttons ──────────────────────────────────────── */
 export function PrimaryBtn({ children, className = '', ...props }) {
   return (
     <button
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:shadow-md active:scale-[0.98] ${className}`}
-      style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)' }}
+      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-semibold text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.97] ${className}`}
+      style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
       {...props}
     >
       {children}
@@ -29,9 +59,15 @@ export function PrimaryBtn({ children, className = '', ...props }) {
 }
 
 export function SecondaryBtn({ children, className = '', ...props }) {
+  const { dark } = useTheme();
   return (
     <button
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all active:scale-[0.98] ${className}`}
+      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-medium shadow-sm transition-all active:scale-[0.97] ${className}`}
+      style={{
+        background: dark ? '#21262d' : '#ffffff',
+        border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+        color: dark ? '#c9d1d9' : '#475569',
+      }}
       {...props}
     >
       {children}
@@ -42,7 +78,7 @@ export function SecondaryBtn({ children, className = '', ...props }) {
 export function DangerBtn({ children, className = '', ...props }) {
   return (
     <button
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white shadow-sm disabled:opacity-60 transition-all hover:shadow-md active:scale-[0.98] ${className}`}
+      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-semibold text-white shadow-sm disabled:opacity-60 transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.97] ${className}`}
       style={{ background: 'linear-gradient(135deg, #f43f5e, #e11d48)' }}
       {...props}
     >
@@ -51,34 +87,59 @@ export function DangerBtn({ children, className = '', ...props }) {
   );
 }
 
+/* ── Search bar ───────────────────────────────────── */
 export function SearchBar({ value, onChange, placeholder = 'Search...' }) {
+  const { dark } = useTheme();
   return (
     <div className="relative flex-1">
-      <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+      <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+        style={{ color: dark ? '#6e7681' : '#94a3b8' }} />
       <input
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm transition-shadow"
+        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-shadow"
+        style={{
+          background: dark ? '#21262d' : '#ffffff',
+          border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+          color: dark ? '#e2e8f0' : '#334155',
+        }}
       />
     </div>
   );
 }
 
+/* ── Card ─────────────────────────────────────────── */
 export function Card({ children, className = '' }) {
+  const { dark } = useTheme();
   return (
-    <div className={`bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden ${className}`}>
+    <div
+      className={`rounded-2xl overflow-hidden shadow-sm ${className}`}
+      style={{
+        background: dark ? '#161b22' : '#ffffff',
+        border: `1px solid ${dark ? '#21262d' : '#e8edf3'}`,
+      }}
+    >
       {children}
     </div>
   );
 }
 
+/* ── Table Head ───────────────────────────────────── */
 export function TableHead({ cols }) {
+  const { dark } = useTheme();
   return (
     <thead>
-      <tr className="border-b-2 border-slate-100" style={{ background: 'linear-gradient(to right, #f8fafc, #f1f5f9)' }}>
+      <tr style={{
+        background: dark ? 'linear-gradient(to right,#1c2130,#1a2030)' : 'linear-gradient(to right,#f8fafc,#f0f4f8)',
+        borderBottom: `2px solid ${dark ? '#21262d' : '#e8edf3'}`,
+      }}>
         {cols.map(col => (
-          <th key={col} className="text-left px-4 py-3.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+          <th
+            key={col}
+            className="text-left px-5 py-4 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap"
+            style={{ color: dark ? '#6e7681' : '#94a3b8' }}
+          >
             {col}
           </th>
         ))}
@@ -87,17 +148,27 @@ export function TableHead({ cols }) {
   );
 }
 
+/* ── Empty Row ────────────────────────────────────── */
 export function EmptyRow({ cols, message = 'No data found' }) {
+  const { dark } = useTheme();
   return (
     <tr>
-      <td colSpan={cols} className="text-center py-14 text-slate-400 text-sm">
+      <td colSpan={cols} className="text-center py-16 text-sm">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-inner">
-            <Search size={18} className="text-slate-300" />
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center"
+            style={{
+              background: dark ? '#21262d' : '#f0f4f8',
+              border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+            }}
+          >
+            <Search size={20} style={{ color: dark ? '#484f58' : '#cbd5e1' }} />
           </div>
           <div>
-            <p className="font-medium text-slate-500">{message}</p>
-            <p className="text-[12px] text-slate-400 mt-0.5">Try adjusting your search or filters</p>
+            <p className="font-semibold" style={{ color: dark ? '#8b949e' : '#64748b' }}>{message}</p>
+            <p className="text-[12px] mt-0.5" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>
+              Try adjusting your search or filters
+            </p>
           </div>
         </div>
       </td>
@@ -105,9 +176,10 @@ export function EmptyRow({ cols, message = 'No data found' }) {
   );
 }
 
+/* ── Avatar ───────────────────────────────────────── */
 export function Avatar({ name, index = 0, size = 'md' }) {
   const hue = (index * 67 + 200) % 360;
-  const sz = size === 'sm' ? 'w-7 h-7 text-[10px]' : size === 'lg' ? 'w-11 h-11 text-sm' : 'w-9 h-9 text-xs';
+  const sz = size === 'sm' ? 'w-8 h-8 text-[11px]' : size === 'lg' ? 'w-12 h-12 text-sm' : 'w-10 h-10 text-xs';
   return (
     <div
       className={`${sz} rounded-xl flex items-center justify-center font-bold text-white shrink-0 shadow-sm`}
@@ -118,36 +190,54 @@ export function Avatar({ name, index = 0, size = 'md' }) {
   );
 }
 
+/* ── Badge ────────────────────────────────────────── */
 export function Badge({ children, color = 'slate' }) {
+  const { dark } = useTheme();
   const colors = {
-    slate:   'bg-slate-100 text-slate-600 border-slate-200',
-    indigo:  'bg-indigo-50 text-indigo-700 border-indigo-100',
-    green:   'bg-emerald-50 text-emerald-700 border-emerald-100',
-    yellow:  'bg-amber-50 text-amber-700 border-amber-100',
-    red:     'bg-rose-50 text-rose-700 border-rose-100',
-    blue:    'bg-sky-50 text-sky-700 border-sky-100',
-    purple:  'bg-purple-50 text-purple-700 border-purple-100',
-    violet:  'bg-violet-50 text-violet-700 border-violet-100',
+    slate:  dark ? { bg: '#2d333b', text: '#8b949e', border: '#444c56' } : { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' },
+    indigo: dark ? { bg: '#1e2d4f', text: '#818cf8', border: '#2d3d6a' } : { bg: '#eef2ff', text: '#4f46e5', border: '#c7d2fe' },
+    green:  dark ? { bg: '#1a2e22', text: '#34d399', border: '#1e4030' } : { bg: '#f0fdf4', text: '#059669', border: '#bbf7d0' },
+    yellow: dark ? { bg: '#2d2712', text: '#fbbf24', border: '#3d3318' } : { bg: '#fffbeb', text: '#d97706', border: '#fde68a' },
+    red:    dark ? { bg: '#2d1517', text: '#f87171', border: '#3d1f22' } : { bg: '#fff1f2', text: '#e11d48', border: '#fecdd3' },
+    blue:   dark ? { bg: '#1a2a3f', text: '#60a5fa', border: '#2d3d56' } : { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe' },
+    purple: dark ? { bg: '#241e36', text: '#c084fc', border: '#33285a' } : { bg: '#faf5ff', text: '#7c3aed', border: '#ddd6fe' },
+    violet: dark ? { bg: '#221e36', text: '#a78bfa', border: '#302857' } : { bg: '#f5f3ff', text: '#6d28d9', border: '#ddd6fe' },
   };
+  const c = colors[color] || colors.slate;
   return (
-    <span className={`inline-flex items-center text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${colors[color] || colors.slate}`}>
+    <span
+      className="inline-flex items-center text-[11px] font-semibold px-2.5 py-0.5 rounded-full border"
+      style={{ background: c.bg, color: c.text, borderColor: c.border }}
+    >
       {children}
     </span>
   );
 }
 
+/* ── Form Field ───────────────────────────────────── */
 export function FormField({ label, children }) {
+  const { dark } = useTheme();
   return (
     <div>
-      <label className={labelCls}>{label}</label>
+      <label
+        className="block text-[11px] font-bold mb-1.5 uppercase tracking-wider"
+        style={{ color: dark ? '#6e7681' : '#64748b' }}
+      >
+        {label}
+      </label>
       {children}
     </div>
   );
 }
 
+/* ── Modal Actions ────────────────────────────────── */
 export function ModalActions({ onCancel, loading, saveLabel = 'Save', cancelLabel = 'Cancel' }) {
+  const { dark } = useTheme();
   return (
-    <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 mt-4">
+    <div
+      className="flex gap-3 justify-end pt-4 mt-4 border-t"
+      style={{ borderColor: dark ? '#21262d' : '#f1f5f9' }}
+    >
       <SecondaryBtn type="button" onClick={onCancel}>{cancelLabel}</SecondaryBtn>
       <PrimaryBtn type="submit" disabled={loading}>
         {loading ? (
@@ -161,22 +251,28 @@ export function ModalActions({ onCancel, loading, saveLabel = 'Save', cancelLabe
   );
 }
 
+/* ── Icon Button ──────────────────────────────────── */
 export function IconBtn({ icon: Icon, onClick, color = 'slate', title }) {
-  const colors = {
-    slate:  'text-slate-400 hover:bg-slate-100 hover:text-slate-700',
-    red:    'text-slate-400 hover:bg-rose-50 hover:text-rose-600',
-    green:  'text-slate-400 hover:bg-emerald-50 hover:text-emerald-600',
-    blue:   'text-slate-400 hover:bg-sky-50 hover:text-sky-600',
-    indigo: 'text-slate-400 hover:bg-indigo-50 hover:text-indigo-600',
+  const { dark } = useTheme();
+  const styles = {
+    slate:  { color: dark ? '#6e7681' : '#94a3b8', hoverBg: dark ? '#21262d' : '#f1f5f9', hoverColor: dark ? '#c9d1d9' : '#475569' },
+    red:    { color: dark ? '#6e7681' : '#94a3b8', hoverBg: dark ? '#2d1517' : '#fff1f2', hoverColor: '#f87171' },
+    green:  { color: dark ? '#6e7681' : '#94a3b8', hoverBg: dark ? '#1a2e22' : '#f0fdf4', hoverColor: '#34d399' },
+    blue:   { color: dark ? '#6e7681' : '#94a3b8', hoverBg: dark ? '#1a2a3f' : '#eff6ff', hoverColor: '#60a5fa' },
+    indigo: { color: dark ? '#6e7681' : '#94a3b8', hoverBg: dark ? '#1e2d4f' : '#eef2ff', hoverColor: '#818cf8' },
   };
+  const s = styles[color] || styles.slate;
   return (
     <button
       type="button"
       title={title}
       onClick={onClick}
-      className={`p-1.5 rounded-lg transition-colors ${colors[color] || colors.slate}`}
+      className="p-2 rounded-lg transition-colors"
+      style={{ color: s.color }}
+      onMouseEnter={e => { e.currentTarget.style.background = s.hoverBg; e.currentTarget.style.color = s.hoverColor; }}
+      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = s.color; }}
     >
-      <Icon size={14} />
+      <Icon size={15} />
     </button>
   );
 }

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
@@ -36,50 +37,61 @@ import StudentNotices from './pages/student/Notices';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                borderRadius: '12px',
+                fontSize: '14px',
+              },
+            }}
+          />
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin" element={<ProtectedRoute role="admin"><Layout /></ProtectedRoute>}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="students" element={<AdminStudents />} />
-            <Route path="teachers" element={<AdminTeachers />} />
-            <Route path="courses" element={<AdminCourses />} />
-            <Route path="timetable" element={<AdminTimetable />} />
-            <Route path="attendance" element={<AdminAttendance />} />
-            <Route path="notices" element={<AdminNotices />} />
-            <Route path="results" element={<AdminResults />} />
-          </Route>
+            {/* Admin Routes */}
+            <Route path="/admin" element={<ProtectedRoute role="admin"><Layout /></ProtectedRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="students" element={<AdminStudents />} />
+              <Route path="teachers" element={<AdminTeachers />} />
+              <Route path="courses" element={<AdminCourses />} />
+              <Route path="timetable" element={<AdminTimetable />} />
+              <Route path="attendance" element={<AdminAttendance />} />
+              <Route path="notices" element={<AdminNotices />} />
+              <Route path="results" element={<AdminResults />} />
+            </Route>
 
-          {/* Teacher Routes */}
-          <Route path="/teacher" element={<ProtectedRoute role="teacher"><Layout /></ProtectedRoute>}>
-            <Route index element={<TeacherDashboard />} />
-            <Route path="courses" element={<TeacherCourses />} />
-            <Route path="attendance" element={<TeacherAttendance />} />
-            <Route path="notes" element={<TeacherNotes />} />
-            <Route path="assignments" element={<TeacherAssignments />} />
-            <Route path="results" element={<TeacherResults />} />
-            <Route path="notices" element={<TeacherNotices />} />
-          </Route>
+            {/* Teacher Routes */}
+            <Route path="/teacher" element={<ProtectedRoute role="teacher"><Layout /></ProtectedRoute>}>
+              <Route index element={<TeacherDashboard />} />
+              <Route path="courses" element={<TeacherCourses />} />
+              <Route path="attendance" element={<TeacherAttendance />} />
+              <Route path="notes" element={<TeacherNotes />} />
+              <Route path="assignments" element={<TeacherAssignments />} />
+              <Route path="results" element={<TeacherResults />} />
+              <Route path="notices" element={<TeacherNotices />} />
+            </Route>
 
-          {/* Student Routes */}
-          <Route path="/student" element={<ProtectedRoute role="student"><Layout /></ProtectedRoute>}>
-            <Route index element={<StudentDashboard />} />
-            <Route path="courses" element={<StudentCourses />} />
-            <Route path="attendance" element={<StudentAttendance />} />
-            <Route path="notes" element={<StudentNotes />} />
-            <Route path="assignments" element={<StudentAssignments />} />
-            <Route path="results" element={<StudentResults />} />
-            <Route path="notices" element={<StudentNotices />} />
-          </Route>
+            {/* Student Routes */}
+            <Route path="/student" element={<ProtectedRoute role="student"><Layout /></ProtectedRoute>}>
+              <Route index element={<StudentDashboard />} />
+              <Route path="courses" element={<StudentCourses />} />
+              <Route path="attendance" element={<StudentAttendance />} />
+              <Route path="notes" element={<StudentNotes />} />
+              <Route path="assignments" element={<StudentAssignments />} />
+              <Route path="results" element={<StudentResults />} />
+              <Route path="notices" element={<StudentNotices />} />
+            </Route>
 
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

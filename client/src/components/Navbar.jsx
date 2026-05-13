@@ -1,30 +1,31 @@
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Bell, ChevronRight, Home, Menu } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Bell, ChevronRight, Home, Menu, Sun, Moon } from 'lucide-react';
 
 const routeMeta = {
-  '/admin':             { label: 'Dashboard',         section: 'Admin' },
-  '/admin/students':    { label: 'Students',           section: 'Admin' },
-  '/admin/teachers':    { label: 'Teachers',           section: 'Admin' },
-  '/admin/courses':     { label: 'Courses',            section: 'Admin' },
-  '/admin/timetable':   { label: 'Timetable',          section: 'Admin' },
-  '/admin/attendance':  { label: 'Attendance Reports', section: 'Admin' },
-  '/admin/notices':     { label: 'Notices',            section: 'Admin' },
-  '/admin/results':     { label: 'Results',            section: 'Admin' },
-  '/teacher':           { label: 'Dashboard',          section: 'Teacher' },
-  '/teacher/courses':   { label: 'My Courses',         section: 'Teacher' },
-  '/teacher/attendance':{ label: 'Attendance',         section: 'Teacher' },
-  '/teacher/notes':     { label: 'Notes & Materials',  section: 'Teacher' },
-  '/teacher/assignments':{ label: 'Assignments',       section: 'Teacher' },
-  '/teacher/results':   { label: 'Results',            section: 'Teacher' },
-  '/teacher/notices':   { label: 'Notices',            section: 'Teacher' },
-  '/student':           { label: 'Dashboard',          section: 'Student' },
-  '/student/courses':   { label: 'My Courses',         section: 'Student' },
-  '/student/attendance':{ label: 'My Attendance',      section: 'Student' },
-  '/student/notes':     { label: 'Notes & Materials',  section: 'Student' },
-  '/student/assignments':{ label: 'Assignments',       section: 'Student' },
-  '/student/results':   { label: 'My Results',         section: 'Student' },
-  '/student/notices':   { label: 'Notices',            section: 'Student' },
+  '/admin':              { label: 'Dashboard',         section: 'Admin' },
+  '/admin/students':     { label: 'Students',           section: 'Admin' },
+  '/admin/teachers':     { label: 'Teachers',           section: 'Admin' },
+  '/admin/courses':      { label: 'Courses',            section: 'Admin' },
+  '/admin/timetable':    { label: 'Timetable',          section: 'Admin' },
+  '/admin/attendance':   { label: 'Attendance Reports', section: 'Admin' },
+  '/admin/notices':      { label: 'Notices',            section: 'Admin' },
+  '/admin/results':      { label: 'Results',            section: 'Admin' },
+  '/teacher':            { label: 'Dashboard',          section: 'Teacher' },
+  '/teacher/courses':    { label: 'My Courses',         section: 'Teacher' },
+  '/teacher/attendance': { label: 'Attendance',         section: 'Teacher' },
+  '/teacher/notes':      { label: 'Notes & Materials',  section: 'Teacher' },
+  '/teacher/assignments':{ label: 'Assignments',        section: 'Teacher' },
+  '/teacher/results':    { label: 'Results',            section: 'Teacher' },
+  '/teacher/notices':    { label: 'Notices',            section: 'Teacher' },
+  '/student':            { label: 'Dashboard',          section: 'Student' },
+  '/student/courses':    { label: 'My Courses',         section: 'Student' },
+  '/student/attendance': { label: 'My Attendance',      section: 'Student' },
+  '/student/notes':      { label: 'Notes & Materials',  section: 'Student' },
+  '/student/assignments':{ label: 'Assignments',        section: 'Student' },
+  '/student/results':    { label: 'My Results',         section: 'Student' },
+  '/student/notices':    { label: 'Notices',            section: 'Student' },
 };
 
 const roleColors = {
@@ -35,6 +36,7 @@ const roleColors = {
 
 export default function Navbar({ onMenuToggle }) {
   const { user } = useAuth();
+  const { dark, toggle } = useTheme();
   const { pathname } = useLocation();
   const meta = routeMeta[pathname] || { label: 'EduTrack LMS', section: '' };
   const avatarGradient = roleColors[user?.role] || roleColors.student;
@@ -42,54 +44,97 @@ export default function Navbar({ onMenuToggle }) {
 
   return (
     <header
-      className="flex items-center justify-between px-4 sm:px-6 bg-white border-b border-slate-100 gap-3"
-      style={{ height: 'var(--navbar-height)', minHeight: 'var(--navbar-height)' }}
+      className="flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300"
+      style={{
+        height: 'var(--navbar-height)',
+        minHeight: 'var(--navbar-height)',
+        background: dark ? '#161b22' : '#ffffff',
+        borderColor: dark ? '#21262d' : '#e8edf3',
+        boxShadow: dark
+          ? '0 1px 0 #21262d'
+          : '0 1px 3px rgba(0,0,0,0.06)',
+      }}
     >
-      {/* Left: hamburger + breadcrumb */}
+      {/* Left */}
       <div className="flex items-center gap-3 min-w-0">
-        {/* Hamburger — mobile only */}
         <button
           onClick={onMenuToggle}
-          className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors shrink-0"
+          className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl transition-colors"
+          style={{ color: dark ? '#8b949e' : '#64748b' }}
           aria-label="Open menu"
         >
           <Menu size={20} />
         </button>
 
-        {/* Breadcrumb — hidden on small mobile, visible from sm+ */}
-        <div className="hidden sm:flex items-center gap-1.5 text-sm min-w-0">
-          <Home size={13} className="text-slate-400 shrink-0" />
-          <ChevronRight size={11} className="text-slate-300 shrink-0" />
-          <span className="text-slate-400 shrink-0 hidden md:inline">{meta.section}</span>
-          <ChevronRight size={11} className="text-slate-300 shrink-0 hidden md:inline" />
-          <span className="font-semibold text-slate-700 truncate">{meta.label}</span>
+        {/* Breadcrumb */}
+        <div className="hidden sm:flex items-center gap-2 text-sm min-w-0">
+          <Home size={13} style={{ color: dark ? '#6e7681' : '#94a3b8' }} className="shrink-0" />
+          <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0" />
+          <span className="hidden md:inline shrink-0" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{meta.section}</span>
+          <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0 hidden md:inline" />
+          <span className="font-semibold truncate" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{meta.label}</span>
         </div>
 
-        {/* Page title — mobile only (when breadcrumb is hidden) */}
-        <span className="sm:hidden font-semibold text-slate-700 text-[15px] truncate">{meta.label}</span>
+        {/* Mobile page title */}
+        <span className="sm:hidden font-bold text-[15px] truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
+          {meta.label}
+        </span>
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {/* Date chip — hidden on mobile */}
-        <span className="hidden md:flex items-center text-[12px] text-slate-400 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Date chip */}
+        <span
+          className="hidden md:flex items-center text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
+          style={{
+            background: dark ? '#21262d' : '#f0f4f8',
+            color: dark ? '#8b949e' : '#64748b',
+            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+          }}
+        >
           {today}
         </span>
 
+        {/* Theme toggle */}
+        <button
+          onClick={toggle}
+          className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+          style={{
+            background: dark ? '#21262d' : '#f0f4f8',
+            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+            color: dark ? '#f0ab3d' : '#64748b',
+          }}
+          title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {dark ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+
         {/* Notifications */}
-        <button className="relative w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors">
+        <button
+          className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+          style={{
+            background: dark ? '#21262d' : '#f0f4f8',
+            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
+            color: dark ? '#8b949e' : '#64748b',
+          }}
+        >
           <Bell size={16} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-2 ring-white" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full ring-2"
+            style={{ ringColor: dark ? '#161b22' : '#ffffff' }} />
         </button>
 
         {/* Divider */}
-        <div className="w-px h-6 bg-slate-100 hidden sm:block" />
+        <div className="w-px h-6 hidden sm:block" style={{ background: dark ? '#21262d' : '#e2e8f0' }} />
 
         {/* User */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div className="text-right hidden sm:block">
-            <p className="text-[13px] font-semibold text-slate-700 leading-none">{user?.name}</p>
-            <p className="text-[11px] text-slate-400 mt-0.5 capitalize">{user?.role}</p>
+            <p className="text-[13px] font-semibold leading-none" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>
+              {user?.name}
+            </p>
+            <p className="text-[11px] mt-0.5 capitalize" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>
+              {user?.role}
+            </p>
           </div>
           <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0`}>
             {user?.name?.[0]?.toUpperCase()}
