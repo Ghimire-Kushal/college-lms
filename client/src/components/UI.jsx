@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 export const inputCls = [
   'w-full px-4 py-3 rounded-xl text-[14px] text-slate-800 placeholder-slate-400',
   'bg-white border border-slate-200 shadow-sm',
-  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+  'focus:outline-none focus:ring-2 focus:border-transparent',
   'transition-shadow',
 ].join(' ');
 
@@ -50,7 +50,7 @@ export function PrimaryBtn({ children, className = '', ...props }) {
   return (
     <button
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-semibold text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:brightness-110 active:scale-[0.97] ${className}`}
-      style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}
+      style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 12px rgba(122,46,46,0.35)' }}
       {...props}
     >
       {children}
@@ -98,7 +98,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search...' }) {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-shadow"
+        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:border-transparent shadow-sm transition-shadow"
         style={{
           background: dark ? '#21262d' : '#ffffff',
           border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,

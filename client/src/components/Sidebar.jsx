@@ -47,9 +47,9 @@ const studentNav = [
 const navByRole = { admin: adminNav, teacher: teacherNav, student: studentNav };
 
 const roleColors = {
-  admin:   { bg: 'bg-violet-500', ring: 'ring-violet-400', dot: 'bg-violet-400', label: 'bg-violet-500/15 text-violet-300' },
-  teacher: { bg: 'bg-sky-500',    ring: 'ring-sky-400',    dot: 'bg-sky-400',    label: 'bg-sky-500/15 text-sky-300' },
-  student: { bg: 'bg-emerald-500',ring: 'ring-emerald-400',dot: 'bg-emerald-400',label: 'bg-emerald-500/15 text-emerald-300' },
+  admin:   { bg: 'bg-[#1E3535]', ring: 'ring-[#2a4a4a]', dot: 'bg-[#F2C04E]', label: 'bg-[#1E3535]/40 text-[#F2C04E]' },
+  teacher: { bg: 'bg-[#8B3030]', ring: 'ring-[#6b2525]', dot: 'bg-[#F2C04E]', label: 'bg-[#8B3030]/30 text-[#f5a0a0]' },
+  student: { bg: 'bg-[#b87a00]', ring: 'ring-[#d4930a]', dot: 'bg-[#F2C04E]', label: 'bg-[#b87a00]/20 text-[#F2C04E]' },
 };
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -61,11 +61,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  // Sidebar is always dark-ish; slightly different tones for light vs dark mode
+  // Sidebar always uses brand dark-teal
   const sidebarBg = dark
-    ? 'linear-gradient(180deg,#0d1117 0%,#0d1117 100%)'
-    : 'linear-gradient(180deg,#0f172a 0%,#111827 100%)';
-  const borderColor = dark ? 'rgba(48,54,61,0.7)' : 'rgba(255,255,255,0.06)';
+    ? 'linear-gradient(180deg,#0a1414 0%,#0f1e1e 100%)'
+    : 'linear-gradient(180deg,#0f1e1e 0%,#162828 100%)';
+  const borderColor = dark ? 'rgba(30,53,53,0.8)' : 'rgba(255,255,255,0.06)';
 
   return (
     <aside
@@ -85,7 +85,7 @@ export default function Sidebar({ isOpen, onClose }) {
       <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-lg bg-white flex items-center justify-center">
-            <img src="/logo.png" alt="Apollo" className="w-full h-full object-contain p-0.5" />
+            <img src="/logo.svg" alt="Apollo" className="w-full h-full object-contain p-0.5" />
           </div>
           <div className="min-w-0">
             <p className="font-extrabold text-white text-[13px] leading-tight tracking-tight truncate">Apollo International</p>
@@ -139,7 +139,7 @@ export default function Sidebar({ isOpen, onClose }) {
                     }`
                   }
                   style={({ isActive }) => isActive
-                    ? { background: 'linear-gradient(135deg, #3b82f6, #2563eb)', boxShadow: '0 4px 14px rgba(59,130,246,0.35)' }
+                    ? { background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 14px rgba(122,46,46,0.5)' }
                     : {}
                   }
                   onMouseEnter={e => { if (!e.currentTarget.className.includes('text-white')) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}

@@ -56,63 +56,67 @@ export default function Login() {
     <div className="min-h-screen flex" style={{ background: panelBg, transition: 'background 0.3s' }}>
       {/* Left hero panel — hidden on mobile/tablet, visible on lg+ */}
       <div
-        className="hidden lg:flex lg:w-[55%] flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #0c2340 50%, #0f3460 100%)' }}
+        className="hidden lg:flex lg:w-[52%] flex-col items-center justify-center px-14 py-12 relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #080f0f 0%, #0f1e1e 45%, #162828 100%)' }}
       >
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #60a5fa, transparent)' }} />
-          <div className="absolute -bottom-40 -left-20 w-80 h-80 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #38bdf8, transparent)' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5"
-            style={{ background: 'radial-gradient(circle, #3b82f6, transparent)' }} />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.12]"
+            style={{ background: 'radial-gradient(circle, #F2C04E, transparent)', transform: 'translate(30%,-30%)' }} />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-[0.08]"
+            style={{ background: 'radial-gradient(circle, #8B3030, transparent)', transform: 'translate(-30%,30%)' }} />
         </div>
 
-        {/* Logo */}
-        <div className="relative flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 shadow-lg bg-white flex items-center justify-center">
-            <img src="/logo.png" alt="Apollo International College" className="w-full h-full object-contain p-1" />
-          </div>
-          <div>
-            <p className="text-white font-bold text-xl leading-tight">Apollo International</p>
-            <p className="text-white/90 font-semibold text-base leading-tight">College</p>
-            <p className="text-sky-300 text-xs font-medium mt-0.5">Learning Management System</p>
-          </div>
-        </div>
+        {/* Centered brand + content */}
+        <div className="relative w-full max-w-lg text-center space-y-10">
 
-        {/* Hero content */}
-        <div className="relative space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold text-white leading-tight">
-              Empowering education<br />
-              <span style={{ background: 'linear-gradient(135deg, #60a5fa, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                through technology
-              </span>
-            </h1>
-            <p className="text-slate-400 mt-3 text-[15px] leading-relaxed max-w-md">
-              A unified platform for admins, teachers, and students to collaborate, track progress, and achieve academic excellence.
-            </p>
+          {/* Logo + College name */}
+          <div className="flex flex-col items-center gap-5">
+            <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-2xl bg-white flex items-center justify-center"
+              style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.12), 0 24px 48px rgba(0,0,0,0.5)' }}>
+              <img src="/logo.svg" alt="Apollo International College" className="w-full h-full object-contain p-2" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold text-white leading-tight tracking-tight">
+                Apollo International College
+              </h1>
+              <p className="text-sky-400 text-sm font-medium mt-1.5 tracking-wide">
+                Learning Management System
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* Divider */}
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+            <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(148,163,184,0.5)' }}>
+              Empowering Education
+            </span>
+            <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+          </div>
+
+          {/* Feature cards */}
+          <div className="grid grid-cols-2 gap-3 text-left">
             {features.map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="flex items-start gap-3 p-3.5 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(59,130,246,0.2)' }}>
-                  <Icon size={15} className="text-blue-300" />
+              <div key={label} className="flex items-start gap-3 p-4 rounded-2xl"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                  style={{ background: 'rgba(59,130,246,0.18)' }}>
+                  <Icon size={16} className="text-blue-300" />
                 </div>
                 <div>
                   <p className="text-white text-[13px] font-semibold">{label}</p>
-                  <p className="text-slate-500 text-[11px] mt-0.5">{desc}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: 'rgba(148,163,184,0.6)' }}>{desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom text */}
-        <p className="relative text-slate-600 text-xs">© 2025 Apollo International College. All rights reserved.</p>
+        {/* Bottom copyright */}
+        <p className="absolute bottom-6 text-[11px]" style={{ color: 'rgba(100,116,139,0.7)' }}>
+          © 2025 Apollo International College. All rights reserved.
+        </p>
       </div>
 
       {/* Right form panel */}
@@ -134,7 +138,7 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl overflow-hidden bg-white shadow-sm flex items-center justify-center border border-slate-200">
-              <img src="/logo.png" alt="Apollo" className="w-full h-full object-contain p-0.5" />
+              <img src="/logo.svg" alt="Apollo" className="w-full h-full object-contain p-0.5" />
             </div>
             <div>
               <p className="font-bold text-[15px] leading-tight" style={{ color: headingColor }}>Apollo International College</p>
@@ -187,7 +191,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
               className="w-full py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)', boxShadow: '0 4px 14px rgba(59,130,246,0.4)' }}
+              style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 14px rgba(122,46,46,0.45)' }}
             >
               {loading ? <><Loader2 size={16} className="animate-spin" /> Signing in...</> : 'Sign In'}
             </button>

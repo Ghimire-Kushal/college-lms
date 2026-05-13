@@ -49,32 +49,32 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Welcome banner */}
       <div className="rounded-2xl p-6 flex items-center justify-between overflow-hidden relative"
-        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #162828 50%, #1e3535 100%)' }}>
         <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #818cf8, transparent)' }} />
+          style={{ background: 'radial-gradient(circle, #F2C04E, transparent)' }} />
         <div>
-          <p className="text-indigo-300 text-sm font-medium">Admin Portal</p>
+          <p className="text-[#F2C04E] text-sm font-medium">Admin Portal</p>
           <h2 className="text-white text-2xl font-bold mt-0.5">Welcome back! 👋</h2>
-          <p className="text-indigo-200/70 text-sm mt-1">Here's an overview of your institution today.</p>
+          <p className="text-white/50 text-sm mt-1">Here's an overview of your institution today.</p>
         </div>
         <div className="hidden sm:flex items-center gap-3">
           <div className="text-center px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
             <p className="text-2xl font-bold text-white">{data?.totalStudents ?? 0}</p>
-            <p className="text-indigo-300 text-xs">Students</p>
+            <p className="text-[#F2C04E] text-xs">Students</p>
           </div>
           <div className="text-center px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm">
             <p className="text-2xl font-bold text-white">{data?.totalCourses ?? 0}</p>
-            <p className="text-indigo-300 text-xs">Courses</p>
+            <p className="text-[#F2C04E] text-xs">Courses</p>
           </div>
         </div>
       </div>
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="blue"   gradient />
-        <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="green"  gradient />
-        <StatCard title="Active Courses"  value={data?.totalCourses ?? 0}  icon={BookOpen}       color="sky"    gradient />
-        <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}           color="yellow" gradient />
+        <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="maroon" gradient />
+        <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="teal"   gradient />
+        <StatCard title="Active Courses"  value={data?.totalCourses ?? 0}  icon={BookOpen}      color="green"  gradient />
+        <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}          color="gold"   gradient />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">

@@ -1,0 +1,11 @@
+<svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" fill="white"/>
+  <!-- Left maroon leg (behind) -->
+  <line x1="95" y1="398" x2="218" y2="112" stroke="#7A2E2E" stroke-width="54" stroke-linecap="round"/>
+  <!-- Right maroon leg (behind) -->
+  <line x1="218" y1="112" x2="368" y2="398" stroke="#7A2E2E" stroke-width="54" stroke-linecap="round"/>
+  <!-- Dark teal crossing stroke (on top) -->
+  <line x1="312" y1="112" x2="88" y2="400" stroke="#1E3535" stroke-width="54" stroke-linecap="round"/>
+  <!-- Gold dot -->
+  <circle cx="394" cy="168" r="32" fill="#F2C04E"/>
+</svg>

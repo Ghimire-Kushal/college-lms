@@ -13,6 +13,9 @@
   --sidebar-width: 272px;
   --navbar-height: 68px;
   --radius: 14px;
+  --brand-red:  #7A2E2E;
+  --brand-teal: #1E3535;
+  --brand-gold: #F2C04E;
 }
 
 html {
@@ -27,36 +30,36 @@ body {
   color: #1e293b;
   line-height: 1.6;
   font-size: 15px;
-  background-color: #eef2f7;
-  background-image: radial-gradient(circle, #c7d4e2 1px, transparent 1px);
+  background-color: #f0ebe8;
+  background-image: radial-gradient(circle, #d8cbc6 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
 /* ── Dark mode ─────────────────────────────────────── */
 html.dark body {
-  background-color: #0d1117;
-  background-image: radial-gradient(circle, #1c2736 1px, transparent 1px);
+  background-color: #0d1212;
+  background-image: radial-gradient(circle, #1a2626 1px, transparent 1px);
   background-size: 28px 28px;
   color: #e2e8f0;
 }
 
 /* Dark mode — white surfaces become dark surfaces */
 html.dark .bg-white {
-  background-color: #161b22 !important;
+  background-color: #131e1e !important;
   background-image: none !important;
 }
-html.dark .border-slate-100 { border-color: #21262d !important; }
-html.dark .border-slate-200 { border-color: #30363d !important; }
+html.dark .border-slate-100 { border-color: #1e2e2e !important; }
+html.dark .border-slate-200 { border-color: #2a3c3c !important; }
 html.dark .text-slate-800   { color: #e2e8f0 !important; }
 html.dark .text-slate-700   { color: #c9d1d9 !important; }
 html.dark .text-slate-600   { color: #b1bac4 !important; }
 html.dark .text-slate-500   { color: #8b949e !important; }
 html.dark .text-slate-400   { color: #6e7681 !important; }
 html.dark .text-slate-300   { color: #555c66 !important; }
-html.dark .bg-slate-50      { background-color: #21262d !important; background-image: none !important; }
-html.dark .bg-slate-100     { background-color: #2d333b !important; background-image: none !important; }
-html.dark .hover\:bg-slate-50\/60:hover { background-color: rgba(33,38,45,0.6) !important; }
-html.dark .hover\:bg-slate-50\/40:hover { background-color: rgba(33,38,45,0.4) !important; }
+html.dark .bg-slate-50      { background-color: #1a2828 !important; background-image: none !important; }
+html.dark .bg-slate-100     { background-color: #243030 !important; background-image: none !important; }
+html.dark .hover\:bg-slate-50\/60:hover { background-color: rgba(26,40,40,0.6) !important; }
+html.dark .hover\:bg-slate-50\/40:hover { background-color: rgba(26,40,40,0.4) !important; }
 
 #root {
   width: 100%;
@@ -66,20 +69,26 @@ html.dark .hover\:bg-slate-50\/40:hover { background-color: rgba(33,38,45,0.4) !
 /* ── Custom scrollbar ──────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #64748b; }
-html.dark ::-webkit-scrollbar-thumb { background: #30363d; }
+::-webkit-scrollbar-thumb { background: #a8928e; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #7A2E2E; }
+html.dark ::-webkit-scrollbar-thumb { background: #2a3c3c; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #1E3535; }
 
 /* ── Focus ring ────────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #7A2E2E;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
+/* Input focus ring override (Tailwind ring utility) */
+input:focus, select:focus, textarea:focus {
+  --tw-ring-color: #7A2E2E !important;
+}
+
 /* ── Selection ─────────────────────────────────────── */
-::selection { background: #dbeafe; color: #1d4ed8; }
-html.dark ::selection { background: #1e3a5f; color: #93c5fd; }
+::selection { background: #f5dada; color: #7A2E2E; }
+html.dark ::selection { background: #3d1515; color: #f5a0a0; }
 
 /* ── Transitions ───────────────────────────────────── */
 button, a, input, select, textarea {
@@ -116,14 +125,6 @@ button, a, input, select, textarea {
   .modal-enter { animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 }
 
-/* ── Gradient text ─────────────────────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 /* ── Card hover lift ───────────────────────────────── */
 .card-hover {
   transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
@@ -134,7 +135,7 @@ button, a, input, select, textarea {
 }
 html.dark .card-hover:hover {
   box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);
-  border-color: #2d4a7a !important;
+  border-color: #2a3c3c !important;
 }
 
 /* ── Progress bar ──────────────────────────────────── */
@@ -158,12 +159,12 @@ tbody tr td:first-child {
   border-left: 3px solid transparent;
   transition: border-color 0.15s ease;
 }
-tbody tr:hover td:first-child { border-left-color: #3b82f6; }
-html.dark tbody tr:hover td:first-child { border-left-color: #60a5fa; }
+tbody tr:hover td:first-child { border-left-color: #7A2E2E; }
+html.dark tbody tr:hover td:first-child { border-left-color: #b56b6b; }
 
 /* ── White bg override for dark ────────────────────── */
 html.dark .bg-white, html.dark [class*="bg-white"] {
-  background-color: #161b22 !important;
+  background-color: #131e1e !important;
   background-image: none !important;
 }
 

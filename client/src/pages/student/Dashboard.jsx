@@ -63,12 +63,12 @@ export default function StudentDashboard() {
     <div className="space-y-6">
       {/* Welcome banner */}
       <div className="rounded-2xl p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, #0f1c1c 0%, #1a2e2e 60%, #1e3535 100%)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #6ee7b7, transparent)' }} />
-        <p className="text-emerald-300 text-sm font-medium">Student Portal</p>
+          style={{ background: 'radial-gradient(circle, #F2C04E, transparent)' }} />
+        <p className="text-[#F2C04E] text-sm font-medium">Student Portal</p>
         <h2 className="text-white text-2xl font-bold mt-0.5">Hi, {user?.name?.split(' ')[0]}! 🎓</h2>
-        <p className="text-emerald-200/70 text-sm mt-1">Keep up the great work and stay on top of your studies.</p>
+        <p className="text-white/50 text-sm mt-1">Keep up the great work and stay on top of your studies.</p>
       </div>
 
       {/* Attendance warning */}
@@ -84,10 +84,10 @@ export default function StudentDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="Enrolled Courses"    value={data?.totalCourses ?? 0}             icon={BookOpen}     color="blue"  gradient />
+        <StatCard title="Enrolled Courses"    value={data?.totalCourses ?? 0}             icon={BookOpen}     color="maroon" gradient />
         <StatCard title="Attendance Rate"     value={`${attPct}%`}                        icon={UserCheck}    color={isLowAtt ? 'red' : 'teal'} gradient />
         <StatCard title="Classes Attended"    value={`${data?.presentClasses ?? 0}/${data?.totalClasses ?? 0}`} icon={UserCheck} color="green" gradient />
-        <StatCard title="Due Assignments"     value={data?.upcomingAssignments?.length ?? 0} icon={ClipboardList} color="yellow" gradient />
+        <StatCard title="Due Assignments"     value={data?.upcomingAssignments?.length ?? 0} icon={ClipboardList} color="gold" gradient />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">

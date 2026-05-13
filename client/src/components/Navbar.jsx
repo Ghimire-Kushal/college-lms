@@ -29,9 +29,9 @@ const routeMeta = {
 };
 
 const roleColors = {
-  admin:   'from-violet-500 to-purple-600',
-  teacher: 'from-sky-500 to-blue-600',
-  student: 'from-emerald-500 to-teal-600',
+  admin:   'from-[#1E3535] to-[#2a4a4a]',
+  teacher: 'from-[#8B3030] to-[#6b2525]',
+  student: 'from-[#b87a00] to-[#8a5a00]',
 };
 
 export default function Navbar({ onMenuToggle }) {

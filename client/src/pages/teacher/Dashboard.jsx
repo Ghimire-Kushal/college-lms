@@ -38,19 +38,19 @@ export default function TeacherDashboard() {
     <div className="space-y-6">
       {/* Welcome banner */}
       <div className="rounded-2xl p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0c4a6e 0%, #0369a1 60%, #0284c7 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, #2a0f0f 0%, #5a2020 60%, #8B3030 100%)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #7dd3fc, transparent)' }} />
-        <p className="text-sky-300 text-sm font-medium">Teacher Portal</p>
+          style={{ background: 'radial-gradient(circle, #F2C04E, transparent)' }} />
+        <p className="text-[#F2C04E] text-sm font-medium">Teacher Portal</p>
         <h2 className="text-white text-2xl font-bold mt-0.5">Hello, {user?.name?.split(' ')[0]}! 👋</h2>
-        <p className="text-sky-200/70 text-sm mt-1">Manage your courses, attendance, and student progress.</p>
+        <p className="text-white/50 text-sm mt-1">Manage your courses, attendance, and student progress.</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-        <StatCard title="My Courses"        value={data?.totalCourses ?? 0}            icon={BookOpen}     color="blue"   gradient />
+        <StatCard title="My Courses"        value={data?.totalCourses ?? 0}            icon={BookOpen}     color="maroon" gradient />
         <StatCard title="Total Students"    value={data?.totalStudents ?? 0}           icon={Users}        color="teal"   gradient />
-        <StatCard title="Pending Reviews"   value={data?.pendingSubmissions ?? 0}      icon={ClipboardList} color="yellow" gradient />
+        <StatCard title="Pending Reviews"   value={data?.pendingSubmissions ?? 0}      icon={ClipboardList} color="gold"  gradient />
         <StatCard title="Classes Recorded"  value={data?.recentAttendance?.length ?? 0} icon={Calendar}    color="green"  gradient />
       </div>
 

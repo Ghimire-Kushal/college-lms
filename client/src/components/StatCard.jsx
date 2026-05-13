@@ -2,15 +2,15 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const themes = {
-  blue:    { bg: 'from-blue-500 to-blue-600',      icon: { bg: '#dbeafe', text: '#2563eb' } },
-  indigo:  { bg: 'from-indigo-500 to-indigo-600',  icon: { bg: '#e0e7ff', text: '#4338ca' } },
-  violet:  { bg: 'from-violet-500 to-purple-600',  icon: { bg: '#ede9fe', text: '#6d28d9' } },
+  maroon:  { bg: 'from-[#8B3030] to-[#6b2525]',   icon: { bg: '#f9e5e5', text: '#7A2E2E' } },
+  teal:    { bg: 'from-[#1E3535] to-[#2a4a4a]',   icon: { bg: '#ccf0ee', text: '#1E3535' } },
+  gold:    { bg: 'from-[#d4930a] to-[#b87a00]',   icon: { bg: '#fef3c7', text: '#b87a00' } },
   green:   { bg: 'from-emerald-500 to-teal-600',   icon: { bg: '#d1fae5', text: '#059669' } },
-  teal:    { bg: 'from-teal-500 to-cyan-600',      icon: { bg: '#ccfbf1', text: '#0d9488' } },
   yellow:  { bg: 'from-amber-400 to-orange-500',   icon: { bg: '#fef3c7', text: '#d97706' } },
   red:     { bg: 'from-rose-500 to-red-600',       icon: { bg: '#ffe4e6', text: '#e11d48' } },
+  blue:    { bg: 'from-blue-500 to-blue-600',      icon: { bg: '#dbeafe', text: '#2563eb' } },
   sky:     { bg: 'from-sky-500 to-blue-600',       icon: { bg: '#e0f2fe', text: '#0284c7' } },
-  purple:  { bg: 'from-purple-500 to-fuchsia-600', icon: { bg: '#f3e8ff', text: '#7c3aed' } },
+  indigo:  { bg: 'from-indigo-500 to-indigo-600',  icon: { bg: '#e0e7ff', text: '#4338ca' } },
   rose:    { bg: 'from-rose-500 to-pink-600',      icon: { bg: '#ffe4e6', text: '#e11d48' } },
 };
 
@@ -45,8 +45,8 @@ export default function StatCard({ title, value, icon: Icon, color = 'blue', sub
     <div
       className="rounded-2xl p-5 shadow-sm card-hover"
       style={{
-        background: dark ? '#161b22' : '#ffffff',
-        border: `1px solid ${dark ? '#21262d' : '#e8edf3'}`,
+        background: dark ? '#131e1e' : '#ffffff',
+        border: `1px solid ${dark ? '#1e2e2e' : '#e8edf3'}`,
       }}
     >
       <div className="flex items-start justify-between">
