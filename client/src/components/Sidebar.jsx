@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
-  Pencil, UserCheck, ChevronRight, X,
+  Pencil, UserCheck, ChevronRight, X, TrendingUp,
 } from 'lucide-react';
 
 const adminNav = [
@@ -18,6 +18,8 @@ const adminNav = [
   { to: '/admin/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/admin/notices', label: 'Notices', icon: Bell },
   { to: '/admin/results', label: 'Results', icon: BarChart3 },
+  { section: 'Market' },
+  { to: '/admin/market', label: 'Market Watch', icon: TrendingUp },
 ];
 
 const teacherNav = [
@@ -30,6 +32,8 @@ const teacherNav = [
   { section: 'Communication' },
   { to: '/teacher/results', label: 'Results', icon: BarChart3 },
   { to: '/teacher/notices', label: 'Notices', icon: Bell },
+  { section: 'Market' },
+  { to: '/teacher/market', label: 'Market Watch', icon: TrendingUp },
 ];
 
 const studentNav = [
@@ -42,6 +46,8 @@ const studentNav = [
   { to: '/student/results', label: 'Results', icon: BarChart3 },
   { section: 'Info' },
   { to: '/student/notices', label: 'Notices', icon: Bell },
+  { section: 'Market' },
+  { to: '/student/market', label: 'Market Watch', icon: TrendingUp },
 ];
 
 const navByRole = { admin: adminNav, teacher: teacherNav, student: studentNav };

@@ -34,6 +34,7 @@ import StudentNotes from './pages/student/Notes';
 import StudentAssignments from './pages/student/Assignments';
 import StudentResults from './pages/student/Results';
 import StudentNotices from './pages/student/Notices';
+import MarketWatch from './pages/MarketWatch';
 
 export default function App() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
               <Route path="attendance" element={<AdminAttendance />} />
               <Route path="notices" element={<AdminNotices />} />
               <Route path="results" element={<AdminResults />} />
+              <Route path="market" element={<MarketWatch />} />
             </Route>
 
             {/* Teacher Routes */}
@@ -75,6 +77,7 @@ export default function App() {
               <Route path="assignments" element={<TeacherAssignments />} />
               <Route path="results" element={<TeacherResults />} />
               <Route path="notices" element={<TeacherNotices />} />
+              <Route path="market" element={<MarketWatch />} />
             </Route>
 
             {/* Student Routes */}
@@ -86,6 +89,7 @@ export default function App() {
               <Route path="assignments" element={<StudentAssignments />} />
               <Route path="results" element={<StudentResults />} />
               <Route path="notices" element={<StudentNotices />} />
+              <Route path="market" element={<MarketWatch />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />
