@@ -18,8 +18,8 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen transition-colors duration-300"
-      style={{ background: dark ? '#0d1117' : '#eef2f7' }}>
+    <div className="flex min-h-screen transition-colors duration-300 overflow-x-hidden"
+      style={{ background: dark ? '#0d1212' : '#f0ebe8' }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -35,7 +35,7 @@ export default function Layout() {
         <Navbar onMenuToggle={() => setSidebarOpen(o => !o)} />
         <main
           key={pathname}
-          className="flex-1 p-5 sm:p-7 overflow-auto page-enter"
+          className="flex-1 p-4 sm:p-6 overflow-auto overflow-x-hidden page-enter"
         >
           <Outlet />
         </main>
