@@ -36,6 +36,7 @@ import StudentResults from './pages/student/Results';
 import StudentNotices from './pages/student/Notices';
 import TeacherOnlineClasses from './pages/teacher/OnlineClasses';
 import StudentOnlineClasses from './pages/student/OnlineClasses';
+import Profile from './pages/Profile';
 
 export default function App() {
   return (
@@ -66,6 +67,7 @@ export default function App() {
               <Route path="attendance" element={<AdminAttendance />} />
               <Route path="notices" element={<AdminNotices />} />
               <Route path="results" element={<AdminResults />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
 
             {/* Teacher Routes */}
@@ -78,6 +80,7 @@ export default function App() {
               <Route path="results" element={<TeacherResults />} />
               <Route path="notices" element={<TeacherNotices />} />
               <Route path="online-classes" element={<TeacherOnlineClasses />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
 
             {/* Student Routes */}
@@ -90,6 +93,7 @@ export default function App() {
               <Route path="results" element={<StudentResults />} />
               <Route path="notices" element={<StudentNotices />} />
               <Route path="online-classes" element={<StudentOnlineClasses />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />
