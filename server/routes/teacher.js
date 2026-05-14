@@ -86,6 +86,14 @@ router.get('/attendance', ...teacherAuth, async (req, res) => {
   }
 });
 
+const statusLabel = (s) => s === 'present' ? 'Present ✓' : s === 'late' ? 'Late ⚠' : 'Absent ✗';
+const statusMsg   = (s, course, date) => {
+  const d = new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  if (s === 'present') return `You were marked Present in ${course} on ${d}.`;
+  if (s === 'late')    return `You were marked Late in ${course} on ${d}. Please be on time.`;
+  return `You were marked Absent in ${course} on ${d}. Contact your teacher if needed.`;
+};
+
 router.post('/attendance', ...teacherAuth, async (req, res) => {
   try {
     const { courseId, date, records } = req.body;
@@ -104,6 +112,19 @@ router.post('/attendance', ...teacherAuth, async (req, res) => {
       { path: 'course', select: 'name code' },
       { path: 'records.student', select: 'name studentId' },
     ]);
+
+    // Send notification to each student
+    const courseName = attendance.course?.name || 'your course';
+    await Notification.insertMany(
+      attendance.records.map(r => ({
+        user:    r.student,
+        title:   `Attendance: ${statusLabel(r.status)}`,
+        message: statusMsg(r.status, courseName, date),
+        type:    'attendance',
+        meta:    { attendanceId: attendance._id, courseId, status: r.status },
+      }))
+    );
+
     res.status(201).json(attendance);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -115,6 +136,21 @@ router.put('/attendance/:id', ...teacherAuth, async (req, res) => {
     const record = await Attendance.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .populate('course', 'name code')
       .populate('records.student', 'name studentId');
+
+    // Update notifications for edited attendance
+    const courseName = record.course?.name || 'your course';
+    await Promise.all(
+      record.records.map(r =>
+        Notification.create({
+          user:    r.student,
+          title:   `Attendance Updated: ${statusLabel(r.status)}`,
+          message: `Your attendance in ${courseName} on ${new Date(record.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} was updated to ${r.status}.`,
+          type:    'attendance',
+          meta:    { attendanceId: record._id, status: r.status },
+        })
+      )
+    );
+
     res.json(record);
   } catch (err) {
     res.status(500).json({ message: err.message });

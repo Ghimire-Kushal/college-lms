@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import { Bell, ChevronRight, Home, Menu, Sun, Moon, KeyRound, LogOut, User, X, Eye, EyeOff, LayoutDashboard } from 'lucide-react';
+import { Bell, ChevronRight, Home, Menu, Sun, Moon, KeyRound, LogOut, User, X, Eye, EyeOff, CheckCheck, UserCheck, ClipboardList, BarChart2, Info } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -145,20 +145,59 @@ function PasswordModal({ onClose, dark }) {
   );
 }
 
+const typeIcon = { attendance: UserCheck, assignment: ClipboardList, result: BarChart2, notice: Bell, general: Info };
+const typeColor = { attendance: '#1E3535', assignment: '#8B3030', result: '#b87a00', notice: '#2a5080', general: '#64748b' };
+
+function timeAgo(date) {
+  const diff = (Date.now() - new Date(date)) / 1000;
+  if (diff < 60)   return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
 export default function Navbar({ onMenuToggle }) {
   const { user, logout } = useAuth();
   const { dark, toggle } = useTheme();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [dropOpen, setDropOpen] = useState(false);
-  const [pwModal, setPwModal] = useState(false);
-  const dropRef = useRef(null);
+  const [dropOpen, setDropOpen]     = useState(false);
+  const [bellOpen, setBellOpen]     = useState(false);
+  const [pwModal, setPwModal]       = useState(false);
+  const [notifs, setNotifs]         = useState([]);
+  const dropRef  = useRef(null);
+  const bellRef  = useRef(null);
   const meta = routeMeta[pathname] || { label: 'Apollo International College', section: '' };
   const avatarGradient = roleColors[user?.role] || roleColors.student;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
+  const unread = notifs.filter(n => !n.read).length;
+
+  const fetchNotifs = useCallback(async () => {
+    try { const r = await api.get('/notifications'); setNotifs(r.data); } catch {}
+  }, []);
+
   useEffect(() => {
-    const handler = (e) => { if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false); };
+    fetchNotifs();
+    const iv = setInterval(fetchNotifs, 30000);
+    return () => clearInterval(iv);
+  }, [fetchNotifs]);
+
+  const markAllRead = async () => {
+    await api.put('/notifications/read-all');
+    setNotifs(n => n.map(x => ({ ...x, read: true })));
+  };
+
+  const markRead = async (id) => {
+    setNotifs(n => n.map(x => x._id === id ? { ...x, read: true } : x));
+    await api.put(`/notifications/${id}/read`);
+  };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current  && !dropRef.current.contains(e.target))  setDropOpen(false);
+      if (bellRef.current  && !bellRef.current.contains(e.target))   setBellOpen(false);
+    };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
@@ -201,11 +240,96 @@ export default function Navbar({ onMenuToggle }) {
             {dark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
-          <button className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-            style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#8b949e' : '#64748b' }}>
-            <Bell size={16} />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full" />
-          </button>
+          {/* Bell / Notifications */}
+          <div className="relative" ref={bellRef}>
+            <button onClick={() => { setBellOpen(o => !o); setDropOpen(false); }}
+              className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+              style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#8b949e' : '#64748b' }}>
+              <Bell size={16} />
+              {unread > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                  style={{ background: '#dc2626' }}>
+                  {unread > 9 ? '9+' : unread}
+                </span>
+              )}
+            </button>
+
+            {bellOpen && (
+              <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl shadow-2xl border overflow-hidden z-50"
+                style={{ background: dark ? '#131e1e' : '#ffffff', borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
+
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b"
+                  style={{ borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
+                  <div className="flex items-center gap-2">
+                    <Bell size={14} style={{ color: '#1E3535' }} />
+                    <span className="text-[13px] font-bold" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
+                      Notifications
+                    </span>
+                    {unread > 0 && (
+                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white"
+                        style={{ background: '#dc2626' }}>{unread}</span>
+                    )}
+                  </div>
+                  {unread > 0 && (
+                    <button onClick={markAllRead}
+                      className="flex items-center gap-1 text-[11px] font-semibold transition-opacity hover:opacity-70"
+                      style={{ color: '#1E3535' }}>
+                      <CheckCheck size={12} /> Mark all read
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="max-h-80 overflow-y-auto">
+                  {notifs.length === 0 && (
+                    <div className="py-10 text-center">
+                      <Bell size={24} className="mx-auto mb-2 opacity-20" style={{ color: dark ? '#6e7681' : '#94a3b8' }} />
+                      <p className="text-[12px]" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>No notifications yet</p>
+                    </div>
+                  )}
+                  {notifs.map(n => {
+                    const Icon = typeIcon[n.type] || Info;
+                    const clr  = typeColor[n.type] || '#64748b';
+                    return (
+                      <div key={n._id}
+                        onClick={() => markRead(n._id)}
+                        className="flex gap-3 px-4 py-3 cursor-pointer border-b last:border-b-0 transition-colors"
+                        style={{
+                          borderColor: dark ? '#1e2e2e' : '#f0ebe8',
+                          background: n.read ? 'transparent' : (dark ? 'rgba(30,53,53,0.2)' : 'rgba(30,53,53,0.04)'),
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.04)' : '#f8f5f3'}
+                        onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : (dark ? 'rgba(30,53,53,0.2)' : 'rgba(30,53,53,0.04)')}>
+
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                          style={{ background: dark ? `${clr}22` : `${clr}15` }}>
+                          <Icon size={14} style={{ color: clr }} />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-[12px] font-semibold leading-snug" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>
+                              {n.title}
+                            </p>
+                            {!n.read && (
+                              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1" />
+                            )}
+                          </div>
+                          <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: dark ? '#6e7681' : '#64748b' }}>
+                            {n.message}
+                          </p>
+                          <p className="text-[10px] mt-1 font-medium" style={{ color: dark ? '#484f58' : '#94a3b8' }}>
+                            {timeAgo(n.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="w-px h-6 hidden sm:block" style={{ background: dark ? '#21262d' : '#e2e8f0' }} />
 
