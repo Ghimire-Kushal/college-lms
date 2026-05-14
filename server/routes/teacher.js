@@ -11,6 +11,7 @@ const Submission = require('../models/Submission');
 const Notice = require('../models/Notice');
 const Result = require('../models/Result');
 const Note = require('../models/Note');
+const OnlineClass = require('../models/OnlineClass');
 
 const teacherAuth = [auth, authorize('teacher', 'admin')];
 
@@ -347,6 +348,43 @@ router.delete('/notices/:id', ...teacherAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+// ===== ONLINE CLASSES =====
+router.get('/online-classes', ...teacherAuth, async (req, res) => {
+  try {
+    const classes = await OnlineClass.find({ teacher: req.user.id })
+      .populate('course', 'name code')
+      .sort({ scheduledAt: 1 });
+    res.json(classes);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.post('/online-classes', ...teacherAuth, async (req, res) => {
+  try {
+    const cls = new OnlineClass({ ...req.body, teacher: req.user.id });
+    await cls.save();
+    await cls.populate('course', 'name code');
+    res.status(201).json(cls);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.put('/online-classes/:id', ...teacherAuth, async (req, res) => {
+  try {
+    const cls = await OnlineClass.findOneAndUpdate(
+      { _id: req.params.id, teacher: req.user.id },
+      req.body, { new: true }
+    ).populate('course', 'name code');
+    if (!cls) return res.status(404).json({ message: 'Not found' });
+    res.json(cls);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.delete('/online-classes/:id', ...teacherAuth, async (req, res) => {
+  try {
+    await OnlineClass.findOneAndDelete({ _id: req.params.id, teacher: req.user.id });
+    res.json({ message: 'Deleted' });
+  } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
 module.exports = router;
