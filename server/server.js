@@ -17,7 +17,6 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/teacher', require('./routes/teacher'));
 app.use('/api/student', require('./routes/student'));
-app.use('/api/market', require('./routes/market'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'EduTrack LMS API running' }));
 
