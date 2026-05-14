@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
-  Pencil, UserCheck, ChevronRight, X,
+  Pencil, UserCheck, ChevronRight, X, Video,
 } from 'lucide-react';
 
 const adminNav = [
@@ -30,6 +30,7 @@ const teacherNav = [
   { section: 'Communication' },
   { to: '/teacher/results', label: 'Results', icon: BarChart3 },
   { to: '/teacher/notices', label: 'Notices', icon: Bell },
+  { to: '/teacher/online-classes', label: 'Online Classes', icon: Video },
 ];
 
 const studentNav = [
@@ -42,6 +43,7 @@ const studentNav = [
   { to: '/student/results', label: 'Results', icon: BarChart3 },
   { section: 'Info' },
   { to: '/student/notices', label: 'Notices', icon: Bell },
+  { to: '/student/online-classes', label: 'Online Classes', icon: Video },
 ];
 
 const navByRole = { admin: adminNav, teacher: teacherNav, student: studentNav };

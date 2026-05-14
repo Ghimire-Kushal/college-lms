@@ -1,31 +1,40 @@
+import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Bell, ChevronRight, Home, Menu, Sun, Moon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Bell, ChevronRight, Home, Menu, Sun, Moon, KeyRound, LogOut, User, X, Eye, EyeOff, LayoutDashboard } from 'lucide-react';
+import api from '../api/axios';
+import toast from 'react-hot-toast';
 
 const routeMeta = {
-  '/admin':              { label: 'Dashboard',         section: 'Admin' },
-  '/admin/students':     { label: 'Students',           section: 'Admin' },
-  '/admin/teachers':     { label: 'Teachers',           section: 'Admin' },
-  '/admin/courses':      { label: 'Courses',            section: 'Admin' },
-  '/admin/timetable':    { label: 'Timetable',          section: 'Admin' },
-  '/admin/attendance':   { label: 'Attendance Reports', section: 'Admin' },
-  '/admin/notices':      { label: 'Notices',            section: 'Admin' },
-  '/admin/results':      { label: 'Results',            section: 'Admin' },
-  '/teacher':            { label: 'Dashboard',          section: 'Teacher' },
-  '/teacher/courses':    { label: 'My Courses',         section: 'Teacher' },
-  '/teacher/attendance': { label: 'Attendance',         section: 'Teacher' },
-  '/teacher/notes':      { label: 'Notes & Materials',  section: 'Teacher' },
-  '/teacher/assignments':{ label: 'Assignments',        section: 'Teacher' },
-  '/teacher/results':    { label: 'Results',            section: 'Teacher' },
-  '/teacher/notices':    { label: 'Notices',            section: 'Teacher' },
-  '/student':            { label: 'Dashboard',          section: 'Student' },
-  '/student/courses':    { label: 'My Courses',         section: 'Student' },
-  '/student/attendance': { label: 'My Attendance',      section: 'Student' },
-  '/student/notes':      { label: 'Notes & Materials',  section: 'Student' },
-  '/student/assignments':{ label: 'Assignments',        section: 'Student' },
-  '/student/results':    { label: 'My Results',         section: 'Student' },
-  '/student/notices':    { label: 'Notices',            section: 'Student' },
+  '/admin':                { label: 'Dashboard',         section: 'Admin' },
+  '/admin/students':       { label: 'Students',           section: 'Admin' },
+  '/admin/teachers':       { label: 'Teachers',           section: 'Admin' },
+  '/admin/courses':        { label: 'Courses',            section: 'Admin' },
+  '/admin/timetable':      { label: 'Timetable',          section: 'Admin' },
+  '/admin/attendance':     { label: 'Attendance Reports', section: 'Admin' },
+  '/admin/notices':        { label: 'Notices',            section: 'Admin' },
+  '/admin/results':        { label: 'Results',            section: 'Admin' },
+  '/teacher':              { label: 'Dashboard',          section: 'Teacher' },
+  '/teacher/courses':      { label: 'My Courses',         section: 'Teacher' },
+  '/teacher/attendance':   { label: 'Attendance',         section: 'Teacher' },
+  '/teacher/notes':        { label: 'Notes & Materials',  section: 'Teacher' },
+  '/teacher/assignments':  { label: 'Assignments',        section: 'Teacher' },
+  '/teacher/results':      { label: 'Results',            section: 'Teacher' },
+  '/teacher/notices':      { label: 'Notices',            section: 'Teacher' },
+  '/teacher/online-classes': { label: 'Online Classes',   section: 'Teacher' },
+  '/teacher/profile':        { label: 'My Profile',        section: 'Teacher' },
+  '/student':              { label: 'Dashboard',          section: 'Student' },
+  '/student/courses':      { label: 'My Courses',         section: 'Student' },
+  '/student/attendance':   { label: 'My Attendance',      section: 'Student' },
+  '/student/notes':        { label: 'Notes & Materials',  section: 'Student' },
+  '/student/assignments':  { label: 'Assignments',        section: 'Student' },
+  '/student/results':      { label: 'My Results',         section: 'Student' },
+  '/student/notices':      { label: 'Notices',            section: 'Student' },
+  '/student/online-classes': { label: 'Online Classes',   section: 'Student' },
+  '/student/profile':        { label: 'My Profile',        section: 'Student' },
+  '/admin/profile':          { label: 'My Profile',        section: 'Admin'   },
 };
 
 const roleColors = {
@@ -34,113 +43,225 @@ const roleColors = {
   student: 'from-[#b87a00] to-[#8a5a00]',
 };
 
+function PasswordModal({ onClose, dark }) {
+  const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
+  const [show, setShow] = useState({ cur: false, new: false, con: false });
+  const [loading, setLoading] = useState(false);
+
+  const borderColor = dark ? '#1e2e2e' : '#ede8e4';
+  const inputStyle = {
+    background: dark ? '#0f1e1e' : '#f8f5f3',
+    borderColor,
+    color: dark ? '#e2e8f0' : '#1e293b',
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (form.newPassword !== form.confirm) return toast.error('Passwords do not match');
+    if (form.newPassword.length < 6) return toast.error('Password must be at least 6 characters');
+    setLoading(true);
+    try {
+      await api.put('/auth/change-password', {
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
+      });
+      toast.success('Password changed successfully');
+      onClose();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to change password');
+    } finally { setLoading(false); }
+  };
+
+  const fields = [
+    { key: 'currentPassword', label: 'Current Password', showKey: 'cur' },
+    { key: 'newPassword',     label: 'New Password',     showKey: 'new' },
+    { key: 'confirm',         label: 'Confirm New Password', showKey: 'con' },
+  ];
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
+        style={{ background: dark ? '#131e1e' : '#ffffff', border: `1px solid ${borderColor}` }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor }}>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: dark ? '#1a2828' : '#edf7f5' }}>
+              <KeyRound size={16} style={{ color: '#1E3535' }} />
+            </div>
+            <div>
+              <h3 className="font-bold text-[15px]" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>Change Password</h3>
+              <p className="text-[11px]" style={{ color: dark ? '#6e7681' : '#64748b' }}>Update your account password</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:opacity-70"
+            style={{ background: dark ? '#1e2e2e' : '#f0ebe8', color: dark ? '#6e7681' : '#64748b' }}>
+            <X size={15} />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          {fields.map(({ key, label, showKey }) => (
+            <div key={key}>
+              <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
+                style={{ color: dark ? '#6e7681' : '#64748b' }}>{label}</label>
+              <div className="relative">
+                <input
+                  type={show[showKey] ? 'text' : 'password'}
+                  required
+                  value={form[key]}
+                  onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
+                  className="w-full px-4 py-2.5 pr-10 rounded-xl text-[14px] border outline-none transition-all"
+                  style={inputStyle}
+                  placeholder="••••••••"
+                />
+                <button type="button" onClick={() => setShow(p => ({ ...p, [showKey]: !p[showKey] }))}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-70"
+                  style={{ color: dark ? '#6e7681' : '#94a3b8' }}>
+                  {show[showKey] ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose}
+              className="flex-1 py-2.5 rounded-xl text-[14px] font-medium border transition-all"
+              style={{ borderColor, color: dark ? '#6e7681' : '#64748b', background: 'transparent' }}>
+              Cancel
+            </button>
+            <button type="submit" disabled={loading}
+              className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white transition-all disabled:opacity-60"
+              style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 12px rgba(122,46,46,0.35)' }}>
+              {loading ? 'Saving...' : 'Update Password'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function Navbar({ onMenuToggle }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { dark, toggle } = useTheme();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [dropOpen, setDropOpen] = useState(false);
+  const [pwModal, setPwModal] = useState(false);
+  const dropRef = useRef(null);
   const meta = routeMeta[pathname] || { label: 'Apollo International College', section: '' };
   const avatarGradient = roleColors[user?.role] || roleColors.student;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
+  useEffect(() => {
+    const handler = (e) => { if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const navBg    = dark ? '#161b22' : '#ffffff';
+  const navBorder = dark ? '#21262d' : '#e8edf3';
+
   return (
-    <header
-      className="flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300"
-      style={{
-        height: 'var(--navbar-height)',
-        minHeight: 'var(--navbar-height)',
-        background: dark ? '#161b22' : '#ffffff',
-        borderColor: dark ? '#21262d' : '#e8edf3',
-        boxShadow: dark
-          ? '0 1px 0 #21262d'
-          : '0 1px 3px rgba(0,0,0,0.06)',
-      }}
-    >
-      {/* Left */}
-      <div className="flex items-center gap-3 min-w-0">
-        <button
-          onClick={onMenuToggle}
-          className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl transition-colors"
-          style={{ color: dark ? '#8b949e' : '#64748b' }}
-          aria-label="Open menu"
-        >
-          <Menu size={20} />
-        </button>
+    <>
+      <header className="flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300"
+        style={{ height: 'var(--navbar-height)', minHeight: 'var(--navbar-height)', background: navBg, borderColor: navBorder, boxShadow: dark ? '0 1px 0 #21262d' : '0 1px 3px rgba(0,0,0,0.06)' }}>
 
-        {/* Breadcrumb */}
-        <div className="hidden sm:flex items-center gap-2 text-sm min-w-0">
-          <Home size={13} style={{ color: dark ? '#6e7681' : '#94a3b8' }} className="shrink-0" />
-          <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0" />
-          <span className="hidden md:inline shrink-0" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{meta.section}</span>
-          <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0 hidden md:inline" />
-          <span className="font-semibold truncate" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{meta.label}</span>
+        {/* Left */}
+        <div className="flex items-center gap-3 min-w-0">
+          <button onClick={onMenuToggle}
+            className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl transition-colors"
+            style={{ color: dark ? '#8b949e' : '#64748b' }}>
+            <Menu size={20} />
+          </button>
+          <div className="hidden sm:flex items-center gap-2 text-sm min-w-0">
+            <Home size={13} style={{ color: dark ? '#6e7681' : '#94a3b8' }} className="shrink-0" />
+            <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0" />
+            <span className="hidden md:inline shrink-0" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{meta.section}</span>
+            <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0 hidden md:inline" />
+            <span className="font-semibold truncate" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{meta.label}</span>
+          </div>
+          <span className="sm:hidden font-bold text-[15px] truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>{meta.label}</span>
         </div>
 
-        {/* Mobile page title */}
-        <span className="sm:hidden font-bold text-[15px] truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
-          {meta.label}
-        </span>
-      </div>
+        {/* Right */}
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="hidden md:flex items-center text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
+            style={{ background: dark ? '#21262d' : '#f0f4f8', color: dark ? '#8b949e' : '#64748b', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}` }}>
+            {today}
+          </span>
 
-      {/* Right */}
-      <div className="flex items-center gap-2 shrink-0">
-        {/* Date chip */}
-        <span
-          className="hidden md:flex items-center text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
-          style={{
-            background: dark ? '#21262d' : '#f0f4f8',
-            color: dark ? '#8b949e' : '#64748b',
-            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
-          }}
-        >
-          {today}
-        </span>
+          <button onClick={toggle}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+            style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#f0ab3d' : '#64748b' }}>
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
 
-        {/* Theme toggle */}
-        <button
-          onClick={toggle}
-          className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-          style={{
-            background: dark ? '#21262d' : '#f0f4f8',
-            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
-            color: dark ? '#f0ab3d' : '#64748b',
-          }}
-          title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        >
-          {dark ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+          <button className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+            style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#8b949e' : '#64748b' }}>
+            <Bell size={16} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full" />
+          </button>
 
-        {/* Notifications */}
-        <button
-          className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-          style={{
-            background: dark ? '#21262d' : '#f0f4f8',
-            border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`,
-            color: dark ? '#8b949e' : '#64748b',
-          }}
-        >
-          <Bell size={16} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full ring-2"
-            style={{ ringColor: dark ? '#161b22' : '#ffffff' }} />
-        </button>
+          <div className="w-px h-6 hidden sm:block" style={{ background: dark ? '#21262d' : '#e2e8f0' }} />
 
-        {/* Divider */}
-        <div className="w-px h-6 hidden sm:block" style={{ background: dark ? '#21262d' : '#e2e8f0' }} />
+          {/* Avatar dropdown */}
+          <div className="relative" ref={dropRef}>
+            <button onClick={() => setDropOpen(o => !o)}
+              className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+              <div className="text-right hidden sm:block">
+                <p className="text-[13px] font-semibold leading-none" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>{user?.name}</p>
+                <p className="text-[11px] mt-0.5 capitalize" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{user?.role}</p>
+              </div>
+              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0`}>
+                {user?.name?.[0]?.toUpperCase()}
+              </div>
+            </button>
 
-        {/* User */}
-        <div className="flex items-center gap-2.5">
-          <div className="text-right hidden sm:block">
-            <p className="text-[13px] font-semibold leading-none" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>
-              {user?.name}
-            </p>
-            <p className="text-[11px] mt-0.5 capitalize" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>
-              {user?.role}
-            </p>
-          </div>
-          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0`}>
-            {user?.name?.[0]?.toUpperCase()}
+            {dropOpen && (
+              <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl shadow-xl border overflow-hidden z-50"
+                style={{ background: dark ? '#131e1e' : '#ffffff', borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
+                <div className="px-4 py-3 border-b" style={{ borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
+                  <p className="text-[13px] font-semibold truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>{user?.name}</p>
+                  <p className="text-[11px] truncate capitalize" style={{ color: dark ? '#6e7681' : '#64748b' }}>{user?.role}</p>
+                </div>
+                <div className="py-1">
+                  <button onClick={() => { setDropOpen(false); navigate(`/${user?.role}/profile`); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
+                    style={{ color: dark ? '#c9d1d9' : '#374151' }}
+                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2828' : '#f5faf7'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <User size={14} style={{ color: '#8B3030' }} />
+                    My Profile
+                  </button>
+                  <button onClick={() => { setDropOpen(false); setPwModal(true); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
+                    style={{ color: dark ? '#c9d1d9' : '#374151' }}
+                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2828' : '#f5faf7'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <KeyRound size={14} style={{ color: '#1E3535' }} />
+                    Change Password
+                  </button>
+                  <button onClick={logout}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
+                    style={{ color: dark ? '#f87171' : '#8B3030' }}
+                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <LogOut size={14} />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {pwModal && <PasswordModal onClose={() => setPwModal(false)} dark={dark} />}
+    </>
   );
 }

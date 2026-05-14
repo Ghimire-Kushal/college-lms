@@ -12,6 +12,7 @@ const Notice = require('../models/Notice');
 const Result = require('../models/Result');
 const Timetable = require('../models/Timetable');
 const Note = require('../models/Note');
+const OnlineClass = require('../models/OnlineClass');
 
 const studentAuth = [auth, authorize('student', 'admin')];
 
@@ -204,6 +205,19 @@ router.get('/notices', ...studentAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+// ===== ONLINE CLASSES =====
+router.get('/online-classes', ...studentAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate('enrolledCourses');
+    const courseIds = user.enrolledCourses.map(c => c._id);
+    const classes = await OnlineClass.find({ course: { $in: courseIds } })
+      .populate('course', 'name code')
+      .populate('teacher', 'name')
+      .sort({ scheduledAt: 1 });
+    res.json(classes);
+  } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
 module.exports = router;

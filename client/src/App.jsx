@@ -34,6 +34,8 @@ import StudentNotes from './pages/student/Notes';
 import StudentAssignments from './pages/student/Assignments';
 import StudentResults from './pages/student/Results';
 import StudentNotices from './pages/student/Notices';
+import TeacherOnlineClasses from './pages/teacher/OnlineClasses';
+import StudentOnlineClasses from './pages/student/OnlineClasses';
 
 export default function App() {
   return (
@@ -75,6 +77,7 @@ export default function App() {
               <Route path="assignments" element={<TeacherAssignments />} />
               <Route path="results" element={<TeacherResults />} />
               <Route path="notices" element={<TeacherNotices />} />
+              <Route path="online-classes" element={<TeacherOnlineClasses />} />
             </Route>
 
             {/* Student Routes */}
@@ -86,6 +89,7 @@ export default function App() {
               <Route path="assignments" element={<StudentAssignments />} />
               <Route path="results" element={<StudentResults />} />
               <Route path="notices" element={<StudentNotices />} />
+              <Route path="online-classes" element={<StudentOnlineClasses />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />
