@@ -11,7 +11,8 @@ const Submission = require('../models/Submission');
 const Notice = require('../models/Notice');
 const Result = require('../models/Result');
 const Note = require('../models/Note');
-const OnlineClass = require('../models/OnlineClass');
+const OnlineClass    = require('../models/OnlineClass');
+const Notification   = require('../models/Notification');
 
 const teacherAuth = [auth, authorize('teacher', 'admin')];
 
