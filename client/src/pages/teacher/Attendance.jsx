@@ -1,27 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Plus, Eye, UserCheck, Edit2, Calendar, CheckCircle } from 'lucide-react';
+import { UserCheck, Eye, Edit2, Calendar, CheckCircle, X, ChevronDown, BarChart2, Clock, Users } from 'lucide-react';
 import Modal from '../../components/Modal';
-import { PrimaryBtn, SecondaryBtn, FormField, PageHeader, inputCls, selectCls, Badge, Avatar } from '../../components/UI';
+import { Avatar } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 
+const courseColors = ['#8B3030', '#1E3535', '#b87a00', '#2a5080', '#5a2a80'];
+
 export default function TeacherAttendance() {
-  const [courses, setCourses]       = useState([]);
-  const [records, setRecords]       = useState([]);
-  const [modal, setModal]           = useState(null);   // 'take' | 'edit' | 'summary'
-  const [selectedCourse, setSelected] = useState('');
-  const [date, setDate]             = useState(new Date().toISOString().split('T')[0]);
-  const [attendance, setAttendance] = useState([]);
-  const [summary, setSummary]       = useState(null);
-  const [filterCourse, setFilter]   = useState('');
-  const [editRecord, setEditRecord] = useState(null);
+  const [courses, setCourses]         = useState([]);
+  const [records, setRecords]         = useState([]);
+  const [activePanel, setActivePanel] = useState(null); // { courseId, mode: 'take'|'edit', record? }
+  const [date, setDate]               = useState(new Date().toISOString().split('T')[0]);
+  const [attendance, setAttendance]   = useState([]);
+  const [saving, setSaving]           = useState(false);
+  const [summary, setSummary]         = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const [filterCourse, setFilter]     = useState('');
   const { dark } = useTheme();
 
   const cardBg  = dark ? '#131e1e' : '#ffffff';
   const border  = dark ? '#1e2e2e' : '#ede8e4';
   const headClr = dark ? '#e2e8f0' : '#1e293b';
   const subClr  = dark ? '#6e7681' : '#64748b';
+  const rowBg   = dark ? '#0f1e1e' : '#faf7f5';
 
   const loadCourses = () => api.get('/teacher/courses').then(r => setCourses(r.data));
   const loadRecords = () => api.get('/teacher/attendance', { params: { courseId: filterCourse } }).then(r => setRecords(r.data));
@@ -29,15 +32,21 @@ export default function TeacherAttendance() {
   useEffect(() => { loadCourses(); }, []);
   useEffect(() => { loadRecords(); }, [filterCourse]);
 
-  const openTake = async () => {
-    if (!selectedCourse) return toast.error('Select a course first');
-    const course = courses.find(c => c._id === selectedCourse);
-    setAttendance(course?.students?.map(s => ({ student: s._id, status: 'present', name: s.name, studentId: s.studentId })) || []);
-    setModal('take');
+  const openTake = (course) => {
+    setDate(new Date().toISOString().split('T')[0]);
+    setAttendance(
+      course.students?.map(s => ({ student: s._id, status: 'present', name: s.name, studentId: s.studentId })) || []
+    );
+    setActivePanel({ courseId: course._id, courseName: course.name, mode: 'take' });
   };
 
   const openEdit = (record) => {
-    setEditRecord(record);
+    setActivePanel({
+      courseId: record.course?._id,
+      courseName: record.course?.name,
+      mode: 'edit',
+      record,
+    });
     setAttendance(record.records.map(r => ({
       student: r.student._id,
       status: r.status,
@@ -45,167 +54,276 @@ export default function TeacherAttendance() {
       studentId: r.student.studentId,
     })));
     setDate(new Date(record.date).toISOString().split('T')[0]);
-    setModal('edit');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const closePanel = () => { setActivePanel(null); setAttendance([]); };
 
   const openSummary = async (courseId) => {
     const r = await api.get(`/teacher/attendance/summary/${courseId}`);
     setSummary(r.data);
-    setModal('summary');
+    setShowSummary(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
       await api.post('/teacher/attendance', {
-        courseId: selectedCourse,
+        courseId: activePanel.courseId,
         date,
         records: attendance.map(a => ({ student: a.student, status: a.status })),
       });
       toast.success('Attendance submitted');
-      loadRecords(); setModal(null);
+      loadRecords();
+      closePanel();
     } catch (err) { toast.error(err.response?.data?.message || 'Error'); }
+    finally { setSaving(false); }
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
-      await api.put(`/teacher/attendance/${editRecord._id}`, {
+      await api.put(`/teacher/attendance/${activePanel.record._id}`, {
         date,
         records: attendance.map(a => ({ student: a.student, status: a.status })),
       });
       toast.success('Attendance updated');
-      loadRecords(); setModal(null);
+      loadRecords();
+      closePanel();
     } catch (err) { toast.error(err.response?.data?.message || 'Error'); }
+    finally { setSaving(false); }
   };
 
   const toggle = (id, status) => setAttendance(a => a.map(s => s.student === id ? { ...s, status } : s));
+
   const pct = (s) => s.total > 0 ? ((s.present + s.late * 0.5) / s.total * 100).toFixed(1) : 0;
 
-  const statusBtn = (s, value, label, colors) => (
-    <button type="button" onClick={() => toggle(s.student, value)}
-      className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${s.status === value ? colors.active : ''}`}
-      style={s.status !== value ? { background: dark ? '#1a2828' : '#f0ebe8', color: subClr } : {}}>
-      {label}
-    </button>
-  );
+  const presentCount = attendance.filter(s => s.status === 'present').length;
+  const absentCount  = attendance.filter(s => s.status === 'absent').length;
+  const lateCount    = attendance.filter(s => s.status === 'late').length;
 
-  const AttendanceForm = ({ onSubmit, title }) => (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="flex items-center justify-between p-3.5 rounded-xl border"
-        style={{ background: dark ? '#0f1e1e' : '#f5faf7', borderColor: dark ? '#1e3535' : '#c8e8dc' }}>
-        <span className="text-[13px] font-semibold" style={{ color: headClr }}>
-          {modal === 'edit'
-            ? records.find(r => r._id === editRecord?._id)?.course?.name || editRecord?.course?.name
-            : courses.find(c => c._id === selectedCourse)?.name}
-        </span>
-        <input type="date" value={date} onChange={e => setDate(e.target.value)}
-          className="text-[12px] border rounded-lg px-2.5 py-1 outline-none"
-          style={{ background: dark ? '#131e1e' : '#fff', borderColor: border, color: headClr }} />
-      </div>
-
-      <div className="flex gap-2 text-[11px] font-semibold pb-1" style={{ color: subClr }}>
-        <span className="flex-1">Student</span>
-        <span className="w-8 text-center text-emerald-500">P</span>
-        <span className="w-8 text-center text-rose-500">A</span>
-        <span className="w-8 text-center text-amber-500">L</span>
-      </div>
-
-      <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-        {attendance.map((s, i) => (
-          <div key={s.student} className="flex items-center gap-3 p-3 rounded-xl border transition-colors"
-            style={{ background: dark ? '#0f1e1e' : '#faf7f5', borderColor: border }}>
-            <Avatar name={s.name} index={i} size="sm" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{s.name}</p>
-              <p className="text-[11px]" style={{ color: subClr }}>{s.studentId}</p>
-            </div>
-            <div className="flex gap-1 shrink-0">
-              {statusBtn(s, 'present', 'P', { active: 'bg-emerald-500 text-white' })}
-              {statusBtn(s, 'absent',  'A', { active: 'bg-rose-500 text-white' })}
-              {statusBtn(s, 'late',    'L', { active: 'bg-amber-500 text-white' })}
-            </div>
-          </div>
-        ))}
-        {attendance.length === 0 && (
-          <p className="text-center py-8 text-sm" style={{ color: subClr }}>No students enrolled</p>
-        )}
-      </div>
-
-      <div className="flex gap-3 justify-end pt-2 border-t" style={{ borderColor: border }}>
-        <SecondaryBtn type="button" onClick={() => setModal(null)}>Cancel</SecondaryBtn>
-        <PrimaryBtn type="submit">{title}</PrimaryBtn>
-      </div>
-    </form>
-  );
+  const totalClasses = records.length;
+  const avgPct = records.length > 0
+    ? Math.round(records.reduce((acc, r) => {
+        const p = r.records?.filter(x => x.status === 'present').length || 0;
+        const t = r.records?.length || 1;
+        return acc + (p / t) * 100;
+      }, 0) / records.length)
+    : 0;
 
   return (
     <div className="space-y-5">
-      <PageHeader title="Attendance" subtitle="Take attendance and review class records." />
 
-      {/* Take Attendance panel */}
-      <div className="rounded-2xl p-5 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
-        <h3 className="text-[14px] font-semibold mb-4" style={{ color: headClr }}>Take New Attendance</h3>
-        <div className="flex flex-wrap gap-3 items-end">
-          <FormField label="Course">
-            <select value={selectedCourse} onChange={e => setSelected(e.target.value)}
-              className={`${selectCls} min-w-48`}
-              style={{ background: dark ? '#0f1e1e' : '#fff', borderColor: border, color: headClr }}>
-              <option value="">Select a course...</option>
-              {courses.map(c => <option key={c._id} value={c._id}>{c.name} ({c.code})</option>)}
-            </select>
-          </FormField>
-          <FormField label="Date">
-            <input type="date" value={date} onChange={e => setDate(e.target.value)}
-              className={inputCls}
-              style={{ background: dark ? '#0f1e1e' : '#fff', borderColor: border, color: headClr }} />
-          </FormField>
-          <PrimaryBtn onClick={openTake} disabled={!selectedCourse} className="self-end">
-            <Plus size={15} /> Take Attendance
-          </PrimaryBtn>
+      {/* ── Banner ── */}
+      <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0a1a1a 0%, #1E3535 55%, #2a4a4a 100%)' }}>
+        <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.15 }} />
+        <div>
+          <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Teacher Portal</p>
+          <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Attendance</h2>
+          <p className="text-white/50 text-sm mt-1">Select a course below to take or review attendance.</p>
+        </div>
+        <div className="flex gap-3 mt-4 flex-wrap">
+          {[
+            { l: 'Total Classes', v: totalClasses, icon: Calendar },
+            { l: 'Avg Attendance', v: `${avgPct}%`, icon: BarChart2 },
+            { l: 'Courses', v: courses.length, icon: Users },
+          ].map(({ l, v, icon: Icon }) => (
+            <div key={l} className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <Icon size={14} style={{ color: '#F2C04E' }} />
+              <span className="text-lg font-bold text-white">{v}</span>
+              <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{l}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Course summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-        {courses.map((c, i) => {
-          const colors = ['#8B3030','#1E3535','#b87a00','#2a6648'];
-          return (
-            <div key={c._id} className="rounded-2xl p-5 border shadow-sm transition-all hover:shadow-md"
-              style={{ background: cardBg, borderColor: border }}>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
-                    style={{ background: colors[i % colors.length] }}>
-                    {c.code?.slice(0, 2)}
+      {/* ── Inline Attendance Panel ── */}
+      {activePanel && (
+        <div className="rounded-2xl border shadow-sm overflow-hidden"
+          style={{ background: cardBg, borderColor: border }}>
+
+          {/* Panel header */}
+          <div className="px-8 py-5 border-b flex items-center justify-between"
+            style={{ borderColor: border, background: dark ? '#0f1e1e' : '#f5faf7' }}>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                style={{ background: dark ? '#1a2828' : '#dff0eb' }}>
+                <UserCheck size={22} style={{ color: '#1E3535' }} />
+              </div>
+              <div>
+                <p className="text-[19px] font-bold" style={{ color: headClr }}>
+                  {activePanel.mode === 'edit' ? 'Edit Attendance' : 'Take Attendance'}
+                </p>
+                <p className="text-[13px] mt-0.5" style={{ color: subClr }}>{activePanel.courseName}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border"
+                style={{ background: dark ? '#0f1e1e' : '#fff', borderColor: border }}>
+                <Calendar size={15} style={{ color: subClr }} />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)}
+                  className="outline-none bg-transparent text-[14px]"
+                  style={{ color: headClr }} />
+              </div>
+              <button onClick={closePanel}
+                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:opacity-70"
+                style={{ background: dark ? '#1a2828' : '#f0ebe8', color: subClr }}>
+                <X size={17} />
+              </button>
+            </div>
+          </div>
+
+          {/* Quick summary row */}
+          <div className="px-8 py-4 border-b flex items-center gap-5 flex-wrap"
+            style={{ borderColor: border, background: dark ? '#0c1818' : '#fafbfc' }}>
+            <span className="text-[13px] font-semibold" style={{ color: subClr }}>
+              {attendance.length} students
+            </span>
+            <div className="flex items-center gap-2 ml-auto flex-wrap gap-y-1">
+              <span className="px-3.5 py-1.5 rounded-full text-[13px] font-bold" style={{ background: dark ? '#0f2518' : '#dcfce7', color: '#059669' }}>
+                {presentCount} Present
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full text-[13px] font-bold" style={{ background: dark ? '#2a1414' : '#fee2e2', color: '#dc2626' }}>
+                {absentCount} Absent
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full text-[13px] font-bold" style={{ background: dark ? '#2a1a00' : '#fef3c7', color: '#d97706' }}>
+                {lateCount} Late
+              </span>
+            </div>
+          </div>
+
+          {/* Student list */}
+          <form onSubmit={activePanel.mode === 'edit' ? handleEditSubmit : handleSubmit}>
+            <div className="divide-y" style={{ borderColor: border }}>
+              {attendance.length === 0 && (
+                <div className="py-14 text-center text-[15px]" style={{ color: subClr }}>No students enrolled in this course</div>
+              )}
+              {attendance.map((s, i) => (
+                <div key={s.student} className="flex items-center gap-5 px-8 py-4 transition-colors"
+                  onMouseEnter={e => e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.02)' : '#fafafa'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <Avatar name={s.name} index={i} size="md" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-semibold" style={{ color: headClr }}>{s.name}</p>
+                    <p className="text-[12px] mt-0.5" style={{ color: subClr }}>{s.studentId}</p>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[13px]" style={{ color: headClr }}>{c.name}</h3>
-                    <p className="text-[11px]" style={{ color: subClr }}>{c.code}</p>
+                  {/* Status buttons */}
+                  <div className="flex gap-2.5 shrink-0">
+                    {[
+                      { val: 'present', label: 'Present', short: 'P', activeStyle: { background: '#059669', color: '#fff' } },
+                      { val: 'absent',  label: 'Absent',  short: 'A', activeStyle: { background: '#dc2626', color: '#fff' } },
+                      { val: 'late',    label: 'Late',    short: 'L', activeStyle: { background: '#d97706', color: '#fff' } },
+                    ].map(({ val, label, short, activeStyle }) => (
+                      <button key={val} type="button"
+                        onClick={() => toggle(s.student, val)}
+                        title={label}
+                        className="w-12 h-10 rounded-xl text-[14px] font-bold transition-all"
+                        style={s.status === val
+                          ? activeStyle
+                          : { background: dark ? '#1a2828' : '#f0ebe8', color: subClr }}>
+                        {short}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <button onClick={() => openSummary(c._id)}
-                  className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded-xl transition-colors"
-                  style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#1E3535' }}>
-                  <Eye size={12} /> Summary
+              ))}
+            </div>
+
+            {/* Actions */}
+            {attendance.length > 0 && (
+              <div className="px-8 py-5 border-t flex items-center justify-end gap-3"
+                style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
+                <button type="button" onClick={closePanel}
+                  className="px-6 py-3 rounded-xl text-[14px] font-medium border transition-all hover:opacity-80"
+                  style={{ borderColor: border, color: subClr }}>
+                  Cancel
+                </button>
+                <button type="submit" disabled={saving}
+                  className="px-8 py-3 rounded-xl text-[14px] font-semibold text-white transition-all disabled:opacity-60"
+                  style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)', boxShadow: '0 4px 12px rgba(30,53,53,0.35)' }}>
+                  {saving ? 'Saving…' : activePanel.mode === 'edit' ? 'Save Changes' : 'Submit Attendance'}
                 </button>
               </div>
-              <p className="text-[12px]" style={{ color: subClr }}>{c.students?.length || 0} students enrolled</p>
+            )}
+          </form>
+        </div>
+      )}
+
+      {/* ── Course Cards ── */}
+      <div>
+        <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: subClr }}>
+          Your Courses — click to take attendance
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {courses.map((c, i) => {
+            const color = courseColors[i % courseColors.length];
+            const isActive = activePanel?.courseId === c._id;
+            return (
+              <div key={c._id}
+                className="rounded-2xl border shadow-sm overflow-hidden transition-all hover:shadow-md"
+                style={{
+                  background: cardBg, borderColor: isActive ? color : border,
+                  boxShadow: isActive ? `0 0 0 2px ${color}40` : undefined,
+                }}>
+                {/* Color bar */}
+                <div className="h-2" style={{ background: color }} />
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-bold text-white shrink-0"
+                      style={{ background: color }}>
+                      {c.code?.slice(0, 2)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-[15px] truncate" style={{ color: headClr }}>{c.name}</p>
+                      <p className="text-[12px] font-mono mt-1" style={{ color: subClr }}>{c.code}</p>
+                    </div>
+                  </div>
+                  <p className="text-[13px] mb-5" style={{ color: subClr }}>
+                    {c.students?.length || 0} student{c.students?.length !== 1 ? 's' : ''} enrolled
+                  </p>
+                  <div className="flex gap-2.5">
+                    <button
+                      onClick={() => isActive ? closePanel() : openTake(c)}
+                      className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-white transition-all"
+                      style={{ background: isActive ? '#555' : color }}>
+                      {isActive ? 'Close' : 'Take Attendance'}
+                    </button>
+                    <button
+                      onClick={() => openSummary(c._id)}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
+                      style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#1E3535' }}>
+                      <Eye size={14} /> Summary
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          {courses.length === 0 && (
+            <div className="sm:col-span-2 xl:col-span-3 rounded-2xl p-12 text-center border"
+              style={{ background: cardBg, borderColor: border }}>
+              <p className="text-sm" style={{ color: subClr }}>No courses assigned yet</p>
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
 
-      {/* Attendance History */}
+      {/* ── Attendance History ── */}
       <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
-        <div className="px-5 py-4 border-b flex flex-wrap items-center gap-3" style={{ borderColor: border }}>
+        <div className="px-6 py-5 border-b flex flex-wrap items-center gap-3"
+          style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
           <div className="flex items-center gap-2">
-            <Calendar size={15} style={{ color: '#1E3535' }} />
-            <span className="text-[14px] font-semibold" style={{ color: headClr }}>Attendance History</span>
+            <Clock size={16} style={{ color: '#1E3535' }} />
+            <span className="text-[15px] font-semibold" style={{ color: headClr }}>Attendance History</span>
           </div>
           <select value={filterCourse} onChange={e => setFilter(e.target.value)}
-            className="ml-auto px-3 py-1.5 rounded-xl text-[12px] border outline-none"
-            style={{ background: dark ? '#0f1e1e' : '#f8f5f3', borderColor: border, color: headClr }}>
+            className="ml-auto px-4 py-2 rounded-xl text-[13px] border outline-none"
+            style={{ background: dark ? '#0f1e1e' : '#fff', borderColor: border, color: headClr }}>
             <option value="">All Courses</option>
             {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
           </select>
@@ -213,45 +331,52 @@ export default function TeacherAttendance() {
 
         <div className="divide-y" style={{ borderColor: border }}>
           {records.length === 0 && (
-            <div className="flex items-center gap-3 px-5 py-10 justify-center" style={{ color: subClr }}>
-              <UserCheck size={20} className="opacity-30" />
+            <div className="py-12 text-center flex flex-col items-center gap-2" style={{ color: subClr }}>
+              <CheckCircle size={28} className="opacity-20" />
               <p className="text-sm">No attendance records yet</p>
             </div>
           )}
           {records.map(r => {
-            const presentCount = r.records?.filter(x => x.status === 'present').length || 0;
-            const total = r.records?.length || 0;
-            const p = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+            const present = r.records?.filter(x => x.status === 'present').length || 0;
+            const total   = r.records?.length || 0;
+            const p       = total > 0 ? Math.round((present / total) * 100) : 0;
+            const isEditing = activePanel?.mode === 'edit' && activePanel?.record?._id === r._id;
             return (
-              <div key={r._id} className="flex items-center gap-4 px-5 py-3.5 group transition-colors"
-                style={{ borderColor: border }}
-                onMouseEnter={e => e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+              <div key={r._id}
+                className="flex items-center gap-5 px-6 py-4 group transition-colors"
+                style={{ background: isEditing ? (dark ? '#0c1c1c' : '#f5faf7') : 'transparent' }}
+                onMouseEnter={e => { if (!isEditing) e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.02)' : '#fafafa'; }}
+                onMouseLeave={e => { if (!isEditing) e.currentTarget.style.background = 'transparent'; }}>
+
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                   style={{ background: dark ? '#0f1e1e' : '#edf7f5' }}>
-                  <CheckCircle size={14} style={{ color: '#1E3535' }} />
+                  <CheckCircle size={16} style={{ color: '#1E3535' }} />
                 </div>
+
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold" style={{ color: headClr }}>{r.course?.name}</p>
-                  <p className="text-[11px]" style={{ color: subClr }}>
+                  <p className="text-[14px] font-semibold" style={{ color: headClr }}>{r.course?.name}</p>
+                  <p className="text-[12px] mt-0.5" style={{ color: subClr }}>
                     {new Date(r.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
                   </p>
                 </div>
-                <div className="text-right shrink-0 mr-2">
-                  <p className="text-[13px] font-semibold" style={{ color: headClr }}>{presentCount}/{total}</p>
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <span className="text-[13px] font-semibold" style={{ color: headClr }}>{present}/{total}</span>
+                  <span className="text-[12px] font-bold px-3 py-1 rounded-full"
                     style={{
                       background: p >= 75 ? (dark ? '#0f2518' : '#dcfce7') : (dark ? '#2a1414' : '#fee2e2'),
                       color: p >= 75 ? '#059669' : '#dc2626',
                     }}>{p}%</span>
                 </div>
-                <button onClick={() => openEdit(r)}
-                  className="opacity-0 group-hover:opacity-100 p-2 rounded-xl transition-all"
-                  style={{ color: subClr }}
-                  onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#1E3535'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
-                  title="Edit attendance">
-                  <Edit2 size={14} />
+
+                <button onClick={() => isEditing ? closePanel() : openEdit(r)}
+                  className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-semibold transition-all"
+                  style={{
+                    background: isEditing ? (dark ? '#2a1414' : '#fee2e2') : (dark ? '#1a2828' : '#edf7f5'),
+                    color: isEditing ? '#dc2626' : '#1E3535',
+                  }}>
+                  {isEditing ? <X size={12} /> : <Edit2 size={12} />}
+                  {isEditing ? 'Close' : 'Edit'}
                 </button>
               </div>
             );
@@ -259,23 +384,9 @@ export default function TeacherAttendance() {
         </div>
       </div>
 
-      {/* Take Attendance Modal */}
-      {modal === 'take' && (
-        <Modal title="Take Attendance" onClose={() => setModal(null)} size="lg">
-          <AttendanceForm onSubmit={handleSubmit} title="Submit Attendance" />
-        </Modal>
-      )}
-
-      {/* Edit Attendance Modal */}
-      {modal === 'edit' && (
-        <Modal title="Edit Attendance Record" onClose={() => setModal(null)} size="lg">
-          <AttendanceForm onSubmit={handleEditSubmit} title="Save Changes" />
-        </Modal>
-      )}
-
-      {/* Summary Modal */}
-      {modal === 'summary' && summary && (
-        <Modal title={`Summary — ${summary.course?.name}`} onClose={() => setModal(null)} size="lg">
+      {/* ── Summary Modal ── */}
+      {showSummary && summary && (
+        <Modal title={`Summary — ${summary.course?.name}`} onClose={() => setShowSummary(false)} size="lg">
           <div className="flex items-center gap-3 mb-4 p-3.5 rounded-xl border"
             style={{ background: dark ? '#0f1e1e' : '#edf7f5', borderColor: dark ? '#1e3535' : '#c8e8dc' }}>
             <UserCheck size={15} style={{ color: '#1E3535' }} />
