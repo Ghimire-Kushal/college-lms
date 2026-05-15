@@ -1,7 +1,7 @@
 import { X, RefreshCw, Sun, Moon, Monitor } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-// ── SVG thumbnails ───────────────────────────────────────
+// ── SVG thumbnails -───────────────────────────────────────
 function ThumbDefault({ selected }) {
   return (
     <svg viewBox="0 0 72 52" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
