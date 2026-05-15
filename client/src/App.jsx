@@ -36,6 +36,11 @@ import StudentResults from './pages/student/Results';
 import StudentNotices from './pages/student/Notices';
 import TeacherOnlineClasses from './pages/teacher/OnlineClasses';
 import StudentOnlineClasses from './pages/student/OnlineClasses';
+import StudentTimetable from './pages/student/Timetable';
+import StudentFees from './pages/student/Fees';
+import StudentLibrary from './pages/student/Library';
+import StudentFeedback from './pages/student/Feedback';
+import StudentProgress from './pages/student/Progress';
 import Profile from './pages/Profile';
 
 export default function App() {
@@ -93,6 +98,11 @@ export default function App() {
               <Route path="results" element={<StudentResults />} />
               <Route path="notices" element={<StudentNotices />} />
               <Route path="online-classes" element={<StudentOnlineClasses />} />
+              <Route path="timetable" element={<StudentTimetable />} />
+              <Route path="fees" element={<StudentFees />} />
+              <Route path="library" element={<StudentLibrary />} />
+              <Route path="feedback" element={<StudentFeedback />} />
+              <Route path="progress" element={<StudentProgress />} />
               <Route path="profile" element={<Profile />} />
             </Route>
 

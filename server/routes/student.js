@@ -13,6 +13,7 @@ const Result = require('../models/Result');
 const Timetable = require('../models/Timetable');
 const Note = require('../models/Note');
 const OnlineClass = require('../models/OnlineClass');
+const Feedback = require('../models/Feedback');
 
 const studentAuth = [auth, authorize('student', 'admin')];
 
@@ -217,6 +218,32 @@ router.get('/online-classes', ...studentAuth, async (req, res) => {
       .populate('teacher', 'name')
       .sort({ scheduledAt: 1 });
     res.json(classes);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// ===== FEEDBACK =====
+router.post('/feedback', ...studentAuth, async (req, res) => {
+  try {
+    const fb = new Feedback({ ...req.body, student: req.user.id });
+    await fb.save();
+    res.status(201).json(fb);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+router.get('/feedback', ...studentAuth, async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ student: req.user.id }).sort({ createdAt: -1 });
+    res.json(feedbacks);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// ===== PROFILE =====
+router.get('/profile', ...studentAuth, async (req, res) => {
+  try {
+    const student = await User.findById(req.user.id)
+      .populate('enrolledCourses', 'name code credits semester')
+      .select('-password');
+    res.json(student);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 

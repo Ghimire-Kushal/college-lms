@@ -4,7 +4,8 @@ import { useTheme } from '../context/ThemeContext';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, CalendarDays,
   ClipboardList, Bell, BarChart3, LogOut, FileText, BookMarked,
-  Pencil, UserCheck, ChevronRight, X, Video,
+  Pencil, UserCheck, ChevronRight, X, Video, CreditCard,
+  Library, MessageSquare, TrendingUp,
 } from 'lucide-react';
 
 const adminNav = [
@@ -37,13 +38,19 @@ const studentNav = [
   { to: '/student', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { section: 'Academics' },
   { to: '/student/courses', label: 'My Courses', icon: BookOpen },
+  { to: '/student/timetable', label: 'Class Routine', icon: CalendarDays },
   { to: '/student/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/student/notes', label: 'Notes & Materials', icon: BookMarked },
   { to: '/student/assignments', label: 'Assignments', icon: Pencil },
   { to: '/student/results', label: 'Results', icon: BarChart3 },
-  { section: 'Info' },
-  { to: '/student/notices', label: 'Notices', icon: Bell },
+  { to: '/student/progress', label: 'Academic Progress', icon: TrendingUp },
+  { section: 'Campus' },
   { to: '/student/online-classes', label: 'Online Classes', icon: Video },
+  { to: '/student/library', label: 'Library', icon: Library },
+  { to: '/student/fees', label: 'Fee Details', icon: CreditCard },
+  { section: 'Communication' },
+  { to: '/student/notices', label: 'Notices', icon: Bell },
+  { to: '/student/feedback', label: 'Feedback', icon: MessageSquare },
 ];
 
 const navByRole = { admin: adminNav, teacher: teacherNav, student: studentNav };
