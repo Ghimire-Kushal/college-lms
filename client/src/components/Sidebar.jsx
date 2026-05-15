@@ -19,6 +19,7 @@ const adminNav = [
   { to: '/admin/attendance', label: 'Attendance', icon: UserCheck },
   { to: '/admin/notices', label: 'Notices', icon: Bell },
   { to: '/admin/results', label: 'Results', icon: BarChart3 },
+  { to: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
 ];
 
 const teacherNav = [

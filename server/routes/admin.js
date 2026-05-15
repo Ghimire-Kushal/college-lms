@@ -7,6 +7,7 @@ const Attendance = require('../models/Attendance');
 const Notice = require('../models/Notice');
 const Result = require('../models/Result');
 const Timetable = require('../models/Timetable');
+const Feedback = require('../models/Feedback');
 
 const adminOnly = [auth, authorize('admin')];
 
@@ -426,6 +427,48 @@ router.delete('/results/:id', ...adminOnly, async (req, res) => {
   try {
     await Result.findByIdAndDelete(req.params.id);
     res.json({ message: 'Result deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ===== FEEDBACK =====
+router.get('/feedback', ...adminOnly, async (req, res) => {
+  try {
+    const { status, category } = req.query;
+    const query = {};
+    if (status) query.status = status;
+    if (category) query.category = category;
+    const feedbacks = await Feedback.find(query)
+      .populate('student', 'name studentId semester section')
+      .sort({ createdAt: -1 });
+    res.json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.patch('/feedback/:id', ...adminOnly, async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['pending', 'reviewed', 'resolved'].includes(status))
+      return res.status(400).json({ message: 'Invalid status' });
+    const fb = await Feedback.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    ).populate('student', 'name studentId semester section');
+    if (!fb) return res.status(404).json({ message: 'Feedback not found' });
+    res.json(fb);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.delete('/feedback/:id', ...adminOnly, async (req, res) => {
+  try {
+    await Feedback.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Feedback deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

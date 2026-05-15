@@ -16,6 +16,7 @@ import AdminTimetable from './pages/admin/Timetable';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminNotices from './pages/admin/Notices';
 import AdminResults from './pages/admin/Results';
+import AdminFeedback from './pages/admin/Feedback';
 
 // Teacher
 import TeacherDashboard from './pages/teacher/Dashboard';
@@ -72,6 +73,7 @@ export default function App() {
               <Route path="attendance" element={<AdminAttendance />} />
               <Route path="notices" element={<AdminNotices />} />
               <Route path="results" element={<AdminResults />} />
+              <Route path="feedback" element={<AdminFeedback />} />
               <Route path="profile" element={<Profile />} />
             </Route>
 

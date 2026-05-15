@@ -16,6 +16,7 @@ const routeMeta = {
   '/admin/attendance':     { label: 'Attendance Reports', section: 'Admin' },
   '/admin/notices':        { label: 'Notices',            section: 'Admin' },
   '/admin/results':        { label: 'Results',            section: 'Admin' },
+  '/admin/feedback':       { label: 'Feedback',           section: 'Admin' },
   '/teacher':              { label: 'Dashboard',          section: 'Teacher' },
   '/teacher/courses':      { label: 'My Courses',         section: 'Teacher' },
   '/teacher/attendance':   { label: 'Attendance',         section: 'Teacher' },
