@@ -175,3 +175,26 @@ html {
 html.dark, html.dark body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ── Bordered theme ────────────────────────────────────── */
+html[data-theme="bordered"] .rounded-2xl.border,
+html[data-theme="bordered"] .rounded-xl.border {
+  border-width: 2px !important;
+  box-shadow: none !important;
+}
+html[data-theme="bordered"] .shadow-sm,
+html[data-theme="bordered"] .shadow-md,
+html[data-theme="bordered"] .shadow-lg,
+html[data-theme="bordered"] .hover\:shadow-md:hover,
+html[data-theme="bordered"] .hover\:shadow-lg:hover {
+  box-shadow: none !important;
+}
+html[data-theme="bordered"] .rounded-2xl.shadow-sm,
+html[data-theme="bordered"] .rounded-xl.shadow-sm {
+  box-shadow: none !important;
+}
+
+/* ── Customizer panel slide animation ──────────────────── */
+.customizer-panel {
+  will-change: transform;
+}

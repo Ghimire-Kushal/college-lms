@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import { Bell, ChevronRight, Home, Menu, Sun, Moon, KeyRound, LogOut, User, X, Eye, EyeOff, CheckCheck, UserCheck, ClipboardList, BarChart2, Info } from 'lucide-react';
+import { Bell, ChevronRight, Home, Menu, KeyRound, LogOut, User, X, Eye, EyeOff, CheckCheck, UserCheck, ClipboardList, BarChart2, Info } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
@@ -157,9 +157,9 @@ function timeAgo(date) {
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-export default function Navbar({ onMenuToggle }) {
+export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
   const { user, logout } = useAuth();
-  const { dark, toggle } = useTheme();
+  const { dark } = useTheme();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [dropOpen, setDropOpen]     = useState(false);
@@ -208,7 +208,8 @@ export default function Navbar({ onMenuToggle }) {
 
   return (
     <>
-      <header className="flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300"
+      <header
+        className={`flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300${headerType === 'fixed' ? ' sticky top-0 z-20' : ''}`}
         style={{ height: 'var(--navbar-height)', minHeight: 'var(--navbar-height)', background: navBg, borderColor: navBorder, boxShadow: dark ? '0 1px 0 #21262d' : '0 1px 3px rgba(0,0,0,0.06)' }}>
 
         {/* Left */}
@@ -234,12 +235,6 @@ export default function Navbar({ onMenuToggle }) {
             style={{ background: dark ? '#21262d' : '#f0f4f8', color: dark ? '#8b949e' : '#64748b', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}` }}>
             {today}
           </span>
-
-          <button onClick={toggle}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-            style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#f0ab3d' : '#64748b' }}>
-            {dark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
 
           {/* Bell / Notifications */}
           <div className="relative" ref={bellRef}>
