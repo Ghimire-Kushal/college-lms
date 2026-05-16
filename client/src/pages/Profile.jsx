@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   User, Mail, Phone, MapPin, Edit2, Save, X,
   KeyRound, Eye, EyeOff, BookOpen, UserCheck,
-  GraduationCap, Clock, Award, Shield, AlertTriangle, CheckCircle,
+  GraduationCap, Clock, Award, Shield, AlertTriangle, CheckCircle, Camera,
 } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
@@ -27,6 +27,8 @@ export default function Profile() {
   const [pwForm, setPwForm]   = useState({ currentPassword: '', newPassword: '', confirm: '' });
   const [showPw, setShowPw]   = useState({ cur: false, nw: false, cn: false });
   const [pwLoading, setPwLoading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef(null);
 
   const cardBg  = dark ? '#131e1e' : '#ffffff';
   const border  = dark ? '#1e2e2e' : '#ede8e4';
@@ -58,6 +60,20 @@ export default function Profile() {
       setEditing(false);
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
     finally { setSaving(false); }
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('avatar', file);
+    setUploadingAvatar(true);
+    try {
+      const r = await api.put('/auth/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      setProfile(r.data);
+      toast.success('Avatar updated');
+    } catch (err) { toast.error(err.response?.data?.message || 'Upload failed'); }
+    finally { setUploadingAvatar(false); e.target.value = ''; }
   };
 
   const handlePwChange = async (e) => {

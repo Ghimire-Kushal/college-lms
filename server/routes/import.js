@@ -27,11 +27,14 @@ const AuditLog = require('../models/AuditLog');
 
 const adminOnly = [auth, authorize('admin')];
 
-// 5 sync attempts per admin per 15 minutes (keyed by authenticated user id)
+// 5 sync attempts per admin per 15 minutes, keyed by authenticated user ID.
+// Auth middleware runs first so req.user is always set on this route.
 const syncLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  keyGenerator: (req) => req.user?.id || req.ip,
+  // Key by user ID — avoids IPv6 issues and is more precise than IP
+  keyGenerator: (req) => req.user?.id ?? 'unknown',
+  validate: { xForwardedForHeader: false },
   handler: (_req, res) =>
     res.status(429).json({
       message: 'Too many sync requests. Please wait 15 minutes before retrying.',
