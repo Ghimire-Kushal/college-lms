@@ -13,11 +13,12 @@ app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', creden
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/admin', require('./routes/admin'));
-app.use('/api/teacher', require('./routes/teacher'));
-app.use('/api/student', require('./routes/student'));
-app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/auth',              require('./routes/auth'));
+app.use('/api/admin',             require('./routes/admin'));
+app.use('/api/admin/import',      require('./routes/import'));
+app.use('/api/teacher',           require('./routes/teacher'));
+app.use('/api/student',           require('./routes/student'));
+app.use('/api/notifications',     require('./routes/notifications'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'EduTrack LMS API running' }));
 
