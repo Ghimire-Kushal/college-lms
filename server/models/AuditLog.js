@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//audit log model to track all critical actions for accountability and debugging
 const auditLogSchema = new mongoose.Schema(
   {
     action: {
