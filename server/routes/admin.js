@@ -33,8 +33,7 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
 
     const teachers = await User.find({ role: 'teacher', isActive: true })
       .sort({ createdAt: -1 })
-      .select('name email employeeId department qualification createdAt')
-      .populate({ path: 'teachingCourses', select: 'name code', options: { limit: 3 } });
+      .select('name email employeeId department qualification createdAt');
 
     res.json({ totalStudents, totalTeachers, totalCourses, totalNotices, recentStudents, recentNotices, teachers });
   } catch (err) {
