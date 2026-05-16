@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -22,9 +22,15 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [clock, setClock] = useState(() => new Date());
   const { login } = useAuth();
   const { dark, toggle } = useTheme();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const iv = setInterval(() => setClock(new Date()), 1000);
+    return () => clearInterval(iv);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,8 +49,6 @@ export default function Login() {
   const quickLogin = (email, pass) => setForm({ email, password: pass });
 
   const panelBg = dark ? '#0d1117' : '#f1f5f9';
-  const cardBg  = dark ? '#161b22' : '#ffffff';
-  const cardBorder = dark ? '#30363d' : '#e2e8f0';
   const labelColor = dark ? '#94a3b8' : '#374151';
   const headingColor = dark ? '#f1f5f9' : '#1e293b';
   const subColor = dark ? '#64748b' : '#64748b';
@@ -84,6 +88,19 @@ export default function Login() {
                 Learning Management System
               </p>
             </div>
+          </div>
+
+          {/* Digital Clock */}
+          <div className="flex flex-col items-center gap-1 py-4 px-6 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <span className="font-mono text-5xl font-bold tracking-widest tabular-nums"
+              style={{ color: '#F2C04E', textShadow: '0 0 24px rgba(242,192,78,0.35)' }}>
+              {clock.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </span>
+            <span className="text-[12px] font-medium tracking-wide mt-0.5"
+              style={{ color: 'rgba(148,163,184,0.7)' }}>
+              {clock.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
           </div>
 
           {/* Divider */}

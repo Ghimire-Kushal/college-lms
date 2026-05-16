@@ -173,10 +173,12 @@ export default function Sidebar({ isOpen, onClose }) {
       <div className="px-3 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl mb-1" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <div
-            className={`w-9 h-9 rounded-full ${rc.bg} ring-2 ${rc.ring} ring-offset-1 flex items-center justify-center text-white text-xs font-bold shrink-0`}
+            className={`w-9 h-9 rounded-full ${rc.bg} ring-2 ${rc.ring} ring-offset-1 flex items-center justify-center text-white text-xs font-bold shrink-0 overflow-hidden`}
             style={{ ringOffsetColor: '#0f172a' }}
           >
-            {user?.name?.[0]?.toUpperCase()}
+            {user?.avatar
+              ? <img src={user.avatar} alt="" className="w-full h-full object-cover" />
+              : user?.name?.[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-slate-200 truncate">{user?.name}</p>

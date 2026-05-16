@@ -16,7 +16,7 @@ const roleColors = {
 };
 
 export default function Profile() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, updateUser } = useAuth();
   const { dark } = useTheme();
   const [profile, setProfile] = useState(null);
   const [stats, setStats]     = useState(null);
@@ -56,6 +56,7 @@ export default function Profile() {
     try {
       const r = await api.put('/auth/profile', form);
       setProfile(r.data);
+      updateUser(r.data);
       toast.success('Profile updated');
       setEditing(false);
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
@@ -71,6 +72,7 @@ export default function Profile() {
     try {
       const r = await api.put('/auth/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       setProfile(r.data);
+      updateUser(r.data);
       toast.success('Avatar updated');
     } catch (err) { toast.error(err.response?.data?.message || 'Upload failed'); }
     finally { setUploadingAvatar(false); e.target.value = ''; }
@@ -121,33 +123,13 @@ export default function Profile() {
   return (
     <div className="space-y-4">
 
-      {/* ── Hero ── */}
-      <div className="rounded-2xl overflow-hidden shadow-sm border" style={{ background: cardBg, borderColor: border }}>
-        {/* Cover strip */}
-        <div className="h-24 relative" style={{ background: rc.gradient }}>
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '18px 18px' }} />
-          <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.22 }} />
-          {/* Name + initial overlay inside banner */}
-          <div className="absolute bottom-3 left-5 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white"
-              style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(4px)' }}>
-              {profile?.name?.[0]?.toUpperCase()}
-            </div>
-            <div>
-              <p className="text-[13px] font-bold text-white leading-tight drop-shadow">{profile?.name}</p>
-              <p className="text-[10px] text-white/70 capitalize leading-tight">{profile?.role}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="px-5 pb-5">
-          {/* Avatar row */}
-          <div className="flex items-end justify-between -mt-7 mb-3">
-            <div className="relative group">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-xl border-4 overflow-hidden"
-                style={{ background: rc.gradient, borderColor: cardBg }}>
+      {/* ── Profile summary ── */}
+      <div className="rounded-2xl shadow-sm border p-5" style={{ background: cardBg, borderColor: border }}>
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0">
+            <div className="relative group shrink-0">
+              <div className="w-24 h-24 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-sm border overflow-hidden"
+                style={{ background: rc.gradient, borderColor: border }}>
                 {profile?.avatar
                   ? <img src={profile.avatar} alt="avatar" className="w-full h-full object-cover" />
                   : profile?.name?.[0]?.toUpperCase()}
@@ -160,12 +142,51 @@ export default function Profile() {
                 title="Change avatar">
                 {uploadingAvatar
                   ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : <Camera size={16} className="text-white" />}
+                  : <Camera size={17} className="text-white" />}
               </button>
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp"
                 className="hidden" onChange={handleAvatarUpload} />
             </div>
-            <div className="flex gap-2">
+
+            <div className="min-w-0">
+              {editing ? (
+                <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                  className="text-[22px] font-bold bg-transparent border-b-2 outline-none w-full max-w-xl mb-3"
+                  style={{ color: headClr, borderColor: rc.badge }} />
+              ) : (
+                <h2 className="text-[22px] font-bold leading-tight mb-3 truncate" style={{ color: headClr }}>{profile?.name}</h2>
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white"
+                  style={{ background: rc.badge }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
+                  {profile?.role}
+                </span>
+                {profile?.studentId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.studentId}</span>}
+                {profile?.teacherId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.teacherId}</span>}
+                {profile?.semester  && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>Sem {profile.semester} · {profile.section}</span>}
+                <span className="text-[11px]" style={{ color: subClr }}>
+                  Since {new Date(profile?.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="rounded-xl border px-3 py-2 min-w-[180px]" style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: subClr }}>Email</p>
+                <p className="text-[12px] font-semibold truncate mt-0.5" style={{ color: headClr }}>{profile?.email}</p>
+              </div>
+              <div className="rounded-xl border px-3 py-2 min-w-[150px]" style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: subClr }}>Phone</p>
+                <p className="text-[12px] font-semibold truncate mt-0.5" style={{ color: profile?.phone ? headClr : subClr }}>
+                  {profile?.phone || 'Not set'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 shrink-0">
               {editing ? (
                 <>
                   <button onClick={() => setEditing(false)}
@@ -187,28 +208,6 @@ export default function Profile() {
                 </button>
               )}
             </div>
-          </div>
-
-          {/* Name + badges */}
-          {editing ? (
-            <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-              className="text-[18px] font-bold bg-transparent border-b-2 outline-none w-full mb-2"
-              style={{ color: headClr, borderColor: rc.badge }} />
-          ) : (
-            <h2 className="text-[18px] font-bold mb-2" style={{ color: headClr }}>{profile?.name}</h2>
-          )}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white"
-              style={{ background: rc.badge }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
-              {profile?.role}
-            </span>
-            {profile?.studentId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.studentId}</span>}
-            {profile?.teacherId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.teacherId}</span>}
-            {profile?.semester  && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>Sem {profile.semester} · {profile.section}</span>}
-            <span className="text-[11px] ml-auto" style={{ color: subClr }}>
-              Since {new Date(profile?.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-            </span>
           </div>
         </div>
       </div>

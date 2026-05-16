@@ -170,7 +170,13 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
   const bellRef  = useRef(null);
   const meta = routeMeta[pathname] || { label: 'Apollo International College', section: '' };
   const avatarGradient = roleColors[user?.role] || roleColors.student;
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const iv = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(iv);
+  }, []);
+  const today = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
   const unread = notifs.filter(n => !n.read).length;
 
@@ -231,9 +237,10 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
 
         {/* Right */}
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden md:flex items-center text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
+          <span className="hidden md:flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
             style={{ background: dark ? '#21262d' : '#f0f4f8', color: dark ? '#8b949e' : '#64748b', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}` }}>
             {today}
+            <span className="font-mono font-semibold tabular-nums" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{timeStr}</span>
           </span>
 
           {/* Bell / Notifications */}
@@ -337,8 +344,10 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
                 <p className="text-[13px] font-semibold leading-none" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>{user?.name}</p>
                 <p className="text-[11px] mt-0.5 capitalize" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{user?.role}</p>
               </div>
-              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0`}>
-                {user?.name?.[0]?.toUpperCase()}
+              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0 overflow-hidden`}>
+                {user?.avatar
+                  ? <img src={user.avatar} alt="" className="w-full h-full object-cover" />
+                  : user?.name?.[0]?.toUpperCase()}
               </div>
             </button>
 
