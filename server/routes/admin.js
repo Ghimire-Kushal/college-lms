@@ -31,14 +31,12 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
       .limit(5)
       .populate('postedBy', 'name');
 
-    // Semester-wise student count for chart
-    const semesterStats = await User.aggregate([
-      { $match: { role: 'student', isActive: true } },
-      { $group: { _id: '$semester', count: { $sum: 1 } } },
-      { $sort: { _id: 1 } },
-    ]);
+    const teachers = await User.find({ role: 'teacher', isActive: true })
+      .sort({ createdAt: -1 })
+      .select('name email employeeId department qualification createdAt')
+      .populate({ path: 'teachingCourses', select: 'name code', options: { limit: 3 } });
 
-    res.json({ totalStudents, totalTeachers, totalCourses, totalNotices, recentStudents, recentNotices, semesterStats });
+    res.json({ totalStudents, totalTeachers, totalCourses, totalNotices, recentStudents, recentNotices, teachers });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
