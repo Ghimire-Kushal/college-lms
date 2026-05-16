@@ -5,3 +5,8 @@ uploads/*
 !uploads/.gitkeep
 *.log
 .DS_Store
+
+# Google service-account credentials — NEVER commit these
+server/keys/
+**/google-service-account.json
+*service-account*.json
