@@ -129,14 +129,41 @@ export default function Profile() {
             style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '18px 18px' }} />
           <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full pointer-events-none"
             style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.22 }} />
+          {/* Name + initial overlay inside banner */}
+          <div className="absolute bottom-3 left-5 flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white"
+              style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(4px)' }}>
+              {profile?.name?.[0]?.toUpperCase()}
+            </div>
+            <div>
+              <p className="text-[13px] font-bold text-white leading-tight drop-shadow">{profile?.name}</p>
+              <p className="text-[10px] text-white/70 capitalize leading-tight">{profile?.role}</p>
+            </div>
+          </div>
         </div>
 
         <div className="px-5 pb-5">
           {/* Avatar row */}
           <div className="flex items-end justify-between -mt-7 mb-3">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-xl border-4"
-              style={{ background: rc.gradient, borderColor: cardBg }}>
-              {profile?.name?.[0]?.toUpperCase()}
+            <div className="relative group">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-xl border-4 overflow-hidden"
+                style={{ background: rc.gradient, borderColor: cardBg }}>
+                {profile?.avatar
+                  ? <img src={profile.avatar} alt="avatar" className="w-full h-full object-cover" />
+                  : profile?.name?.[0]?.toUpperCase()}
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                className="absolute inset-0 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ background: 'rgba(0,0,0,0.45)' }}
+                title="Change avatar">
+                {uploadingAvatar
+                  ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  : <Camera size={16} className="text-white" />}
+              </button>
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp"
+                className="hidden" onChange={handleAvatarUpload} />
             </div>
             <div className="flex gap-2">
               {editing ? (
