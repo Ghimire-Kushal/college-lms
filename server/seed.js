@@ -10,7 +10,7 @@ const seed = async () => {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log('Connected to MongoDB');
 
-  // Clear existing data
+  // Clear  the existing data
   await Promise.all([
     User.deleteMany({}),
     Course.deleteMany({}),
