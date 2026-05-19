@@ -45,23 +45,31 @@ const syncLimiter = rateLimit({
 
 // ── Helpers ───────────────────────────────────────────────
 
-/**
- * Build a Google Sheets auth client from the service-account file
- * whose path is stored in GOOGLE_SERVICE_ACCOUNT_PATH (never the frontend).
- */
+// Supports two auth modes:
+// 1. GOOGLE_SERVICE_ACCOUNT_JSON — JSON string (used on Render/cloud)
+// 2. GOOGLE_SERVICE_ACCOUNT_PATH — local file path (used in local dev)
 function buildSheetsClient() {
-  const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH;
-  if (!keyPath) throw new Error('GOOGLE_SERVICE_ACCOUNT_PATH is not set in environment');
+  let authClient;
 
-  const resolvedPath = path.isAbsolute(keyPath)
-    ? keyPath
-    : path.join(__dirname, '..', keyPath);
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    authClient = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+  } else {
+    const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_PATH;
+    if (!keyPath) throw new Error('Set GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_SERVICE_ACCOUNT_PATH');
+    const resolvedPath = path.isAbsolute(keyPath)
+      ? keyPath
+      : path.join(__dirname, '..', keyPath);
+    authClient = new google.auth.GoogleAuth({
+      keyFile: resolvedPath,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+  }
 
-  const auth = new google.auth.GoogleAuth({
-    keyFile: resolvedPath,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-  });
-  return google.sheets({ version: 'v4', auth });
+  return google.sheets({ version: 'v4', auth: authClient });
 }
 
 /**
