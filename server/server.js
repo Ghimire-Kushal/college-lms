@@ -6,7 +6,7 @@ const connectDB = require('./config/db');
 
 dotenv.config();
 connectDB();
-
+//server.js - Main entry point for the Express server, setting up middleware and routes
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
