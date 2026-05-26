@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
   address: String,
   avatar: String,
   enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
+  // Teacher-specific fields
+  department:    { type: String },
+  qualification: { type: String },
+  subjects:      [{ type: String }],
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
