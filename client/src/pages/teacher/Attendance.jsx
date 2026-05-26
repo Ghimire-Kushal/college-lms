@@ -9,7 +9,7 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 
-const COURSE_ACCENTS = ['#8B3030', '#1E3535', '#b87a00', '#2a5080', '#5a3080', '#1a6648'];
+const COURSE_ACCENTS = ['#2563eb', '#0f766e', '#d97706', '#4f46e5', '#7c3aed', '#059669'];
 
 export default function TeacherAttendance() {
   const [courses, setCourses]         = useState([]);
@@ -149,10 +149,10 @@ export default function TeacherAttendance() {
 
         {/* ── Page Header ───────────────────────────────── */}
         <div className="rounded-2xl overflow-hidden shadow-sm"
-          style={{ background: 'linear-gradient(135deg, #0d2222 0%, #1E3535 60%, #2a5050 100%)' }}>
+          >
           <div className="px-8 py-8 relative">
             <div className="absolute right-0 top-0 w-64 h-full opacity-10 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at right, #F2C04E, transparent)' }} />
+              style={{ background: 'transparent' }} />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -185,7 +185,7 @@ export default function TeacherAttendance() {
         {/* ── Inline Attendance Panel ───────────────────── */}
         {activePanel && (
           <div id="attendance-panel" className="rounded-2xl border shadow-md overflow-hidden"
-            style={{ background: cardBg, borderColor: '#1E3535', boxShadow: `0 0 0 2px #1E353530` }}>
+            style={{ background: cardBg, borderColor: '#0f766e', boxShadow: `0 0 0 2px #1E353530` }}>
 
             {/* Panel Header */}
             <div className="px-8 py-5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -193,7 +193,7 @@ export default function TeacherAttendance() {
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
                   style={{ background: dark ? '#1a2e2e' : '#d4ede8' }}>
-                  <UserCheck size={22} style={{ color: '#1E3535' }} />
+                  <UserCheck size={22} style={{ color: '#0f766e' }} />
                 </div>
                 <div>
                   <p className="text-[18px] font-bold" style={{ color: headClr }}>
@@ -347,7 +347,7 @@ export default function TeacherAttendance() {
                     </button>
                     <button type="submit" disabled={saving}
                       className="px-8 py-2.5 rounded-xl text-[14px] font-semibold text-white transition-all disabled:opacity-60 hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #1E3535 0%, #2a4a4a 100%)', boxShadow: '0 4px 14px rgba(30,53,53,0.35)' }}>
+                      style={{ background: '#f8fafc', boxShadow: '0 4px 14px rgba(30,53,53,0.35)' }}>
                       {saving ? 'Saving…' : activePanel.mode === 'edit' ? 'Save Changes' : 'Submit Attendance'}
                     </button>
                   </div>
@@ -482,7 +482,7 @@ export default function TeacherAttendance() {
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{ background: dark ? '#1a2828' : '#e8f4f1' }}>
-                <Clock size={16} style={{ color: '#1E3535' }} />
+                <Clock size={16} style={{ color: '#0f766e' }} />
               </div>
               <div>
                 <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Attendance History</h2>
@@ -529,7 +529,7 @@ export default function TeacherAttendance() {
               const p          = total > 0 ? Math.round((present / total) * 100) : 0;
               const isEditing  = activePanel?.mode === 'edit' && activePanel?.record?._id === r._id;
               const accentIdx  = courses.findIndex(c => c._id === r.course?._id);
-              const rowAccent  = COURSE_ACCENTS[accentIdx % COURSE_ACCENTS.length] || '#1E3535';
+              const rowAccent  = COURSE_ACCENTS[accentIdx % COURSE_ACCENTS.length] || '#0f766e';
 
               return (
                 <div key={r._id}
@@ -576,7 +576,7 @@ export default function TeacherAttendance() {
                       className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
                       style={{
                         background: isEditing ? (dark ? '#2a1010' : '#fee2e2') : (dark ? '#1a2828' : '#e8f4f1'),
-                        color: isEditing ? '#dc2626' : '#1E3535',
+                        color: isEditing ? '#dc2626' : '#0f766e',
                       }}>
                       {isEditing ? <X size={12} /> : <Edit2 size={12} />}
                       {isEditing ? 'Close' : 'Edit'}
@@ -596,7 +596,7 @@ export default function TeacherAttendance() {
         <Modal title={`Attendance Summary — ${summary.course?.name}`} onClose={() => setShowSummary(false)} size="lg">
           <div className="flex items-center gap-3 mb-5 p-4 rounded-xl border"
             style={{ background: dark ? '#0f1e1e' : '#f0faf8', borderColor: dark ? '#1e3535' : '#c0ddd6' }}>
-            <UserCheck size={16} style={{ color: '#1E3535' }} />
+            <UserCheck size={16} style={{ color: '#0f766e' }} />
             <span className="text-[13px] font-medium" style={{ color: headClr }}>
               Total classes held: <span className="font-bold">{summary.totalClasses}</span>
             </span>

@@ -11,7 +11,7 @@ const GRADE_COLOR  = { 'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue', '
 
 function GpaBar({ gpa }) {
   const pct = (gpa / 4.0) * 100;
-  const color = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#1E3535' : gpa >= 2.5 ? '#b87a00' : '#8B3030';
+  const color = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#0f766e' : gpa >= 2.5 ? '#d97706' : '#2563eb';
   return (
     <div className="w-full">
       <div className="flex justify-between text-[11px] mb-1.5">
@@ -119,9 +119,9 @@ export default function StudentProgress() {
       {/* Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { icon: Award,        label: 'CGPA',            value: cgpa.toFixed(2),        sub: 'out of 4.00',              color: '#8B3030' },
-          { icon: BookOpen,     label: 'Credits Earned',  value: totalCredits,           sub: 'total credit hours',       color: '#1E3535' },
-          { icon: TrendingUp,   label: 'Pass Rate',       value: `${passRate}%`,         sub: `${totalPassed}/${results.length} subjects`, color: '#b87a00' },
+          { icon: Award,        label: 'CGPA',            value: cgpa.toFixed(2),        sub: 'out of 4.00',              color: '#2563eb' },
+          { icon: BookOpen,     label: 'Credits Earned',  value: totalCredits,           sub: 'total credit hours',       color: '#0f766e' },
+          { icon: TrendingUp,   label: 'Pass Rate',       value: `${passRate}%`,         sub: `${totalPassed}/${results.length} subjects`, color: '#d97706' },
           { icon: GraduationCap, label: 'Current Semester', value: user?.semester ? `Sem ${user.semester}` : 'N/A', sub: `of ${TOTAL_SEMESTERS} semesters`, color: '#4338ca' },
         ].map(({ icon: Icon, label, value, sub, color }) => (
           <div key={label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
@@ -160,14 +160,14 @@ export default function StudentProgress() {
                   <div key={sem} className="flex flex-col items-center gap-1">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold transition-all"
                       style={current
-                        ? { background: '#8B3030', color: '#fff', boxShadow: '0 0 0 3px #8B303040' }
+                        ? { background: '#2563eb', color: '#fff', boxShadow: '0 0 0 3px #8B303040' }
                         : done
-                          ? { background: '#1E3535', color: '#fff' }
+                          ? { background: '#0f766e', color: '#fff' }
                           : { background: dark ? '#1e2e2e' : '#f1f5f9', color: subClr }
                       }>
                       {sem}
                     </div>
-                    <span className="text-[9px]" style={{ color: current ? '#8B3030' : subClr }}>
+                    <span className="text-[9px]" style={{ color: current ? '#2563eb' : subClr }}>
                       {current ? 'Now' : done ? '✓' : ''}
                     </span>
                   </div>
@@ -184,7 +184,7 @@ export default function StudentProgress() {
         <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center gap-2">
-              <BarChart3 size={15} style={{ color: '#8B3030' }} />
+              <BarChart3 size={15} style={{ color: '#2563eb' }} />
               <h2 className="text-[14px] font-bold" style={{ color: headClr }}>GPA by Semester</h2>
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function StudentProgress() {
             <div className="p-5 space-y-4">
               {semStats.map(({ sem, gpa, passed, total, avgTotal, totalCredits: tc }) => {
                 const pct = (gpa / 4.0) * 100;
-                const clr = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#1E3535' : gpa >= 2.5 ? '#b87a00' : '#8B3030';
+                const clr = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#0f766e' : gpa >= 2.5 ? '#d97706' : '#2563eb';
                 return (
                   <div key={sem}>
                     <div className="flex items-center justify-between mb-1.5">
@@ -229,7 +229,7 @@ export default function StudentProgress() {
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Target size={15} style={{ color: '#1E3535' }} />
+                <Target size={15} style={{ color: '#0f766e' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Current Courses</h2>
               </div>
               <Badge color="teal">{courses.length} courses</Badge>
@@ -244,7 +244,7 @@ export default function StudentProgress() {
             ) : courses.map((c, i) => {
               const courseResults = results.filter(r => r.course?._id === c._id || r.course === c._id);
               const latest = courseResults[courseResults.length - 1];
-              const colors = ['#8B3030','#1E3535','#b87a00','#2a6648','#4338ca','#0369a1'];
+              const colors = ['#2563eb','#0f766e','#d97706','#2a6648','#4338ca','#0369a1'];
               return (
                 <div key={c._id} className="flex items-center gap-4 px-5 py-3.5"
                   style={{ background: i % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>

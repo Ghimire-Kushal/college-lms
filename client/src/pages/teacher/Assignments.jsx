@@ -87,9 +87,9 @@ export default function TeacherAssignments() {
 
       {/* ── Banner ── */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #2a0f0f 0%, #5a2020 55%, #8B3030 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
+          style={{ background: 'transparent', opacity: 0.18 }} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Teacher Portal</p>
@@ -125,7 +125,7 @@ export default function TeacherAssignments() {
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
                 style={{ background: dark ? '#1a1414' : '#fef0f0' }}>
-                <ClipboardList size={22} style={{ color: '#8B3030' }} />
+                <ClipboardList size={22} style={{ color: '#2563eb' }} />
               </div>
               <div>
                 <p className="text-[18px] font-bold" style={{ color: headClr }}>Create New Assignment</p>
@@ -197,7 +197,7 @@ export default function TeacherAssignments() {
               </button>
               <button type="submit" disabled={saving}
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-all disabled:opacity-60 hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 14px rgba(139,48,48,0.35)' }}>
+                style={{ background: '#f8fafc', boxShadow: '0 4px 14px rgba(139,48,48,0.35)' }}>
                 <ClipboardList size={16} />
                 {saving ? 'Creating…' : 'Create Assignment'}
               </button>
@@ -248,7 +248,7 @@ export default function TeacherAssignments() {
             <span className="text-[13px]" style={{ color: headClr }}>
               {submissions.filter(s => s.status === 'graded').length}/{submissions.length} graded
             </span>
-            <span className="text-[12px] font-semibold" style={{ color: '#1E3535' }}>Max: {selected?.totalMarks} marks</span>
+            <span className="text-[12px] font-semibold" style={{ color: '#0f766e' }}>Max: {selected?.totalMarks} marks</span>
           </div>
           <div className="space-y-2.5 max-h-[55vh] overflow-y-auto pr-1">
             {submissions.length === 0 && (
@@ -273,13 +273,13 @@ export default function TeacherAssignments() {
                     ? <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
                         style={{ background: dark ? '#0f2518' : '#dcfce7', color: '#059669' }}>{s.marks}/{selected?.totalMarks}</span>
                     : <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                        style={{ background: dark ? '#1a1a00' : '#fef9ec', color: '#b87a00' }}>Pending</span>
+                        style={{ background: dark ? '#1a1a00' : '#fef9ec', color: '#d97706' }}>Pending</span>
                   }
                   {s.fileUrl && <a href={s.fileUrl} target="_blank" rel="noreferrer"
-                    className="text-[11px] font-medium hover:underline" style={{ color: '#1E3535' }}>File</a>}
+                    className="text-[11px] font-medium hover:underline" style={{ color: '#0f766e' }}>File</a>}
                   <button onClick={() => openGrade(s)}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold rounded-xl hover:opacity-80"
-                    style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)', color: '#fff' }}>
+                    style={{ background: '#f8fafc', color: '#fff' }}>
                     <Award size={11} /> Grade
                   </button>
                 </div>
@@ -314,7 +314,7 @@ export default function TeacherAssignments() {
               <SecondaryBtn type="button" onClick={() => setModal('submissions')}>Back</SecondaryBtn>
               <button type="submit"
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-semibold text-white hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #059669, #047857)' }}>
+                >
                 <Award size={14} /> Save Grade
               </button>
             </div>
@@ -340,7 +340,7 @@ function AssignmentCard({ a, dark, cardBg, border, headClr, subClr, onSubmission
           style={{ background: isPast ? (dark ? '#1a1a1a' : '#f5f5f5') : (dark ? '#1a1414' : '#fef0f0') }}>
           {isPast
             ? <Clock size={16} style={{ color: subClr }} />
-            : <CheckCircle size={16} style={{ color: '#8B3030' }} />}
+            : <CheckCircle size={16} style={{ color: '#2563eb' }} />}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -348,14 +348,14 @@ function AssignmentCard({ a, dark, cardBg, border, headClr, subClr, onSubmission
             <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
               style={isPast
                 ? { background: dark ? '#1a1a1a' : '#f0f0f0', color: subClr }
-                : { background: dark ? '#1a1414' : '#fef0f0', color: '#8B3030' }}>
+                : { background: dark ? '#1a1414' : '#fef0f0', color: '#2563eb' }}>
               {isPast ? 'Closed' : 'Active'}
             </span>
           </div>
           {a.description && <p className="text-[11px] mb-1.5 line-clamp-1" style={{ color: subClr }}>{a.description}</p>}
           <div className="flex flex-wrap gap-2 text-[11px]">
             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full"
-              style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#1E3535' }}>
+              style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#0f766e' }}>
               <BookOpen size={9} /> {a.course?.name}
             </span>
             <span className="flex items-center gap-1" style={{ color: subClr }}>
@@ -367,7 +367,7 @@ function AssignmentCard({ a, dark, cardBg, border, headClr, subClr, onSubmission
             {!isPast && daysLeft <= 7 && (
               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
                 style={{ background: daysLeft <= 2 ? (dark ? '#2a1414' : '#fef0f0') : (dark ? '#1a2828' : '#f0fdf4'),
-                         color: daysLeft <= 2 ? '#8B3030' : '#059669' }}>
+                         color: daysLeft <= 2 ? '#2563eb' : '#059669' }}>
                 {daysLeft <= 0 ? 'Due today' : `${daysLeft}d left`}
               </span>
             )}
@@ -376,13 +376,13 @@ function AssignmentCard({ a, dark, cardBg, border, headClr, subClr, onSubmission
         <div className="flex items-center gap-1.5 shrink-0">
           <button onClick={() => onSubmissions(a)}
             className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold rounded-xl transition-all hover:opacity-80"
-            style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#1E3535' }}>
+            style={{ background: dark ? '#1a2828' : '#edf7f5', color: '#0f766e' }}>
             <Eye size={12} /> Submissions
           </button>
           <button onClick={() => onDelete(a._id)}
             className="p-1.5 rounded-xl transition-all opacity-0 group-hover:opacity-100"
             style={{ color: subClr }}
-            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}>
             <Trash2 size={13} />
           </button>

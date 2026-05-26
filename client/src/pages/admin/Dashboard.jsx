@@ -12,7 +12,7 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 
-const TEACHER_COLORS = ['#8B3030', '#1E3535', '#b87a00', '#2a6648', '#7A2E2E', '#2a4a8a'];
+const TEACHER_COLORS = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#7A2E2E', '#2a4a8a'];
 
 const emptyForm = {
   name: '', email: '', password: '', employeeId: '',
@@ -111,9 +111,9 @@ export default function AdminDashboard() {
 
       {/* Welcome banner */}
       <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden relative"
-        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #162828 55%, #1e3535 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.15 }} />
+          style={{ background: 'transparent', opacity: 0.15 }} />
         <div>
           <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Admin Portal</p>
           <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Welcome back! 👋</h2>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center"
                 style={{ background: dark ? '#1a2828' : '#e8f4f1' }}>
-                <Briefcase size={15} style={{ color: '#1E3535' }} />
+                <Briefcase size={15} style={{ color: '#0f766e' }} />
               </div>
               <div>
                 <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Faculty</h2>
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
                       <p className="text-[13px] font-bold truncate" style={{ color: headClr }}>{t.name}</p>
                       {t.employeeId && (
                         <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                          style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+                          style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
                           {t.employeeId}
                         </span>
                       )}
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
                     <button onClick={() => openEdit(t)}
                       className="p-1.5 rounded-lg transition-colors"
                       style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#1E3535'; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                       title="Edit">
                       <Edit2 size={13} />
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                     <button onClick={() => openDelete(t)}
                       className="p-1.5 rounded-lg transition-colors"
                       style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                       title="Remove">
                       <Trash2 size={13} />
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => navigate('/admin/students')}
               className="flex items-center gap-1 text-[11px] font-semibold transition-opacity hover:opacity-70"
-              style={{ color: '#8B3030' }}>
+              style={{ color: '#2563eb' }}>
               View all <ArrowRight size={12} />
             </button>
           </div>
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
               </div>
             )}
             {data?.recentStudents?.map((s, i) => {
-              const colors = ['#8B3030', '#1E3535', '#b87a00', '#2a6648', '#7A2E2E'];
+              const colors = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#7A2E2E'];
               return (
                 <div key={s._id} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => navigate('/admin/notices')}
             className="flex items-center gap-1 text-xs font-semibold transition-opacity hover:opacity-70"
-            style={{ color: '#8B3030' }}>
+            style={{ color: '#2563eb' }}>
             View all <ArrowRight size={13} />
           </button>
         </div>
@@ -315,9 +315,9 @@ export default function AdminDashboard() {
           )}
           {data?.recentNotices?.map((n, i) => {
             const noticeColors = [
-              { bg: dark ? '#1a1a0d' : '#fef9ec', border: dark ? '#2a2808' : '#f5e8c0', icon: '#b87a00' },
-              { bg: dark ? '#1a1414' : '#fef0f0', border: dark ? '#2e1a1a' : '#f5d0d0', icon: '#8B3030' },
-              { bg: dark ? '#0d1a1a' : '#edf7f5', border: dark ? '#122828' : '#c5e8e2', icon: '#1E3535' },
+              { bg: dark ? '#1a1a0d' : '#fef9ec', border: dark ? '#2a2808' : '#f5e8c0', icon: '#d97706' },
+              { bg: dark ? '#1a1414' : '#fef0f0', border: dark ? '#2e1a1a' : '#f5d0d0', icon: '#2563eb' },
+              { bg: dark ? '#0d1a1a' : '#edf7f5', border: dark ? '#122828' : '#c5e8e2', icon: '#0f766e' },
             ];
             const nc = noticeColors[i % noticeColors.length];
             return (
@@ -391,7 +391,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-4 p-4 rounded-xl"
               style={{ background: dark ? '#2a1414' : '#fff0f0', border: '1px solid #fca5a5' }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold text-white shrink-0"
-                style={{ background: '#8B3030' }}>
+                style={{ background: '#2563eb' }}>
                 {selected?.name?.[0]?.toUpperCase()}
               </div>
               <div>
@@ -410,7 +410,7 @@ export default function AdminDashboard() {
               </button>
               <button onClick={handleDelete} disabled={saving}
                 className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)' }}>
+                >
                 {saving ? 'Removing…' : 'Remove Faculty'}
               </button>
             </div>

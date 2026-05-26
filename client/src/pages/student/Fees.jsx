@@ -4,9 +4,9 @@ import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 
 const feeStructure = [
-  { label: 'Tuition Fee', amount: 'As per semester', period: 'Per Semester', color: '#8B3030' },
-  { label: 'Exam Fee', amount: 'As per exam', period: 'Per Exam', color: '#1E3535' },
-  { label: 'Library Fee', amount: 'Annual', period: 'Per Year', color: '#b87a00' },
+  { label: 'Tuition Fee', amount: 'As per semester', period: 'Per Semester', color: '#2563eb' },
+  { label: 'Exam Fee', amount: 'As per exam', period: 'Per Exam', color: '#0f766e' },
+  { label: 'Library Fee', amount: 'Annual', period: 'Per Year', color: '#d97706' },
   { label: 'Sports & Activities', amount: 'Annual', period: 'Per Year', color: '#2a6648' },
   { label: 'Lab / Practical Fee', amount: 'As applicable', period: 'Per Semester', color: '#4338ca' },
   { label: 'Administration Fee', amount: 'Annual', period: 'Per Year', color: '#0369a1' },
@@ -34,7 +34,7 @@ export default function StudentFees() {
 
       {/* Coming Soon Banner */}
       <div className="rounded-2xl p-5 border relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #b87a00 0%, #8B3030 100%)', borderColor: 'transparent' }}>
+        style={{ background: '#f8fafc', borderColor: 'transparent' }}>
         <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full pointer-events-none"
           style={{ background: 'rgba(255,255,255,0.08)' }} />
         <div className="flex items-start gap-4">
@@ -74,7 +74,7 @@ export default function StudentFees() {
         <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center gap-2">
-              <FileText size={16} style={{ color: '#8B3030' }} />
+              <FileText size={16} style={{ color: '#2563eb' }} />
               <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Fee Structure</h2>
             </div>
             <p className="text-[12px] mt-1" style={{ color: subClr }}>General fee categories for your program</p>
@@ -99,7 +99,7 @@ export default function StudentFees() {
           <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
             <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
               <div className="flex items-center gap-2">
-                <CreditCard size={16} style={{ color: '#1E3535' }} />
+                <CreditCard size={16} style={{ color: '#0f766e' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Payment Methods</h2>
               </div>
             </div>

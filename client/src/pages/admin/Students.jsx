@@ -26,7 +26,7 @@ function SyncSummary({ result, onClose, dark }) {
   const stats = [
     { label: 'Imported', value: result.summary.imported, icon: CheckCircle, color: '#059669', bg: dark ? '#0d2018' : '#ecfdf5' },
     { label: 'Updated',  value: result.summary.updated,  icon: RefreshCw,   color: '#2563eb', bg: dark ? '#0d1a30' : '#eff6ff' },
-    { label: 'Skipped',  value: result.summary.skipped,  icon: SkipForward, color: '#b87a00', bg: dark ? '#2d2712' : '#fef9ec' },
+    { label: 'Skipped',  value: result.summary.skipped,  icon: SkipForward, color: '#d97706', bg: dark ? '#2d2712' : '#fef9ec' },
     { label: 'Errors',   value: result.summary.errors,   icon: XCircle,     color: '#dc2626', bg: dark ? '#2a1010' : '#fff0f0' },
   ];
 
@@ -45,7 +45,7 @@ function SyncSummary({ result, onClose, dark }) {
             Google Sheets Sync Complete
           </p>
           <span className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-            style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+            style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
             {result.summary.total} rows processed
           </span>
         </div>
@@ -78,7 +78,7 @@ function SyncSummary({ result, onClose, dark }) {
             <details open className="rounded-xl border overflow-hidden"
               style={{ borderColor: dark ? '#2d2712' : '#fef0c0' }}>
               <summary className="flex items-center gap-2 px-4 py-2.5 cursor-pointer select-none text-[12px] font-semibold"
-                style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#b87a00' }}>
+                style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#d97706' }}>
                 <SkipForward size={13} />
                 {result.skippedDetails.length} skipped row{result.skippedDetails.length !== 1 ? 's' : ''}
               </summary>
@@ -86,7 +86,7 @@ function SyncSummary({ result, onClose, dark }) {
                 {result.skippedDetails.map((d, i) => (
                   <div key={i} className="flex items-center gap-3 px-4 py-2">
                     <span className="text-[11px] font-bold px-1.5 py-0.5 rounded"
-                      style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#b87a00' }}>
+                      style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#d97706' }}>
                       Row {d.row}
                     </span>
                     <span className="text-[12px]" style={{ color: dark ? '#94a3b8' : '#64748b' }}>{d.reason}</span>
@@ -331,7 +331,7 @@ export default function Students() {
             </FormField>
             <div className="flex gap-3 justify-end pt-2">
               <SecondaryBtn type="button" onClick={() => setModal(null)}>Cancel</SecondaryBtn>
-              <PrimaryBtn type="submit" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
+              <PrimaryBtn type="submit" >
                 Enroll
               </PrimaryBtn>
             </div>

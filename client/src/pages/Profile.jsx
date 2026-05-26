@@ -10,9 +10,9 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
 const roleColors = {
-  admin:   { gradient: 'linear-gradient(135deg, #1E3535, #2a4a4a)', badge: '#1E3535' },
-  teacher: { gradient: 'linear-gradient(135deg, #8B3030, #6b2525)', badge: '#8B3030' },
-  student: { gradient: 'linear-gradient(135deg, #b87a00, #8a5a00)', badge: '#b87a00' },
+  admin:   { gradient: 'linear-gradient(135deg,#1d4ed8,#2563eb)', badge: '#0f766e' },
+  teacher: { gradient: 'linear-gradient(135deg,#1d4ed8,#2563eb)', badge: '#2563eb' },
+  student: { gradient: 'linear-gradient(135deg, #b87a00, #8a5a00)', badge: '#d97706' },
 };
 
 export default function Profile() {
@@ -100,23 +100,23 @@ export default function Profile() {
   );
 
   const attPct = stats?.attendancePercentage ? parseFloat(stats.attendancePercentage) : null;
-  const courseColors = ['#8B3030','#1E3535','#b87a00','#2a6648'];
+  const courseColors = ['#2563eb','#0f766e','#d97706','#2a6648'];
 
   // Stat cards config per role
   const statCards = authUser?.role === 'student' ? [
-    { label: 'Courses',     value: stats?.totalCourses ?? 0,                  icon: BookOpen,    color: '#8B3030' },
-    { label: 'Attendance',  value: `${attPct ?? 0}%`,                         icon: UserCheck,   color: attPct >= 75 ? '#059669' : '#8B3030' },
+    { label: 'Courses',     value: stats?.totalCourses ?? 0,                  icon: BookOpen,    color: '#2563eb' },
+    { label: 'Attendance',  value: `${attPct ?? 0}%`,                         icon: UserCheck,   color: attPct >= 75 ? '#059669' : '#2563eb' },
     { label: 'Present',     value: stats?.presentClasses ?? 0,                icon: CheckCircle, color: '#059669' },
-    { label: 'Assignments', value: stats?.upcomingAssignments?.length ?? 0,   icon: Clock,       color: '#b87a00' },
+    { label: 'Assignments', value: stats?.upcomingAssignments?.length ?? 0,   icon: Clock,       color: '#d97706' },
   ] : authUser?.role === 'teacher' ? [
-    { label: 'Courses',   value: stats?.totalCourses ?? 0,              icon: BookOpen,     color: '#8B3030' },
-    { label: 'Students',  value: stats?.totalStudents ?? 0,             icon: GraduationCap, color: '#1E3535' },
-    { label: 'Pending',   value: stats?.pendingSubmissions ?? 0,        icon: Clock,        color: '#b87a00' },
+    { label: 'Courses',   value: stats?.totalCourses ?? 0,              icon: BookOpen,     color: '#2563eb' },
+    { label: 'Students',  value: stats?.totalStudents ?? 0,             icon: GraduationCap, color: '#0f766e' },
+    { label: 'Pending',   value: stats?.pendingSubmissions ?? 0,        icon: Clock,        color: '#d97706' },
     { label: 'Recorded',  value: stats?.recentAttendance?.length ?? 0,  icon: Award,        color: '#2a6648' },
   ] : [
-    { label: 'Students', value: stats?.totalStudents ?? 0, icon: GraduationCap, color: '#8B3030' },
-    { label: 'Teachers', value: stats?.totalTeachers ?? 0, icon: User,          color: '#1E3535' },
-    { label: 'Courses',  value: stats?.totalCourses  ?? 0, icon: BookOpen,      color: '#b87a00' },
+    { label: 'Students', value: stats?.totalStudents ?? 0, icon: GraduationCap, color: '#2563eb' },
+    { label: 'Teachers', value: stats?.totalTeachers ?? 0, icon: User,          color: '#0f766e' },
+    { label: 'Courses',  value: stats?.totalCourses  ?? 0, icon: BookOpen,      color: '#d97706' },
     { label: 'Notices',  value: stats?.totalNotices  ?? 0, icon: Shield,        color: '#2a6648' },
   ];
 
@@ -196,7 +196,7 @@ export default function Profile() {
                   </button>
                   <button onClick={handleSave} disabled={saving}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold text-white disabled:opacity-60"
-                    style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)' }}>
+                    >
                     <Save size={12} /> {saving ? 'Saving…' : 'Save'}
                   </button>
                 </>
@@ -268,7 +268,7 @@ export default function Profile() {
         {/* Change Password */}
         <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
           <h3 className="text-[13px] font-bold mb-4 flex items-center gap-2" style={{ color: headClr }}>
-            <KeyRound size={14} style={{ color: '#1E3535' }} /> Change Password
+            <KeyRound size={14} style={{ color: '#0f766e' }} /> Change Password
           </h3>
           <form onSubmit={handlePwChange} className="space-y-3">
             {[
@@ -294,7 +294,7 @@ export default function Profile() {
             ))}
             <button type="submit" disabled={pwLoading}
               className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-white disabled:opacity-60 hover:opacity-90 transition-all mt-1"
-              style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)' }}>
+              >
               {pwLoading ? 'Updating…' : 'Update Password'}
             </button>
           </form>
@@ -310,17 +310,17 @@ export default function Profile() {
               <h3 className="text-[13px] font-bold mb-4" style={{ color: headClr }}>Attendance Overview</h3>
               <div className="flex justify-between text-[12px] mb-1.5">
                 <span style={{ color: subClr }}>{stats?.presentClasses} present / {stats?.totalClasses} total</span>
-                <span className="font-bold" style={{ color: attPct >= 75 ? '#059669' : '#8B3030' }}>{attPct}%</span>
+                <span className="font-bold" style={{ color: attPct >= 75 ? '#059669' : '#2563eb' }}>{attPct}%</span>
               </div>
               <div className="h-3 rounded-full overflow-hidden" style={{ background: dark ? '#1a2828' : '#e8f5f0' }}>
                 <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${Math.min(attPct, 100)}%`, background: attPct >= 75 ? '#059669' : '#8B3030' }} />
+                  style={{ width: `${Math.min(attPct, 100)}%`, background: attPct >= 75 ? '#059669' : '#2563eb' }} />
               </div>
               {attPct < 75 && (
                 <div className="flex items-center gap-2 mt-3 p-3 rounded-xl border"
                   style={{ background: dark ? '#2a1414' : '#fff0f0', borderColor: dark ? '#5a2020' : '#fca5a5' }}>
-                  <AlertTriangle size={13} style={{ color: '#8B3030' }} />
-                  <p className="text-[12px] font-medium" style={{ color: '#8B3030' }}>
+                  <AlertTriangle size={13} style={{ color: '#2563eb' }} />
+                  <p className="text-[12px] font-medium" style={{ color: '#2563eb' }}>
                     Below 75% — please attend more classes.
                   </p>
                 </div>
@@ -367,7 +367,7 @@ export default function Profile() {
                   <p className="text-[11px]" style={{ color: subClr }}>{c.code}</p>
                 </div>
                 <span className="text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0"
-                  style={{ background: dark ? '#1a1414' : '#fef0f0', color: '#8B3030' }}>
+                  style={{ background: dark ? '#1a1414' : '#fef0f0', color: '#2563eb' }}>
                   {c.students?.length || 0} students
                 </span>
               </div>

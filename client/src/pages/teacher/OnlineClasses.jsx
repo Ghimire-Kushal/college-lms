@@ -12,7 +12,7 @@ const platformInfo = {
   meet:  { label: 'Google Meet', color: '#1E8E3E', bg: '#e6f4ea' },
   zoom:  { label: 'Zoom',        color: '#2D8CFF', bg: '#e8f1ff' },
   teams: { label: 'MS Teams',    color: '#464EB8', bg: '#eceeff' },
-  other: { label: 'Other',       color: '#8B3030', bg: '#fef0f0' },
+  other: { label: 'Other',       color: '#2563eb', bg: '#fef0f0' },
 };
 
 export default function TeacherOnlineClasses() {
@@ -78,7 +78,7 @@ export default function TeacherOnlineClasses() {
             <div className="flex items-start gap-3 flex-1 min-w-0">
               <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
                 style={{ background: isPast ? (dark ? '#1a1a1a' : '#f0f0f0') : (dark ? '#0f1e1e' : '#edf7f5') }}>
-                <Video size={18} style={{ color: isPast ? subClr : '#1E3535' }} />
+                <Video size={18} style={{ color: isPast ? subClr : '#0f766e' }} />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-[14px] leading-snug" style={{ color: headClr }}>{cls.title}</h3>
@@ -88,13 +88,13 @@ export default function TeacherOnlineClasses() {
             <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={() => openEdit(cls)}
                 className="p-2 rounded-xl transition-colors" style={{ color: subClr }}
-                onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#1E3535'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}>
                 <Edit2 size={13} />
               </button>
               <button onClick={() => handleDelete(cls._id)}
                 className="p-2 rounded-xl transition-colors" style={{ color: subClr }}
-                onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}>
                 <Trash2 size={13} />
               </button>
@@ -130,7 +130,7 @@ export default function TeacherOnlineClasses() {
             {!isPast && (
               <a href={cls.meetLink} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-xl transition-all hover:opacity-80"
-                style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)', color: '#fff' }}>
+                style={{ background: '#f8fafc', color: '#fff' }}>
                 <Link2 size={11} /> Join Class <ExternalLink size={10} />
               </a>
             )}
@@ -144,9 +144,9 @@ export default function TeacherOnlineClasses() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #0f1e1e 55%, #162828 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
+          style={{ background: 'transparent', opacity: 0.18 }} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Virtual Classroom</p>

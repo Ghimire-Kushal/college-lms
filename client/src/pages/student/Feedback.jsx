@@ -16,8 +16,8 @@ const CATEGORIES = [
 ];
 
 const STATUS_CONFIG = {
-  pending:  { color: '#b87a00', bg: 'bg-amber-50',  darkBg: '#2d2712', label: 'Pending',  icon: Clock },
-  reviewed: { color: '#1E3535', bg: 'bg-teal-50',   darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye },
+  pending:  { color: '#d97706', bg: 'bg-amber-50',  darkBg: '#2d2712', label: 'Pending',  icon: Clock },
+  reviewed: { color: '#0f766e', bg: 'bg-teal-50',   darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye },
   resolved: { color: '#059669', bg: 'bg-emerald-50', darkBg: '#1a2e22', label: 'Resolved', icon: CheckCircle },
 };
 
@@ -73,7 +73,7 @@ export default function StudentFeedback() {
           <div className="rounded-2xl border shadow-sm overflow-hidden sticky top-4" style={{ background: cardBg, borderColor: border }}>
             <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
               <div className="flex items-center gap-2">
-                <MessageSquare size={16} style={{ color: '#8B3030' }} />
+                <MessageSquare size={16} style={{ color: '#2563eb' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Submit Feedback</h2>
               </div>
               <p className="text-[12px] mt-1" style={{ color: subClr }}>
@@ -90,7 +90,7 @@ export default function StudentFeedback() {
                       onClick={() => setForm(p => ({ ...p, category: cat.value }))}
                       className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-[11px] font-semibold transition-all"
                       style={form.category === cat.value
-                        ? { background: 'linear-gradient(135deg, #8B3030, #6b2525)', borderColor: '#8B3030', color: '#fff' }
+                        ? { background: '#f8fafc', borderColor: '#2563eb', color: '#fff' }
                         : { background: dark ? '#1a2828' : '#f8fafc', borderColor: border, color: subClr }
                       }
                     >

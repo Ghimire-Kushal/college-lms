@@ -9,9 +9,9 @@ import { useTheme } from '../../context/ThemeContext';
 const emptyForm = { title: '', content: '', targetRole: 'all' };
 
 const roleInfo = {
-  all:     { label: 'Everyone',      icon: Users,          bg: ['#0f1e1e','#1a3535'],  light: ['#edf7f5','#d5eeea'],  text: '#1E3535',  border: ['#1e3535','#c5e8e2'] },
-  student: { label: 'Students Only', icon: GraduationCap,  bg: ['#1a1414','#2e1a1a'],  light: ['#fef9ec','#fef0d8'],  text: '#b87a00',  border: ['#3d2a00','#f5dfa0'] },
-  teacher: { label: 'Teachers Only', icon: UserCheck,       bg: ['#1a1414','#2e1a1a'],  light: ['#fff0f0','#fde8e8'],  text: '#8B3030',  border: ['#5a2020','#fca5a5'] },
+  all:     { label: 'Everyone',      icon: Users,          bg: ['#0f1e1e','#1a3535'],  light: ['#edf7f5','#d5eeea'],  text: '#0f766e',  border: ['#1e3535','#c5e8e2'] },
+  student: { label: 'Students Only', icon: GraduationCap,  bg: ['#1a1414','#2e1a1a'],  light: ['#fef9ec','#fef0d8'],  text: '#d97706',  border: ['#3d2a00','#f5dfa0'] },
+  teacher: { label: 'Teachers Only', icon: UserCheck,       bg: ['#1a1414','#2e1a1a'],  light: ['#fff0f0','#fde8e8'],  text: '#2563eb',  border: ['#5a2020','#fca5a5'] },
 };
 
 export default function AdminNotices() {
@@ -68,9 +68,9 @@ export default function AdminNotices() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #0f1e1e 55%, #162828 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
+          style={{ background: 'transparent', opacity: 0.18 }} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Announcements</p>
@@ -111,7 +111,7 @@ export default function AdminNotices() {
             <button key={key} onClick={() => setFilter(key)}
               className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
               style={filter === key
-                ? { background: '#8B3030', color: '#fff', boxShadow: '0 2px 8px rgba(139,48,48,0.4)' }
+                ? { background: '#2563eb', color: '#fff', boxShadow: '0 2px 8px rgba(139,48,48,0.4)' }
                 : { color: subClr }}>
               {label}
             </button>
@@ -197,7 +197,7 @@ export default function AdminNotices() {
                       <button onClick={() => openEdit(n)}
                         className="p-2 rounded-xl transition-colors"
                         style={{ color: subClr }}
-                        onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#1E3535'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                         title="Edit">
                         <Edit2 size={14} />
@@ -205,7 +205,7 @@ export default function AdminNotices() {
                       <button onClick={() => handleDelete(n._id)}
                         className="p-2 rounded-xl transition-colors"
                         style={{ color: subClr }}
-                        onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                         title="Delete">
                         <Trash2 size={14} />
@@ -216,7 +216,7 @@ export default function AdminNotices() {
                   {/* Footer */}
                   <div className="flex items-center gap-3 mt-3 pt-3 border-t" style={{ borderColor: border }}>
                     <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-                      style={{ background: '#8B3030' }}>
+                      style={{ background: '#2563eb' }}>
                       {n.postedBy?.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="flex items-center gap-1.5 flex-1 min-w-0">

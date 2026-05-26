@@ -16,7 +16,7 @@ const DAY_STYLES = [
   { light: { bg: '#fff1f2', border: '#fecdd3', text: '#be123c' }, dark: { bg: '#2d1517', border: '#3d1f22', text: '#f87171' } },
 ];
 
-const COURSE_COLORS = ['#8B3030', '#1E3535', '#b87a00', '#2a6648', '#4338ca', '#0369a1'];
+const COURSE_COLORS = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#4338ca', '#0369a1'];
 
 function TimeSlot({ entry, idx, dark }) {
   const bg   = dark ? '#161b22' : '#ffffff';
@@ -99,9 +99,9 @@ export default function StudentTimetable() {
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { label: 'Total Classes/Week', value: totalClasses, color: '#8B3030' },
-          { label: 'Active Days', value: DAYS.filter(d => byDay[d].length > 0).length, color: '#1E3535' },
-          { label: 'Free Days', value: DAYS.filter(d => byDay[d].length === 0).length, color: '#b87a00' },
+          { label: 'Total Classes/Week', value: totalClasses, color: '#2563eb' },
+          { label: 'Active Days', value: DAYS.filter(d => byDay[d].length > 0).length, color: '#0f766e' },
+          { label: 'Free Days', value: DAYS.filter(d => byDay[d].length === 0).length, color: '#d97706' },
         ].map(s => (
           <div key={s.label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
             <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>

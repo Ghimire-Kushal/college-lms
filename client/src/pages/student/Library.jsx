@@ -62,9 +62,9 @@ export default function StudentLibrary() {
       {/* Quick Info */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { icon: BookOpen, label: 'Total Books', value: '3,000+', color: '#8B3030' },
-          { icon: Users, label: 'Seating Capacity', value: '80 Seats', color: '#1E3535' },
-          { icon: Wifi, label: 'Wi-Fi', value: 'Available', color: '#b87a00' },
+          { icon: BookOpen, label: 'Total Books', value: '3,000+', color: '#2563eb' },
+          { icon: Users, label: 'Seating Capacity', value: '80 Seats', color: '#0f766e' },
+          { icon: Wifi, label: 'Wi-Fi', value: 'Available', color: '#d97706' },
           { icon: BookMarked, label: 'Borrow Limit', value: '3 Books', color: '#4338ca' },
         ].map(({ icon: Icon, label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
@@ -93,7 +93,7 @@ export default function StudentLibrary() {
                     <span className="text-xl">{r.icon}</span>
                     <div>
                       <p className="text-[13px] font-bold" style={{ color: headClr }}>{r.category}</p>
-                      <p className="text-[10px] font-semibold" style={{ color: '#8B3030' }}>{r.count}</p>
+                      <p className="text-[10px] font-semibold" style={{ color: '#2563eb' }}>{r.count}</p>
                     </div>
                   </div>
                   <p className="text-[11px] leading-relaxed" style={{ color: subClr }}>{r.desc}</p>
@@ -118,7 +118,7 @@ export default function StudentLibrary() {
                 <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:opacity-90 transition-opacity"
                   style={{ background: i % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-white text-[11px] font-bold"
-                    style={{ background: ['#8B3030','#1E3535','#b87a00','#4338ca','#0369a1','#2a6648'][i % 6] }}>
+                    style={{ background: ['#2563eb','#0f766e','#d97706','#4338ca','#0369a1','#2a6648'][i % 6] }}>
                     {b.title[0]}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export default function StudentLibrary() {
           <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
             <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
               <div className="flex items-center gap-2">
-                <Clock size={15} style={{ color: '#1E3535' }} />
+                <Clock size={15} style={{ color: '#0f766e' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Opening Hours</h2>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function StudentLibrary() {
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }}>
-                    <Icon size={13} style={{ color: '#1E3535' }} />
+                    <Icon size={13} style={{ color: '#0f766e' }} />
                   </div>
                   <p className="text-[12px]" style={{ color: subClr }}>{text}</p>
                 </div>
@@ -201,7 +201,7 @@ export default function StudentLibrary() {
               <ul className="space-y-2">
                 {rules.map((rule, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-[11px] font-bold mt-0.5 shrink-0" style={{ color: '#8B3030' }}>{i + 1}.</span>
+                    <span className="text-[11px] font-bold mt-0.5 shrink-0" style={{ color: '#2563eb' }}>{i + 1}.</span>
                     <span className="text-[11px] leading-relaxed" style={{ color: subClr }}>{rule}</span>
                   </li>
                 ))}

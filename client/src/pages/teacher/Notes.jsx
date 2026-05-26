@@ -82,7 +82,7 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: dark ? '#1a2e2e' : '#d4ede8' }}>
-              <Upload size={18} style={{ color: '#1E3535' }} />
+              <Upload size={18} style={{ color: '#0f766e' }} />
             </div>
             <div>
               <p className="text-[16px] font-bold" style={{ color: headClr }}>Upload Material</p>
@@ -134,13 +134,13 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
               onClick={() => fileRef.current?.click()}
               className="relative cursor-pointer rounded-xl border-2 border-dashed px-6 py-8 text-center transition-all"
               style={{
-                borderColor: dragOver ? '#1E3535' : border,
+                borderColor: dragOver ? '#0f766e' : border,
                 background: dragOver ? (dark ? '#0f1e1e' : '#f0faf8') : inputBg,
               }}>
               <input ref={fileRef} type="file" className="hidden" onChange={e => setFile(e.target.files[0])} />
               {file ? (
                 <div className="flex items-center justify-center gap-3">
-                  <FileText size={20} style={{ color: '#1E3535' }} />
+                  <FileText size={20} style={{ color: '#0f766e' }} />
                   <div className="text-left">
                     <p className="text-[13px] font-semibold" style={{ color: headClr }}>{file.name}</p>
                     <p className="text-[11px]" style={{ color: subClr }}>{(file.size / 1024 / 1024).toFixed(2)} MB</p>
@@ -169,7 +169,7 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
             </button>
             <button type="submit" disabled={loading}
               className="flex-1 py-3 rounded-xl text-[14px] font-semibold text-white transition-all disabled:opacity-60 hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #1E3535 0%, #2a4a4a 100%)', boxShadow: '0 4px 14px rgba(30,53,53,0.35)' }}>
+              style={{ background: '#f8fafc', boxShadow: '0 4px 14px rgba(30,53,53,0.35)' }}>
               {loading ? 'Uploading…' : 'Upload Material'}
             </button>
           </div>
@@ -212,7 +212,7 @@ function NoteCard({ note, dark, onDelete }) {
           <div className="flex-1 min-w-0 pt-0.5">
             <h3 className="font-bold text-[15px] leading-snug truncate" style={{ color: headClr }}>{note.title}</h3>
             <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold"
-              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
               <BookOpen size={10} />
               {note.course?.name}
             </span>
@@ -250,7 +250,7 @@ function NoteCard({ note, dark, onDelete }) {
           {note.fileUrl && (
             <a href={note.fileUrl} target="_blank" rel="noreferrer"
               className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[12px] font-semibold transition-all hover:opacity-80"
-              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
               <Download size={13} /> Download
             </a>
           )}
@@ -323,10 +323,10 @@ export default function TeacherNotes() {
 
         {/* ── Page Header ─────────────────────────────── */}
         <div className="rounded-2xl overflow-hidden shadow-sm"
-          style={{ background: 'linear-gradient(135deg, #0d2222 0%, #1E3535 60%, #2a5050 100%)' }}>
+          >
           <div className="px-8 py-8 relative">
             <div className="absolute right-0 top-0 w-64 h-full opacity-10 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at right, #F2C04E, transparent)' }} />
+              style={{ background: 'transparent' }} />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative">
               <div>
                 <span className="inline-block text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
@@ -404,7 +404,7 @@ export default function TeacherNotes() {
           {/* Upload button (secondary, for non-banner context) */}
           <button onClick={() => setShowModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white shrink-0 transition-all hover:opacity-90 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #1E3535 0%, #2a4a4a 100%)', boxShadow: '0 4px 12px rgba(30,53,53,0.3)' }}>
+            style={{ background: '#f8fafc', boxShadow: '0 4px 12px rgba(30,53,53,0.3)' }}>
             <Plus size={15} /> Upload
           </button>
         </div>
@@ -415,13 +415,13 @@ export default function TeacherNotes() {
             <span>{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
             {search && (
               <span className="px-2 py-0.5 rounded-full font-medium"
-                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
                 "{search}"
               </span>
             )}
             {filterCourse && (
               <span className="px-2 py-0.5 rounded-full font-medium"
-                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
                 {courses.find(c => c._id === filterCourse)?.name}
               </span>
             )}
@@ -447,7 +447,7 @@ export default function TeacherNotes() {
             {!search && !filterCourse && (
               <button onClick={() => setShowModal(true)}
                 className="mt-5 flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white mx-auto transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #1E3535 0%, #2a4a4a 100%)' }}>
+                >
                 <Upload size={14} /> Upload First Material
               </button>
             )}

@@ -45,9 +45,9 @@ export default function TeacherDashboard() {
     <div className="space-y-5">
       {/* Welcome banner */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #2a0f0f 0%, #5a2020 55%, #8B3030 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
+          style={{ background: 'transparent', opacity: 0.18 }} />
         <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Teacher Portal</p>
         <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Hello, {user?.name?.split(' ')[0]}! 👋</h2>
         <p className="text-white/50 text-sm mt-1">Manage your courses, attendance, and student progress.</p>
@@ -76,7 +76,7 @@ export default function TeacherDashboard() {
               </div>
             )}
             {data?.courses?.map((c, i) => {
-              const colors = ['#8B3030','#1E3535','#b87a00','#2a6648'];
+              const colors = ['#2563eb','#0f766e','#d97706','#2a6648'];
               return (
                 <div key={c._id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors"
                   style={{ background: dark ? '#1a2828' : '#faf7f5', borderColor: border }}>
@@ -89,7 +89,7 @@ export default function TeacherDashboard() {
                     <p className="text-[11px]" style={{ color: subClr }}>{c.code}</p>
                   </div>
                   <span className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full"
-                    style={{ background: dark ? '#1a1414' : '#f9e8e8', color: '#8B3030' }}>
+                    style={{ background: dark ? '#1a1414' : '#f9e8e8', color: '#2563eb' }}>
                     {c.students?.length || 0} students
                   </span>
                 </div>
@@ -103,7 +103,7 @@ export default function TeacherDashboard() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[15px] font-semibold" style={{ color: headClr }}>Recent Assignments</h2>
             <span className="flex items-center gap-1 text-xs font-semibold cursor-pointer"
-              style={{ color: '#8B3030' }}>View all <ArrowRight size={12} /></span>
+              style={{ color: '#2563eb' }}>View all <ArrowRight size={12} /></span>
           </div>
           <div className="space-y-2.5">
             {!data?.recentAssignments?.length && (
@@ -118,7 +118,7 @@ export default function TeacherDashboard() {
                 <div key={a._id} className="flex items-start gap-3 p-3 rounded-xl border transition-colors"
                   style={{ background: dark ? '#1a2828' : '#faf7f5', borderColor: border }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: overdue ? (dark ? '#2a1414' : '#fde8e8') : (dark ? '#122828' : '#e8f5f0'), color: overdue ? '#e11d48' : '#1E3535' }}>
+                    style={{ background: overdue ? (dark ? '#2a1414' : '#fde8e8') : (dark ? '#122828' : '#e8f5f0'), color: overdue ? '#e11d48' : '#0f766e' }}>
                     {overdue ? <Clock size={15} /> : <CheckCircle size={15} />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -146,7 +146,7 @@ export default function TeacherDashboard() {
             {data.recentAttendance.map(r => (
               <div key={r._id} className="flex items-center gap-3 p-3 rounded-xl border"
                 style={{ background: dark ? '#0f1e1e' : '#edf7f3', borderColor: dark ? '#1e3535' : '#c8e8dc' }}>
-                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: '#1E3535' }} />
+                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: '#0f766e' }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{r.course?.name}</p>
                   <p className="text-[11px]" style={{ color: subClr }}>

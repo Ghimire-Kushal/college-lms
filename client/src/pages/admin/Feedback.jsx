@@ -14,8 +14,8 @@ const CATEGORIES = [
 ];
 
 const STATUS_CONFIG = {
-  pending:  { color: '#b87a00', bg: '#fef9ec', darkBg: '#2d2712', label: 'Pending',  icon: Clock,        next: 'reviewed' },
-  reviewed: { color: '#1E3535', bg: '#edf7f5', darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye,          next: 'resolved' },
+  pending:  { color: '#d97706', bg: '#fef9ec', darkBg: '#2d2712', label: 'Pending',  icon: Clock,        next: 'reviewed' },
+  reviewed: { color: '#0f766e', bg: '#edf7f5', darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye,          next: 'resolved' },
   resolved: { color: '#059669', bg: '#ecfdf5', darkBg: '#0d2018', label: 'Resolved', icon: CheckCircle,  next: null },
 };
 
@@ -89,9 +89,9 @@ export default function AdminFeedback() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #0f1e1e 55%, #162828 100%)' }}>
+        >
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
+          style={{ background: 'transparent', opacity: 0.18 }} />
         <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Inbox</p>
         <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Student Feedback</h2>
         <p className="text-white/50 text-sm mt-1">Review and respond to feedback submitted by students.</p>
@@ -124,7 +124,7 @@ export default function AdminFeedback() {
           <button onClick={() => setCat('all')}
             className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
             style={catFilter === 'all'
-              ? { background: '#8B3030', color: '#fff' }
+              ? { background: '#2563eb', color: '#fff' }
               : { color: subClr }}>
             All
           </button>
@@ -132,7 +132,7 @@ export default function AdminFeedback() {
             <button key={c.value} onClick={() => setCat(c.value)}
               className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all flex items-center gap-1"
               style={catFilter === c.value
-                ? { background: '#8B3030', color: '#fff' }
+                ? { background: '#2563eb', color: '#fff' }
                 : { color: subClr }}>
               <span>{c.emoji}</span>{c.label}
             </button>
@@ -232,7 +232,7 @@ export default function AdminFeedback() {
                             onClick={() => deleteFeedback(fb._id)}
                             className="p-2 rounded-xl transition-colors"
                             style={{ color: subClr }}
-                            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+                            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}>
                             <Trash2 size={14} />
                           </button>
@@ -247,7 +247,7 @@ export default function AdminFeedback() {
                         {fb.message.length > 180 && (
                           <button onClick={() => setExpanded(open ? null : fb._id)}
                             className="text-[11px] font-semibold mt-1 transition-colors"
-                            style={{ color: '#8B3030' }}>
+                            style={{ color: '#2563eb' }}>
                             {open ? 'Show less' : 'Read more'}
                           </button>
                         )}

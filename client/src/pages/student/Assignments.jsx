@@ -80,7 +80,7 @@ export default function StudentAssignments() {
             {showSubmit && !a.submission && (
               <button onClick={() => openSubmit(a)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold text-white shadow-sm"
-                style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)' }}>
+                >
                 <Upload size={11} /> Submit
               </button>
             )}
