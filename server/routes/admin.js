@@ -142,9 +142,21 @@ router.get('/teachers', ...adminOnly, async (req, res) => {
       { name: { $regex: search, $options: 'i' } },
       { email: { $regex: search, $options: 'i' } },
       { teacherId: { $regex: search, $options: 'i' } },
+      { department: { $regex: search, $options: 'i' } },
     ];
     const teachers = await User.find(query).select('-password').sort({ createdAt: -1 });
-    res.json(teachers);
+
+    // Attach assigned courses to each teacher
+    const teacherIds = teachers.map(t => t._id);
+    const courses = await Course.find({ teacher: { $in: teacherIds }, isActive: true })
+      .select('name code semester teacher');
+
+    const teachersWithCourses = teachers.map(t => {
+      const assigned = courses.filter(c => c.teacher?.toString() === t._id.toString());
+      return { ...t.toObject(), assignedCourses: assigned };
+    });
+
+    res.json(teachersWithCourses);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
