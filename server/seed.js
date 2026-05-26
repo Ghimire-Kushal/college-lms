@@ -34,6 +34,9 @@ const seed = async () => {
     role: 'teacher',
     teacherId: 'TCH001',
     phone: '9800000001',
+    department: 'Computer Science',
+    qualification: 'Ph.D. in Computer Science',
+    subjects: ['Database Management System', 'Data Structures & Algorithms', 'Operating Systems'],
   });
 
   const teacher2 = await User.create({
@@ -43,6 +46,9 @@ const seed = async () => {
     role: 'teacher',
     teacherId: 'TCH002',
     phone: '9800000002',
+    department: 'Information Technology',
+    qualification: 'M.Sc. in Information Technology',
+    subjects: ['Web Technology', 'Software Engineering', 'Computer Networks'],
   });
 
   // Create Students
