@@ -1,85 +1,42 @@
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
-const themes = {
-  maroon:  { bg: 'from-[#8B3030] to-[#6b2525]',   icon: { bg: '#f9e5e5', text: '#7A2E2E' } },
-  teal:    { bg: 'from-[#1E3535] to-[#2a4a4a]',   icon: { bg: '#ccf0ee', text: '#1E3535' } },
-  gold:    { bg: 'from-[#d4930a] to-[#b87a00]',   icon: { bg: '#fef3c7', text: '#b87a00' } },
-  green:   { bg: 'from-emerald-500 to-teal-600',   icon: { bg: '#d1fae5', text: '#059669' } },
-  yellow:  { bg: 'from-amber-400 to-orange-500',   icon: { bg: '#fef3c7', text: '#d97706' } },
-  red:     { bg: 'from-rose-500 to-red-600',       icon: { bg: '#ffe4e6', text: '#e11d48' } },
-  blue:    { bg: 'from-blue-500 to-blue-600',      icon: { bg: '#dbeafe', text: '#2563eb' } },
-  sky:     { bg: 'from-sky-500 to-blue-600',       icon: { bg: '#e0f2fe', text: '#0284c7' } },
-  indigo:  { bg: 'from-indigo-500 to-indigo-600',  icon: { bg: '#e0e7ff', text: '#4338ca' } },
-  rose:    { bg: 'from-rose-500 to-pink-600',      icon: { bg: '#ffe4e6', text: '#e11d48' } },
+const iconColors = {
+  blue:   { bg: 'bg-blue-50',   text: 'text-blue-600' },
+  green:  { bg: 'bg-green-50',  text: 'text-green-600' },
+  yellow: { bg: 'bg-yellow-50', text: 'text-yellow-600' },
+  red:    { bg: 'bg-red-50',    text: 'text-red-600' },
+  indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600' },
+  teal:   { bg: 'bg-teal-50',   text: 'text-teal-600' },
+  maroon: { bg: 'bg-red-50',    text: 'text-red-800' },
+  gold:   { bg: 'bg-yellow-50', text: 'text-yellow-700' },
+  sky:    { bg: 'bg-sky-50',    text: 'text-sky-600' },
+  rose:   { bg: 'bg-rose-50',   text: 'text-rose-600' },
+  violet: { bg: 'bg-violet-50', text: 'text-violet-600' },
+  purple: { bg: 'bg-purple-50', text: 'text-purple-600' },
 };
 
-export default function StatCard({ title, value, icon: Icon, color = 'blue', subtitle, trend, gradient = false }) {
-  const { dark } = useTheme();
-  const t = themes[color] || themes.blue;
-
-  if (gradient) {
-    return (
-      <div className={`rounded-2xl bg-gradient-to-br ${t.bg} p-5 text-white shadow-lg card-hover`}>
-        <div className="flex items-start justify-between">
-          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5">
-            <Icon size={22} className="text-white" />
-          </div>
-          {trend !== undefined && (
-            <span className="flex items-center gap-1 text-[11px] font-semibold bg-white/20 px-2 py-1 rounded-full">
-              {trend > 0 ? <TrendingUp size={11} /> : trend < 0 ? <TrendingDown size={11} /> : <Minus size={11} />}
-              {trend > 0 ? '+' : ''}{trend}%
-            </span>
-          )}
-        </div>
-        <div className="mt-5">
-          <p className="text-3xl font-extrabold tracking-tight">{value}</p>
-          <p className="text-[13px] font-medium mt-1.5 text-white/80">{title}</p>
-          {subtitle && <p className="text-[11px] text-white/60 mt-0.5">{subtitle}</p>}
-        </div>
-      </div>
-    );
-  }
+export default function StatCard({ title, value, icon: Icon, color = 'blue', subtitle, trend }) {
+  const c = iconColors[color] || iconColors.blue;
 
   return (
-    <div
-      className="rounded-2xl p-5 shadow-sm card-hover"
-      style={{
-        background: dark ? '#131e1e' : '#ffffff',
-        border: `1px solid ${dark ? '#1e2e2e' : '#e8edf3'}`,
-      }}
-    >
+    <div className="bg-white border border-slate-200 rounded-lg p-5">
       <div className="flex items-start justify-between">
-        <div
-          className="rounded-xl p-2.5"
-          style={{ background: dark ? t.icon.bg + '22' : t.icon.bg }}
-        >
-          <Icon size={22} style={{ color: t.icon.text }} />
+        <div className={`w-9 h-9 rounded-lg ${c.bg} flex items-center justify-center`}>
+          <Icon size={18} className={c.text} />
         </div>
         {trend !== undefined && (
-          <span
-            className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full"
-            style={
-              trend >= 0
-                ? { background: dark ? '#1a2e22' : '#dcfce7', color: dark ? '#34d399' : '#16a34a' }
-                : { background: dark ? '#2d1517' : '#ffe4e6', color: dark ? '#f87171' : '#e11d48' }
-            }
-          >
+          <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded ${
+            trend >= 0 ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
+          }`}>
             {trend >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
             {trend >= 0 ? '+' : ''}{trend}%
           </span>
         )}
       </div>
-      <div className="mt-5">
-        <p className="text-3xl font-extrabold tracking-tight" style={{ color: dark ? '#e2e8f0' : '#0f172a' }}>
-          {value}
-        </p>
-        <p className="text-[13px] font-medium mt-1.5" style={{ color: dark ? '#6e7681' : '#64748b' }}>
-          {title}
-        </p>
-        {subtitle && (
-          <p className="text-[11px] mt-0.5" style={{ color: dark ? '#484f58' : '#94a3b8' }}>{subtitle}</p>
-        )}
+      <div className="mt-4">
+        <p className="text-2xl font-bold text-slate-800">{value}</p>
+        <p className="text-sm text-slate-500 mt-0.5">{title}</p>
+        {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
       </div>
     </div>
   );

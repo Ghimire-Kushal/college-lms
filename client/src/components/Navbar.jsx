@@ -1,143 +1,99 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { useNavigate } from 'react-router-dom';
-import { Bell, ChevronRight, Home, Menu, KeyRound, LogOut, User, X, Eye, EyeOff, CheckCheck, UserCheck, ClipboardList, BarChart2, Info } from 'lucide-react';
+import { Bell, Menu, KeyRound, LogOut, User, X, Eye, EyeOff, CheckCheck, UserCheck, ClipboardList, BarChart2, Info } from 'lucide-react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 
-const routeMeta = {
-  '/admin':                { label: 'Dashboard',         section: 'Admin' },
-  '/admin/students':       { label: 'Students',           section: 'Admin' },
-  '/admin/teachers':       { label: 'Teachers',           section: 'Admin' },
-  '/admin/courses':        { label: 'Courses',            section: 'Admin' },
-  '/admin/timetable':      { label: 'Timetable',          section: 'Admin' },
-  '/admin/attendance':     { label: 'Attendance Reports', section: 'Admin' },
-  '/admin/notices':        { label: 'Notices',            section: 'Admin' },
-  '/admin/results':        { label: 'Results',            section: 'Admin' },
-  '/admin/feedback':       { label: 'Feedback',           section: 'Admin' },
-  '/teacher':              { label: 'Dashboard',          section: 'Teacher' },
-  '/teacher/courses':      { label: 'My Courses',         section: 'Teacher' },
-  '/teacher/attendance':   { label: 'Attendance',         section: 'Teacher' },
-  '/teacher/notes':        { label: 'Notes & Materials',  section: 'Teacher' },
-  '/teacher/assignments':  { label: 'Assignments',        section: 'Teacher' },
-  '/teacher/results':      { label: 'Results',            section: 'Teacher' },
-  '/teacher/notices':      { label: 'Notices',            section: 'Teacher' },
-  '/teacher/online-classes': { label: 'Online Classes',   section: 'Teacher' },
-  '/teacher/profile':        { label: 'My Profile',        section: 'Teacher' },
-  '/student':              { label: 'Dashboard',          section: 'Student' },
-  '/student/courses':      { label: 'My Courses',         section: 'Student' },
-  '/student/attendance':   { label: 'My Attendance',      section: 'Student' },
-  '/student/notes':        { label: 'Notes & Materials',  section: 'Student' },
-  '/student/assignments':  { label: 'Assignments',        section: 'Student' },
-  '/student/results':      { label: 'My Results',         section: 'Student' },
-  '/student/notices':      { label: 'Notices',            section: 'Student' },
-  '/student/online-classes': { label: 'Online Classes',   section: 'Student' },
-  '/student/profile':        { label: 'My Profile',        section: 'Student' },
-  '/admin/profile':          { label: 'My Profile',        section: 'Admin'   },
+const routeLabels = {
+  '/admin': 'Dashboard', '/admin/students': 'Students', '/admin/teachers': 'Teachers',
+  '/admin/courses': 'Courses', '/admin/timetable': 'Timetable', '/admin/attendance': 'Attendance',
+  '/admin/notices': 'Notices', '/admin/results': 'Results', '/admin/feedback': 'Feedback',
+  '/teacher': 'Dashboard', '/teacher/courses': 'My Courses', '/teacher/attendance': 'Attendance',
+  '/teacher/notes': 'Notes', '/teacher/assignments': 'Assignments', '/teacher/results': 'Results',
+  '/teacher/notices': 'Notices', '/teacher/online-classes': 'Online Classes',
+  '/student': 'Dashboard', '/student/courses': 'My Courses', '/student/timetable': 'Class Routine',
+  '/student/attendance': 'Attendance', '/student/notes': 'Notes', '/student/assignments': 'Assignments',
+  '/student/results': 'Results', '/student/progress': 'Progress', '/student/online-classes': 'Online Classes',
+  '/student/library': 'Library', '/student/fees': 'Fee Details', '/student/notices': 'Notices',
+  '/student/feedback': 'Feedback',
 };
 
-const roleColors = {
-  admin:   'from-[#1E3535] to-[#2a4a4a]',
-  teacher: 'from-[#8B3030] to-[#6b2525]',
-  student: 'from-[#b87a00] to-[#8a5a00]',
-};
+const typeIcon  = { attendance: UserCheck, assignment: ClipboardList, result: BarChart2, notice: Bell, general: Info };
+const typeColor = { attendance: '#059669', assignment: '#2563eb', result: '#d97706', notice: '#7c3aed', general: '#64748b' };
 
-function PasswordModal({ onClose, dark }) {
-  const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
-  const [show, setShow] = useState({ cur: false, new: false, con: false });
+function timeAgo(date) {
+  const s = (Date.now() - new Date(date)) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+function PasswordModal({ onClose }) {
+  const [form, setForm]     = useState({ currentPassword: '', newPassword: '', confirm: '' });
+  const [show, setShow]     = useState({ cur: false, new: false, con: false });
   const [loading, setLoading] = useState(false);
-
-  const borderColor = dark ? '#1e2e2e' : '#ede8e4';
-  const inputStyle = {
-    background: dark ? '#0f1e1e' : '#f8f5f3',
-    borderColor,
-    color: dark ? '#e2e8f0' : '#1e293b',
-  };
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.newPassword !== form.confirm) return toast.error('Passwords do not match');
-    if (form.newPassword.length < 6) return toast.error('Password must be at least 6 characters');
+    if (form.newPassword.length < 6) return toast.error('Minimum 6 characters');
     setLoading(true);
     try {
-      await api.put('/auth/change-password', {
-        currentPassword: form.currentPassword,
-        newPassword: form.newPassword,
-      });
-      toast.success('Password changed successfully');
+      await api.put('/auth/change-password', { currentPassword: form.currentPassword, newPassword: form.newPassword });
+      toast.success('Password changed');
       onClose();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to change password');
-    } finally { setLoading(false); }
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
+    finally { setLoading(false); }
   };
 
-  const fields = [
-    { key: 'currentPassword', label: 'Current Password', showKey: 'cur' },
-    { key: 'newPassword',     label: 'New Password',     showKey: 'new' },
-    { key: 'confirm',         label: 'Confirm New Password', showKey: 'con' },
-  ];
-
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50"
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="w-full max-w-md rounded-2xl shadow-2xl overflow-hidden"
-        style={{ background: dark ? '#131e1e' : '#ffffff', border: `1px solid ${borderColor}` }}>
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor }}>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: dark ? '#1a2828' : '#edf7f5' }}>
-              <KeyRound size={16} style={{ color: '#1E3535' }} />
-            </div>
-            <div>
-              <h3 className="font-bold text-[15px]" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>Change Password</h3>
-              <p className="text-[11px]" style={{ color: dark ? '#6e7681' : '#64748b' }}>Update your account password</p>
-            </div>
+      <div className="bg-white border border-slate-200 rounded-lg shadow-xl w-full max-w-sm">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+          <div className="flex items-center gap-2">
+            <KeyRound size={16} className="text-blue-600" />
+            <h3 className="font-semibold text-slate-800">Change Password</h3>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:opacity-70"
-            style={{ background: dark ? '#1e2e2e' : '#f0ebe8', color: dark ? '#6e7681' : '#64748b' }}>
-            <X size={15} />
+          <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+            <X size={16} />
           </button>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          {fields.map(({ key, label, showKey }) => (
+        <form onSubmit={handleSubmit} className="p-5 space-y-3">
+          {[
+            { key: 'currentPassword', label: 'Current Password', showKey: 'cur' },
+            { key: 'newPassword',     label: 'New Password',     showKey: 'new' },
+            { key: 'confirm',         label: 'Confirm Password', showKey: 'con' },
+          ].map(({ key, label, showKey }) => (
             <div key={key}>
-              <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5"
-                style={{ color: dark ? '#6e7681' : '#64748b' }}>{label}</label>
+              <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
               <div className="relative">
                 <input
                   type={show[showKey] ? 'text' : 'password'}
                   required
                   value={form[key]}
-                  onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
-                  className="w-full px-4 py-2.5 pr-10 rounded-xl text-[14px] border outline-none transition-all"
-                  style={inputStyle}
+                  onChange={f(key)}
+                  className="w-full px-3 py-2 pr-9 rounded-md text-sm border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="••••••••"
                 />
                 <button type="button" onClick={() => setShow(p => ({ ...p, [showKey]: !p[showKey] }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-70"
-                  style={{ color: dark ? '#6e7681' : '#94a3b8' }}>
-                  {show[showKey] ? <EyeOff size={15} /> : <Eye size={15} />}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  {show[showKey] ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
             </div>
           ))}
-
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-2 pt-2">
             <button type="button" onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-[14px] font-medium border transition-all"
-              style={{ borderColor, color: dark ? '#6e7681' : '#64748b', background: 'transparent' }}>
+              className="flex-1 py-2 rounded-md text-sm font-medium text-slate-700 border border-slate-300 hover:bg-slate-50">
               Cancel
             </button>
             <button type="submit" disabled={loading}
-              className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white transition-all disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)', boxShadow: '0 4px 12px rgba(122,46,46,0.35)' }}>
-              {loading ? 'Saving...' : 'Update Password'}
+              className="flex-1 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50">
+              {loading ? 'Saving...' : 'Update'}
             </button>
           </div>
         </form>
@@ -146,38 +102,18 @@ function PasswordModal({ onClose, dark }) {
   );
 }
 
-const typeIcon = { attendance: UserCheck, assignment: ClipboardList, result: BarChart2, notice: Bell, general: Info };
-const typeColor = { attendance: '#1E3535', assignment: '#8B3030', result: '#b87a00', notice: '#2a5080', general: '#64748b' };
-
-function timeAgo(date) {
-  const diff = (Date.now() - new Date(date)) / 1000;
-  if (diff < 60)   return 'just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
-}
-
-export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
+export default function Navbar({ onMenuToggle }) {
   const { user, logout } = useAuth();
-  const { dark } = useTheme();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const [dropOpen, setDropOpen]     = useState(false);
-  const [bellOpen, setBellOpen]     = useState(false);
-  const [pwModal, setPwModal]       = useState(false);
-  const [notifs, setNotifs]         = useState([]);
-  const dropRef  = useRef(null);
-  const bellRef  = useRef(null);
-  const meta = routeMeta[pathname] || { label: 'Apollo International College', section: '' };
-  const avatarGradient = roleColors[user?.role] || roleColors.student;
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const iv = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(iv);
-  }, []);
-  const today = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const { pathname }     = useLocation();
+  const navigate         = useNavigate();
+  const [dropOpen, setDropOpen] = useState(false);
+  const [bellOpen, setBellOpen] = useState(false);
+  const [pwModal, setPwModal]   = useState(false);
+  const [notifs, setNotifs]     = useState([]);
+  const dropRef = useRef(null);
+  const bellRef = useRef(null);
 
+  const label  = routeLabels[pathname] || 'Apollo LMS';
   const unread = notifs.filter(n => !n.read).length;
 
   const fetchNotifs = useCallback(async () => {
@@ -201,131 +137,72 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
   };
 
   useEffect(() => {
-    const handler = (e) => {
-      if (dropRef.current  && !dropRef.current.contains(e.target))  setDropOpen(false);
-      if (bellRef.current  && !bellRef.current.contains(e.target))   setBellOpen(false);
+    const h = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
+      if (bellRef.current && !bellRef.current.contains(e.target)) setBellOpen(false);
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
   }, []);
-
-  const navBg    = dark ? '#161b22' : '#ffffff';
-  const navBorder = dark ? '#21262d' : '#e8edf3';
 
   return (
     <>
-      <header
-        className={`flex items-center justify-between px-4 sm:px-6 gap-3 border-b transition-colors duration-300${headerType === 'fixed' ? ' sticky top-0 z-20' : ''}`}
-        style={{ height: 'var(--navbar-height)', minHeight: 'var(--navbar-height)', background: navBg, borderColor: navBorder, boxShadow: dark ? '0 1px 0 #21262d' : '0 1px 3px rgba(0,0,0,0.06)' }}>
+      <header className="sticky top-0 z-20 flex items-center justify-between px-4 gap-3 bg-white border-b border-slate-200"
+        style={{ height: 'var(--navbar-height)', minHeight: 'var(--navbar-height)' }}>
 
         {/* Left */}
         <div className="flex items-center gap-3 min-w-0">
-          <button onClick={onMenuToggle}
-            className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl transition-colors"
-            style={{ color: dark ? '#8b949e' : '#64748b' }}>
-            <Menu size={20} />
+          <button onClick={onMenuToggle} className="lg:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100">
+            <Menu size={18} />
           </button>
-          <div className="hidden sm:flex items-center gap-2 text-sm min-w-0">
-            <Home size={13} style={{ color: dark ? '#6e7681' : '#94a3b8' }} className="shrink-0" />
-            <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0" />
-            <span className="hidden md:inline shrink-0" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{meta.section}</span>
-            <ChevronRight size={11} style={{ color: dark ? '#484f58' : '#cbd5e1' }} className="shrink-0 hidden md:inline" />
-            <span className="font-semibold truncate" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{meta.label}</span>
-          </div>
-          <span className="sm:hidden font-bold text-[15px] truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>{meta.label}</span>
+          <h2 className="font-semibold text-slate-800 text-sm truncate">{label}</h2>
         </div>
 
         {/* Right */}
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden md:flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-full font-medium whitespace-nowrap"
-            style={{ background: dark ? '#21262d' : '#f0f4f8', color: dark ? '#8b949e' : '#64748b', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}` }}>
-            {today}
-            <span className="font-mono font-semibold tabular-nums" style={{ color: dark ? '#c9d1d9' : '#334155' }}>{timeStr}</span>
-          </span>
 
-          {/* Bell / Notifications */}
+          {/* Bell */}
           <div className="relative" ref={bellRef}>
             <button onClick={() => { setBellOpen(o => !o); setDropOpen(false); }}
-              className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-              style={{ background: dark ? '#21262d' : '#f0f4f8', border: `1px solid ${dark ? '#30363d' : '#e2e8f0'}`, color: dark ? '#8b949e' : '#64748b' }}>
-              <Bell size={16} />
+              className="relative p-2 rounded-md text-slate-500 hover:bg-slate-100 transition">
+              <Bell size={17} />
               {unread > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-bold text-white"
-                  style={{ background: '#dc2626' }}>
-                  {unread > 9 ? '9+' : unread}
-                </span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
               )}
             </button>
 
             {bellOpen && (
-              <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl shadow-2xl border overflow-hidden z-50"
-                style={{ background: dark ? '#131e1e' : '#ffffff', borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
-
-                {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b"
-                  style={{ borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
-                  <div className="flex items-center gap-2">
-                    <Bell size={14} style={{ color: '#1E3535' }} />
-                    <span className="text-[13px] font-bold" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
-                      Notifications
-                    </span>
-                    {unread > 0 && (
-                      <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold text-white"
-                        style={{ background: '#dc2626' }}>{unread}</span>
-                    )}
-                  </div>
+              <div className="absolute right-0 top-full mt-1 w-80 bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden z-50">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+                  <span className="text-sm font-semibold text-slate-800">
+                    Notifications {unread > 0 && <span className="ml-1 text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">{unread}</span>}
+                  </span>
                   {unread > 0 && (
-                    <button onClick={markAllRead}
-                      className="flex items-center gap-1 text-[11px] font-semibold transition-opacity hover:opacity-70"
-                      style={{ color: '#1E3535' }}>
+                    <button onClick={markAllRead} className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
                       <CheckCheck size={12} /> Mark all read
                     </button>
                   )}
                 </div>
-
-                {/* List */}
-                <div className="max-h-80 overflow-y-auto">
+                <div className="max-h-72 overflow-y-auto">
                   {notifs.length === 0 && (
-                    <div className="py-10 text-center">
-                      <Bell size={24} className="mx-auto mb-2 opacity-20" style={{ color: dark ? '#6e7681' : '#94a3b8' }} />
-                      <p className="text-[12px]" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>No notifications yet</p>
-                    </div>
+                    <p className="text-center text-sm text-slate-400 py-8">No notifications</p>
                   )}
                   {notifs.map(n => {
                     const Icon = typeIcon[n.type] || Info;
                     const clr  = typeColor[n.type] || '#64748b';
                     return (
-                      <div key={n._id}
-                        onClick={() => markRead(n._id)}
-                        className="flex gap-3 px-4 py-3 cursor-pointer border-b last:border-b-0 transition-colors"
-                        style={{
-                          borderColor: dark ? '#1e2e2e' : '#f0ebe8',
-                          background: n.read ? 'transparent' : (dark ? 'rgba(30,53,53,0.2)' : 'rgba(30,53,53,0.04)'),
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.04)' : '#f8f5f3'}
-                        onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : (dark ? 'rgba(30,53,53,0.2)' : 'rgba(30,53,53,0.04)')}>
-
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                          style={{ background: dark ? `${clr}22` : `${clr}15` }}>
-                          <Icon size={14} style={{ color: clr }} />
+                      <div key={n._id} onClick={() => markRead(n._id)}
+                        className={`flex gap-3 px-4 py-3 cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50 transition ${!n.read ? 'bg-blue-50/50' : ''}`}>
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                          style={{ background: `${clr}18` }}>
+                          <Icon size={13} style={{ color: clr }} />
                         </div>
-
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="text-[12px] font-semibold leading-snug" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>
-                              {n.title}
-                            </p>
-                            {!n.read && (
-                              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1" />
-                            )}
-                          </div>
-                          <p className="text-[11px] mt-0.5 leading-relaxed" style={{ color: dark ? '#6e7681' : '#64748b' }}>
-                            {n.message}
-                          </p>
-                          <p className="text-[10px] mt-1 font-medium" style={{ color: dark ? '#484f58' : '#94a3b8' }}>
-                            {timeAgo(n.createdAt)}
-                          </p>
+                          <p className="text-xs font-semibold text-slate-800 leading-tight">{n.title}</p>
+                          <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{n.message}</p>
+                          <p className="text-[10px] text-slate-400 mt-1">{timeAgo(n.createdAt)}</p>
                         </div>
+                        {!n.read && <span className="w-1.5 h-1.5 bg-blue-500 rounded-full shrink-0 mt-1.5" />}
                       </div>
                     );
                   })}
@@ -334,54 +211,36 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
             )}
           </div>
 
-          <div className="w-px h-6 hidden sm:block" style={{ background: dark ? '#21262d' : '#e2e8f0' }} />
-
-          {/* Avatar dropdown */}
+          {/* User menu */}
           <div className="relative" ref={dropRef}>
             <button onClick={() => setDropOpen(o => !o)}
-              className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-              <div className="text-right hidden sm:block">
-                <p className="text-[13px] font-semibold leading-none" style={{ color: dark ? '#c9d1d9' : '#1e293b' }}>{user?.name}</p>
-                <p className="text-[11px] mt-0.5 capitalize" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{user?.role}</p>
-              </div>
-              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0 overflow-hidden`}>
+              className="flex items-center gap-2 p-1.5 rounded-md hover:bg-slate-100 transition">
+              <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-semibold overflow-hidden shrink-0">
                 {user?.avatar
                   ? <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                   : user?.name?.[0]?.toUpperCase()}
               </div>
+              <span className="hidden sm:block text-sm font-medium text-slate-700 max-w-[120px] truncate">{user?.name}</span>
             </button>
 
             {dropOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl shadow-xl border overflow-hidden z-50"
-                style={{ background: dark ? '#131e1e' : '#ffffff', borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
-                <div className="px-4 py-3 border-b" style={{ borderColor: dark ? '#1e2e2e' : '#ede8e4' }}>
-                  <p className="text-[13px] font-semibold truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>{user?.name}</p>
-                  <p className="text-[11px] truncate capitalize" style={{ color: dark ? '#6e7681' : '#64748b' }}>{user?.role}</p>
+              <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-slate-200 rounded-lg shadow-xl overflow-hidden z-50">
+                <div className="px-3 py-2.5 border-b border-slate-100">
+                  <p className="text-xs font-semibold text-slate-800 truncate">{user?.name}</p>
+                  <p className="text-[11px] text-slate-400 capitalize">{user?.role}</p>
                 </div>
                 <div className="py-1">
                   <button onClick={() => { setDropOpen(false); navigate(`/${user?.role}/profile`); }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
-                    style={{ color: dark ? '#c9d1d9' : '#374151' }}
-                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2828' : '#f5faf7'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <User size={14} style={{ color: '#8B3030' }} />
-                    My Profile
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+                    <User size={13} className="text-slate-400" /> Profile
                   </button>
                   <button onClick={() => { setDropOpen(false); setPwModal(true); }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
-                    style={{ color: dark ? '#c9d1d9' : '#374151' }}
-                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2828' : '#f5faf7'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <KeyRound size={14} style={{ color: '#1E3535' }} />
-                    Change Password
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+                    <KeyRound size={13} className="text-slate-400" /> Change Password
                   </button>
                   <button onClick={logout}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium transition-colors text-left"
-                    style={{ color: dark ? '#f87171' : '#8B3030' }}
-                    onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <LogOut size={14} />
-                    Sign Out
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition text-left">
+                    <LogOut size={13} /> Sign Out
                   </button>
                 </div>
               </div>
@@ -390,7 +249,7 @@ export default function Navbar({ onMenuToggle, headerType = 'fixed' }) {
         </div>
       </header>
 
-      {pwModal && <PasswordModal onClose={() => setPwModal(false)} dark={dark} />}
+      {pwModal && <PasswordModal onClose={() => setPwModal(false)} />}
     </>
   );
 }

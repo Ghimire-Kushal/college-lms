@@ -22,11 +22,11 @@ export function ThemeProvider({ children }) {
     return () => mq.removeEventListener('change', h);
   }, []);
 
-  const dark = mode === 'dark' || (mode === 'system' && systemDark);
+  const dark = false; // UI is always light mode
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
-  }, [dark]);
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
