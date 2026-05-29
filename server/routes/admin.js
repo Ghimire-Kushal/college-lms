@@ -64,15 +64,16 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
 // ===== STUDENTS =====
 router.get('/students', ...adminOnly, async (req, res) => {
   try {
-    const { search, grade, section } = req.query;
+    const { search, grade, section, stream } = req.query;
     const query = { role: 'student' };
     if (search) query.$or = [
       { name: { $regex: search, $options: 'i' } },
       { email: { $regex: search, $options: 'i' } },
       { rollNo: { $regex: search, $options: 'i' } },
     ];
-    if (grade) query.grade = grade;
+    if (grade)   query.grade   = Number(grade);
     if (section) query.section = section;
+    if (stream)  query.stream  = stream;
 
     const students = await User.find(query)
       .select('-password')
@@ -221,10 +222,14 @@ router.delete('/teachers/:id', ...adminOnly, async (req, res) => {
 // ===== COURSES =====
 router.get('/courses', ...adminOnly, async (req, res) => {
   try {
-    const courses = await Course.find()
+    const { stream, grade } = req.query;
+    const query = {};
+    if (stream) query.stream = stream;
+    if (grade)  query.grade  = Number(grade);
+    const courses = await Course.find(query)
       .populate('teacher', 'name email')
       .populate('students', 'name rollNo')
-      .sort({ createdAt: -1 });
+      .sort({ stream: 1, grade: 1, name: 1 });
     res.json(courses);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -1,113 +1,74 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  GraduationCap, Users, BookOpen, Bell,
-  ArrowRight, Plus, Mail, Briefcase, UserCheck,
-  Edit2, Trash2, Award,
-} from 'lucide-react';
+import { GraduationCap, Users, BookOpen, Bell, ArrowRight, X, ChevronRight } from 'lucide-react';
 import StatCard from '../../components/StatCard';
-import Modal from '../../components/Modal';
-import { PrimaryBtn, FormField, ModalActions, inputCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-
-const TEACHER_COLORS = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#7A2E2E', '#2a4a8a'];
-
-const emptyForm = {
-  name: '', email: '', password: '', employeeId: '',
-  department: '', qualification: '', phone: '',
-};
 
 function Skeleton({ className = '' }) {
   return <div className={`animate-pulse bg-slate-100 rounded-xl ${className}`} />;
 }
 
+const FACULTY_META = {
+  'Science':          { icon: '🔬', color: '#2563eb' },
+  'Management':       { icon: '📊', color: '#059669' },
+  'Law':              { icon: '⚖️',  color: '#7c3aed' },
+  'Computer Science': { icon: '💻', color: '#0891b2' },
+  'Hotel Management': { icon: '🏨', color: '#d97706' },
+  'Humanities':       { icon: '📚', color: '#db2777' },
+  'Education':        { icon: '🎓', color: '#65a30d' },
+};
+
 export default function AdminDashboard() {
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [modal, setModal]     = useState(null);
-  const [form, setForm]       = useState(emptyForm);
-  const [selected, setSelected] = useState(null);
-  const [saving, setSaving]   = useState(false);
+  const [data, setData]             = useState(null);
+  const [loading, setLoading]       = useState(true);
+  const [selected, setSelected]     = useState(null);   // faculty name
+  const [detail, setDetail]         = useState(null);   // { students, courses }
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [activeClass, setActiveClass]     = useState(11);
   const navigate = useNavigate();
 
-  const cardBg  = '#ffffff';
-  const border  = '#e2e8f0';
-  const headClr = '#1e293b';
-  const subClr  = '#64748b';
-
-  const load = () =>
+  useEffect(() => {
     api.get('/admin/dashboard')
       .then(r => setData(r.data))
       .catch(() => toast.error('Failed to load dashboard'))
       .finally(() => setLoading(false));
+  }, []);
 
-  useEffect(() => { load(); }, []);
-
-  const f = k => e => setForm(p => ({ ...p, [k]: e.target.value }));
-
-  const openAdd = () => { setForm(emptyForm); setModal('add'); };
-  const openEdit = t => {
-    setSelected(t);
-    setForm({
-      name: t.name, email: t.email, password: '',
-      employeeId: t.employeeId || '', department: t.department || '',
-      qualification: t.qualification || '', phone: t.phone || '',
-    });
-    setModal('edit');
-  };
-  const openDelete = t => { setSelected(t); setModal('delete'); };
-
-  const handleSave = async e => {
-    e.preventDefault();
-    setSaving(true);
+  const selectFaculty = async (faculty) => {
+    if (selected === faculty.name) { setSelected(null); setDetail(null); return; }
+    setSelected(faculty.name);
+    setActiveClass(11);
+    setDetailLoading(true);
     try {
-      if (modal === 'add') {
-        await api.post('/admin/teachers', { ...form, role: 'teacher' });
-        toast.success('Faculty member added');
-      } else {
-        const payload = { ...form };
-        if (!payload.password) delete payload.password;
-        await api.put(`/admin/teachers/${selected._id}`, payload);
-        toast.success('Faculty member updated');
-      }
-      setModal(null); load();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save');
-    } finally { setSaving(false); }
-  };
-
-  const handleDelete = async () => {
-    setSaving(true);
-    try {
-      await api.delete(`/admin/teachers/${selected._id}`);
-      toast.success('Faculty member removed');
-      setModal(null); load();
-    } catch {
-      toast.error('Failed to delete');
-    } finally { setSaving(false); }
+      const [studRes, courseRes] = await Promise.all([
+        api.get('/admin/students', { params: { stream: faculty.name, limit: 100 } }),
+        api.get('/admin/courses',  { params: { stream: faculty.name } }),
+      ]);
+      setDetail({ students: studRes.data, courses: courseRes.data });
+    } catch { toast.error('Failed to load faculty details'); }
+    finally { setDetailLoading(false); }
   };
 
   if (loading) return (
     <div className="space-y-5">
-      <Skeleton className="h-32" />
+      <Skeleton className="h-28" />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28" />)}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <Skeleton className="lg:col-span-3 h-72" />
-        <Skeleton className="lg:col-span-2 h-72" />
-      </div>
+      <Skeleton className="h-48" />
       <Skeleton className="h-36" />
     </div>
   );
 
-  const teachers = data?.teachers || [];
+  const meta = selected ? (FACULTY_META[selected] || { icon: '📖', color: '#64748b' }) : null;
+  const filteredStudents = detail?.students?.filter(s => s.grade === activeClass) || [];
+  const filteredCourses  = detail?.courses?.filter(c => Number(c.grade) === activeClass) || [];
 
   return (
     <div className="space-y-5">
 
-      {/* Welcome banner */}
+      {/* ── Welcome banner ── */}
       <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden relative"
         style={{ background: 'linear-gradient(135deg,#1d4ed8,#2563eb)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
@@ -115,7 +76,7 @@ export default function AdminDashboard() {
         <div>
           <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider">Admin Portal</p>
           <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Welcome back! 👋</h2>
-          <p className="text-blue-200/70 text-sm mt-1">Here's an overview of your institution today.</p>
+          <p className="text-blue-200/70 text-sm mt-1">Canvas Academy Udayapur — overview for today.</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.12)' }}>
@@ -124,336 +85,251 @@ export default function AdminDashboard() {
           </div>
           <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.12)' }}>
             <p className="text-2xl font-bold text-white">{data?.totalCourses ?? 0}</p>
-            <p className="text-blue-200 text-[11px] font-medium mt-0.5">Courses</p>
+            <p className="text-blue-200 text-[11px] font-medium mt-0.5">Subjects</p>
           </div>
         </div>
       </div>
 
-      {/* Stat cards */}
+      {/* ── Stat cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard title="Total Students" value={data?.totalStudents ?? 0} icon={GraduationCap} color="maroon" />
-        <StatCard title="Total Teachers" value={data?.totalTeachers ?? 0} icon={Users}         color="teal"  />
-        <StatCard title="Active Subjects" value={data?.totalCourses ?? 0}  icon={BookOpen}     color="green" />
-        <StatCard title="Notices Posted" value={data?.totalNotices ?? 0}  icon={Bell}          color="gold"  />
+        <StatCard title="Total Students"  value={data?.totalStudents ?? 0} icon={GraduationCap} color="blue"   />
+        <StatCard title="Total Teachers"  value={data?.totalTeachers ?? 0} icon={Users}         color="teal"   />
+        <StatCard title="Active Subjects" value={data?.totalCourses ?? 0}  icon={BookOpen}      color="green"  />
+        <StatCard title="Notices Posted"  value={data?.totalNotices ?? 0}  icon={Bell}          color="yellow" />
       </div>
 
       {/* ── Faculties ── */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
+      <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-[15px] font-semibold text-slate-800">Faculties</h2>
-          <span className="text-[12px] text-slate-400">{(data?.faculties || []).filter(f => f.total > 0).length} active</span>
+          <p className="text-[12px] text-slate-400">Click a faculty to view details</p>
         </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {(data?.faculties || []).map(f => (
-            <div key={f.name} className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-2xl">{f.icon}</span>
-                <div className="w-2 h-2 rounded-full" style={{ background: f.total > 0 ? f.color : '#e2e8f0' }} />
-              </div>
-              <p className="text-[13px] font-bold text-slate-800 leading-tight">{f.name}</p>
-              <div className="mt-2 space-y-1">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-500">Class 11</span>
-                  <span className="font-semibold" style={{ color: f.color }}>{f.students11}</span>
-                </div>
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-500">Class 12</span>
-                  <span className="font-semibold" style={{ color: f.color }}>{f.students12}</span>
-                </div>
-                <div className="h-px bg-slate-100 my-1" />
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-500">Subjects</span>
-                  <span className="font-semibold text-slate-700">{f.courses}</span>
-                </div>
-              </div>
-              <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full rounded-full transition-all"
-                  style={{ width: `${data?.totalStudents ? Math.min(100, (f.total / data.totalStudents) * 100) : 0}%`, background: f.color }} />
-              </div>
-              <p className="text-[10px] text-slate-400 mt-1.5 text-right">{f.total} students total</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Faculty + Recent Students */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
-        {/* Faculty Management */}
-        <div className="lg:col-span-3 rounded-2xl border shadow-sm overflow-hidden"
-          style={{ background: cardBg, borderColor: border }}>
-          {/* Header */}
-          <div className="px-5 py-4 border-b flex items-center justify-between"
-            style={{ borderColor: border, background: '#fafafa' }}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: '#e8f4f1' }}>
-                <Briefcase size={15} style={{ color: '#0f766e' }} />
-              </div>
-              <div>
-                <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Faculty</h2>
-                <p className="text-[11px]" style={{ color: subClr }}>{teachers.length} member{teachers.length !== 1 ? 's' : ''}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
+          {(data?.faculties || []).map(f => {
+            const m       = FACULTY_META[f.name] || { icon: '📖', color: '#64748b' };
+            const isActive = selected === f.name;
+            return (
               <button
-                onClick={() => navigate('/admin/teachers')}
-                className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
-                style={{ color: subClr, background: '#f1f5f9' }}>
-                View all <ArrowRight size={12} />
-              </button>
-              <PrimaryBtn onClick={openAdd} className="text-[12px] py-1.5 px-3">
-                <Plus size={13} /> Add Faculty
-              </PrimaryBtn>
-            </div>
-          </div>
-
-          {/* List */}
-          {teachers.length === 0 ? (
-            <div className="py-14 text-center">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
-                style={{ background: '#e8f4f1' }}>
-                <Users size={24} style={{ color: '#a0c4bb' }} />
-              </div>
-              <p className="text-[14px] font-semibold" style={{ color: headClr }}>No faculty members yet</p>
-              <p className="text-[12px] mt-1" style={{ color: subClr }}>Click "Add Faculty" to get started.</p>
-            </div>
-          ) : (
-            <div className="divide-y" style={{ borderColor: border }}>
-              {teachers.map((t, i) => (
-                <div key={t._id}
-                  className="group flex items-center gap-4 px-5 py-3.5 transition-colors"
-                  style={{ background: 'transparent' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#fafaf9'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-
-                  {/* Avatar */}
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
-                    style={{ background: TEACHER_COLORS[i % TEACHER_COLORS.length] }}>
-                    {t.name?.[0]?.toUpperCase()}
+                key={f.name}
+                onClick={() => selectFaculty(f)}
+                className="text-left border rounded-xl p-4 transition-all hover:shadow-md"
+                style={{
+                  borderColor:  isActive ? m.color : '#e2e8f0',
+                  background:   isActive ? `${m.color}08` : '#ffffff',
+                  boxShadow:    isActive ? `0 0 0 2px ${m.color}33` : undefined,
+                }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-2xl">{m.icon}</span>
+                  <div className="w-2 h-2 rounded-full" style={{ background: f.total > 0 ? m.color : '#e2e8f0' }} />
+                </div>
+                <p className="text-[13px] font-bold text-slate-800 leading-tight">{f.name}</p>
+                <div className="mt-2.5 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400">Class 11</span>
+                    <span className="font-semibold" style={{ color: m.color }}>{f.students11}</span>
                   </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-[13px] font-bold truncate" style={{ color: headClr }}>{t.name}</p>
-                      {t.employeeId && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                          style={{ background: '#e8f4f1', color: '#0f766e' }}>
-                          {t.employeeId}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      <span className="flex items-center gap-1 text-[11px]" style={{ color: subClr }}>
-                        <Mail size={10} /> {t.email}
-                      </span>
-                      {t.department && (
-                        <>
-                          <span style={{ color: subClr }}>·</span>
-                          <span className="flex items-center gap-1 text-[11px]" style={{ color: subClr }}>
-                            <Award size={10} /> {t.department}
-                          </span>
-                        </>
-                      )}
-                    </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400">Class 12</span>
+                    <span className="font-semibold" style={{ color: m.color }}>{f.students12}</span>
                   </div>
-
-                  {/* Status */}
-                  <div className="hidden sm:flex items-center gap-1.5 shrink-0">
-                    <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full"
-                      style={{ background: '#ecfdf5', color: '#059669' }}>
-                      <UserCheck size={10} /> Active
-                    </span>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                    <button onClick={() => openEdit(t)}
-                      className="p-1.5 rounded-lg transition-colors"
-                      style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
-                      title="Edit">
-                      <Edit2 size={13} />
-                    </button>
-                    <button onClick={() => openDelete(t)}
-                      className="p-1.5 rounded-lg transition-colors"
-                      style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
-                      title="Remove">
-                      <Trash2 size={13} />
-                    </button>
+                  <div className="h-px bg-slate-100 my-1.5" />
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400">Subjects</span>
+                    <span className="font-semibold text-slate-600">{f.courses}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="h-full rounded-full"
+                    style={{
+                      width: `${data?.totalStudents ? Math.min(100, (f.total / data.totalStudents) * 100) : 0}%`,
+                      background: m.color,
+                    }} />
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1.5 text-right">{f.total} students</p>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Recent Students */}
-        <div className="lg:col-span-2 rounded-2xl p-5 sm:p-6 border shadow-sm"
-          style={{ background: cardBg, borderColor: border }}>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Recent Students</h2>
-            <button
-              onClick={() => navigate('/admin/students')}
-              className="flex items-center gap-1 text-[11px] font-semibold transition-opacity hover:opacity-70"
-              style={{ color: '#2563eb' }}>
-              View all <ArrowRight size={12} />
-            </button>
-          </div>
-          <div className="space-y-3">
-            {!data?.recentStudents?.length && (
-              <div className="flex flex-col items-center py-8" style={{ color: subClr }}>
-                <GraduationCap size={28} className="mb-2 opacity-30" />
-                <p className="text-sm opacity-50">No students yet</p>
+        {/* ── Faculty detail panel ── */}
+        {selected && (
+          <div className="mt-5 border border-slate-200 rounded-xl overflow-hidden">
+
+            {/* Panel header */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100"
+              style={{ background: `${meta.color}08` }}>
+              <div className="flex items-center gap-3">
+                <span className="text-xl">{meta.icon}</span>
+                <div>
+                  <p className="font-bold text-slate-800 text-[14px]">{selected}</p>
+                  <p className="text-[11px] text-slate-400">
+                    {detail?.students?.length || 0} students &nbsp;·&nbsp; {detail?.courses?.length || 0} subjects
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => navigate('/admin/courses')}
+                  className="flex items-center gap-1 text-[12px] font-semibold transition hover:opacity-80"
+                  style={{ color: meta.color }}>
+                  View subjects <ChevronRight size={13} />
+                </button>
+                <button
+                  onClick={() => navigate('/admin/students')}
+                  className="flex items-center gap-1 text-[12px] font-semibold transition hover:opacity-80"
+                  style={{ color: meta.color }}>
+                  View students <ChevronRight size={13} />
+                </button>
+                <button onClick={() => { setSelected(null); setDetail(null); }}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                  <X size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Class tabs */}
+            <div className="flex gap-1 px-5 pt-4">
+              {[11, 12].map(g => {
+                const cnt = (detail?.students || []).filter(s => s.grade === g).length;
+                return (
+                  <button key={g}
+                    onClick={() => setActiveClass(g)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-semibold transition-all"
+                    style={activeClass === g
+                      ? { background: meta.color, color: '#fff' }
+                      : { background: '#f1f5f9', color: '#64748b' }
+                    }>
+                    <GraduationCap size={13} />
+                    Class {g}
+                    <span className="text-[11px] px-1.5 py-0.5 rounded-full font-medium"
+                      style={activeClass === g
+                        ? { background: 'rgba(255,255,255,0.25)', color: '#fff' }
+                        : { background: '#e2e8f0', color: '#64748b' }
+                      }>
+                      {cnt}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {detailLoading ? (
+              <div className="p-6 space-y-3">
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-10" />)}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+
+                {/* Students */}
+                <div className="p-5">
+                  <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                    Students — Class {activeClass}
+                  </p>
+                  {filteredStudents.length === 0 ? (
+                    <p className="text-[13px] text-slate-400 py-4 text-center">No students in Class {activeClass}</p>
+                  ) : (
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {filteredStudents.map((s, i) => {
+                        const colors = ['#2563eb','#059669','#7c3aed','#d97706','#0891b2','#db2777'];
+                        return (
+                          <div key={s._id} className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[12px] font-bold shrink-0"
+                              style={{ background: colors[i % colors.length] }}>
+                              {s.name[0]}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[13px] font-semibold text-slate-800 truncate">{s.name}</p>
+                              <p className="text-[11px] text-slate-400">{s.rollNo} · Section {s.section || '—'}</p>
+                            </div>
+                            <span className="text-[11px] font-mono text-slate-400 shrink-0">{s.rollNo}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Subjects */}
+                <div className="p-5">
+                  <p className="text-[12px] font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                    Subjects — Class {activeClass}
+                  </p>
+                  {filteredCourses.length === 0 ? (
+                    <p className="text-[13px] text-slate-400 py-4 text-center">No subjects in Class {activeClass}</p>
+                  ) : (
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {filteredCourses.map(c => (
+                        <div key={c._id} className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0">
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[12px] font-bold shrink-0"
+                            style={{ background: meta.color }}>
+                            {c.name[0]}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-semibold text-slate-800 truncate">{c.name}</p>
+                            <p className="text-[11px] text-slate-400">{c.code} · {c.students?.length || 0} students</p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+                              style={{ background: c.teacher ? meta.color : '#cbd5e1' }}>
+                              {c.teacher?.name?.[0] || '?'}
+                            </div>
+                            <span className="text-[11px] text-slate-400 hidden sm:block truncate max-w-[80px]">
+                              {c.teacher?.name || <span className="italic text-rose-400">—</span>}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
-            {data?.recentStudents?.map((s, i) => {
-              const colors = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#7A2E2E'];
+          </div>
+        )}
+      </div>
+
+      {/* ── Recent Notices ── */}
+      <div className="bg-white border border-slate-200 rounded-xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[15px] font-semibold text-slate-800">Recent Notices</h2>
+          <button onClick={() => navigate('/admin/notices')}
+            className="flex items-center gap-1 text-[12px] font-semibold text-blue-600 hover:text-blue-800 transition">
+            View all <ArrowRight size={12} />
+          </button>
+        </div>
+        {!data?.recentNotices?.length ? (
+          <p className="text-sm text-slate-400 py-4 text-center">No notices yet</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {data.recentNotices.map((n, i) => {
+              const colors = [
+                { bg: '#fef9ec', border: '#f5e8c0', icon: '#d97706' },
+                { bg: '#fef0f0', border: '#f5d0d0', icon: '#2563eb' },
+                { bg: '#edf7f5', border: '#c5e8e2', icon: '#0f766e' },
+              ];
+              const nc = colors[i % colors.length];
               return (
-                <div key={s._id} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
-                    style={{ background: colors[i % colors.length] }}>
-                    {s.name[0]}
+                <div key={n._id} className="flex items-start gap-3 p-3.5 rounded-xl border"
+                  style={{ background: nc.bg, borderColor: nc.border }}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: nc.border }}>
+                    <Bell size={13} style={{ color: nc.icon }} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{s.name}</p>
-                    <p className="text-[11px]" style={{ color: subClr }}>{s.rollNo} · Class {s.grade} {s.stream}</p>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-slate-800 truncate">{n.title}</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      {n.postedBy?.name} · {new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </p>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full border shrink-0"
-                    style={{ background: '#f5f0ed', color: subClr, borderColor: border }}>
-                    §{s.section || '—'}
-                  </span>
                 </div>
               );
             })}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Recent Notices */}
-      <div className="rounded-2xl p-5 sm:p-6 border shadow-sm"
-        style={{ background: cardBg, borderColor: border }}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Recent Notices</h2>
-          <button
-            onClick={() => navigate('/admin/notices')}
-            className="flex items-center gap-1 text-xs font-semibold transition-opacity hover:opacity-70"
-            style={{ color: '#2563eb' }}>
-            View all <ArrowRight size={13} />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {!data?.recentNotices?.length && (
-            <p className="text-sm col-span-3" style={{ color: subClr }}>No notices yet</p>
-          )}
-          {data?.recentNotices?.map((n, i) => {
-            const noticeColors = [
-              { bg: '#fef9ec', border: '#f5e8c0', icon: '#d97706' },
-              { bg: '#fef0f0', border: '#f5d0d0', icon: '#2563eb' },
-              { bg: '#edf7f5', border: '#c5e8e2', icon: '#0f766e' },
-            ];
-            const nc = noticeColors[i % noticeColors.length];
-            return (
-              <div key={n._id} className="flex items-start gap-3 p-3.5 rounded-xl border transition-all hover:shadow-sm"
-                style={{ background: nc.bg, borderColor: nc.border }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: nc.border }}>
-                  <Bell size={14} style={{ color: nc.icon }} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{n.title}</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: subClr }}>
-                    {n.postedBy?.name} · {new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── Add / Edit Modal ── */}
-      {(modal === 'add' || modal === 'edit') && (
-        <Modal title={modal === 'add' ? 'Add Faculty Member' : 'Edit Faculty Member'} onClose={() => setModal(null)}>
-          <form onSubmit={handleSave} className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <FormField label="Full Name">
-                <input required value={form.name} onChange={f('name')} className={inputCls} placeholder="Dr. John Doe" />
-              </FormField>
-              <FormField label="Employee ID">
-                <input value={form.employeeId} onChange={f('employeeId')} className={inputCls} placeholder="EMP001" />
-              </FormField>
-            </div>
-            <FormField label="Email">
-              <input required type="email" value={form.email} onChange={f('email')} className={inputCls} placeholder="teacher@college.edu" />
-            </FormField>
-            <FormField label={modal === 'add' ? 'Password' : 'New Password (leave blank to keep)'}>
-              <input
-                type="password"
-                required={modal === 'add'}
-                value={form.password}
-                onChange={f('password')}
-                className={inputCls}
-                placeholder={modal === 'add' ? 'Minimum 6 characters' : 'Leave blank to keep current'}
-              />
-            </FormField>
-            <div className="grid grid-cols-2 gap-3">
-              <FormField label="Department">
-                <input value={form.department} onChange={f('department')} className={inputCls} placeholder="Computer Science" />
-              </FormField>
-              <FormField label="Qualification">
-                <input value={form.qualification} onChange={f('qualification')} className={inputCls} placeholder="Ph.D, M.Sc..." />
-              </FormField>
-            </div>
-            <FormField label="Phone">
-              <input value={form.phone} onChange={f('phone')} className={inputCls} placeholder="+977-98XXXXXXXX" />
-            </FormField>
-            <ModalActions
-              onCancel={() => setModal(null)}
-              loading={saving}
-              saveLabel={modal === 'add' ? 'Add Faculty' : 'Save Changes'}
-            />
-          </form>
-        </Modal>
-      )}
-
-      {/* ── Delete Confirm Modal ── */}
-      {modal === 'delete' && (
-        <Modal title="Remove Faculty Member" onClose={() => setModal(null)}>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-xl"
-              style={{ background: '#fff0f0', border: '1px solid #fca5a5' }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold text-white shrink-0"
-                style={{ background: '#2563eb' }}>
-                {selected?.name?.[0]?.toUpperCase()}
-              </div>
-              <div>
-                <p className="font-bold text-[14px]" style={{ color: headClr }}>{selected?.name}</p>
-                <p className="text-[12px]" style={{ color: subClr }}>{selected?.email}</p>
-              </div>
-            </div>
-            <p className="text-[13px]" style={{ color: subClr }}>
-              This will permanently remove this faculty member and revoke their access. This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button onClick={() => setModal(null)}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-medium border"
-                style={{ borderColor: border, color: subClr }}>
-                Cancel
-              </button>
-              <button onClick={handleDelete} disabled={saving}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white disabled:opacity-60 bg-red-600 hover:bg-red-700 transition"
-                >
-                {saving ? 'Removing…' : 'Remove Faculty'}
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 }
