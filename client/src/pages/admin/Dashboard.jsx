@@ -10,7 +10,6 @@ import Modal from '../../components/Modal';
 import { PrimaryBtn, FormField, ModalActions, inputCls } from '../../components/UI';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { useTheme } from '../../context/ThemeContext';
 
 const TEACHER_COLORS = ['#2563eb', '#0f766e', '#d97706', '#2a6648', '#7A2E2E', '#2a4a8a'];
 
@@ -26,17 +25,16 @@ function Skeleton({ className = '' }) {
 export default function AdminDashboard() {
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal]     = useState(null); // 'add' | 'edit' | 'delete'
+  const [modal, setModal]     = useState(null);
   const [form, setForm]       = useState(emptyForm);
   const [selected, setSelected] = useState(null);
   const [saving, setSaving]   = useState(false);
-  const { dark } = useTheme();
   const navigate = useNavigate();
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#ede8e4';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#94a3b8' : '#64748b';
+  const cardBg  = '#ffffff';
+  const border  = '#e2e8f0';
+  const headClr = '#1e293b';
+  const subClr  = '#64748b';
 
   const load = () =>
     api.get('/admin/dashboard')
@@ -111,22 +109,22 @@ export default function AdminDashboard() {
 
       {/* Welcome banner */}
       <div className="rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden relative"
-        >
+        style={{ background: 'linear-gradient(135deg,#1d4ed8,#2563eb)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'transparent', opacity: 0.15 }} />
+          style={{ background: 'rgba(255,255,255,0.08)' }} />
         <div>
-          <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Admin Portal</p>
+          <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider">Admin Portal</p>
           <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Welcome back! 👋</h2>
-          <p className="text-white/50 text-sm mt-1">Here's an overview of your institution today.</p>
+          <p className="text-blue-200/70 text-sm mt-1">Here's an overview of your institution today.</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.12)' }}>
             <p className="text-2xl font-bold text-white">{data?.totalStudents ?? 0}</p>
-            <p className="text-[#F2C04E] text-[11px] font-medium mt-0.5">Students</p>
+            <p className="text-blue-200 text-[11px] font-medium mt-0.5">Students</p>
           </div>
-          <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <div className="text-center px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.12)' }}>
             <p className="text-2xl font-bold text-white">{data?.totalCourses ?? 0}</p>
-            <p className="text-[#F2C04E] text-[11px] font-medium mt-0.5">Courses</p>
+            <p className="text-blue-200 text-[11px] font-medium mt-0.5">Courses</p>
           </div>
         </div>
       </div>
@@ -409,7 +407,7 @@ export default function AdminDashboard() {
                 Cancel
               </button>
               <button onClick={handleDelete} disabled={saving}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white disabled:opacity-60"
+                className="flex-1 py-2.5 rounded-xl text-[14px] font-semibold text-white disabled:opacity-60 bg-red-600 hover:bg-red-700 transition"
                 >
                 {saving ? 'Removing…' : 'Remove Faculty'}
               </button>

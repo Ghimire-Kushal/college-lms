@@ -4,7 +4,6 @@ import StatCard from '../../components/StatCard';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 
 function Skeleton({ className = '' }) {
   return <div className={`animate-pulse bg-slate-100 rounded-xl ${className}`} />;
@@ -35,7 +34,6 @@ export default function StudentDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { dark } = useTheme();
 
   useEffect(() => {
     api.get('/student/dashboard')
@@ -59,29 +57,29 @@ export default function StudentDashboard() {
     </div>
   );
 
-  const attPct  = parseFloat(data?.attendancePercentage || 0);
+  const attPct   = parseFloat(data?.attendancePercentage || 0);
   const isLowAtt = attPct < 75;
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#ede8e4';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = '#ffffff';
+  const border  = '#e2e8f0';
+  const headClr = '#1e293b';
+  const subClr  = '#64748b';
 
   return (
     <div className="space-y-5">
       {/* Welcome banner */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        >
+        style={{ background: 'linear-gradient(135deg,#0f766e,#0d9488)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'transparent', opacity: 0.18 }} />
-        <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Student Portal</p>
+          style={{ background: 'rgba(255,255,255,0.08)' }} />
+        <p className="text-teal-200 text-xs font-semibold uppercase tracking-wider">Student Portal</p>
         <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Hi, {user?.name?.split(' ')[0]}! 🎓</h2>
-        <p className="text-white/50 text-sm mt-1">Keep up the great work and stay on top of your studies.</p>
+        <p className="text-teal-200/70 text-sm mt-1">Keep up the great work and stay on top of your studies.</p>
       </div>
 
       {/* Attendance warning */}
       {isLowAtt && (
         <div className="flex items-center gap-3 p-4 rounded-xl border"
-          style={{ background: dark ? '#2a1414' : '#fff0f0', borderColor: dark ? '#5a2020' : '#fca5a5' }}>
+          style={{ background: '#fff0f0', borderColor: '#fca5a5' }}>
           <AlertTriangle size={18} className="shrink-0" style={{ color: '#2563eb' }} />
           <div>
             <p className="text-sm font-semibold" style={{ color: '#2563eb' }}>Attendance Warning</p>
