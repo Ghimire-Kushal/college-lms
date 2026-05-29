@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                     <button onClick={() => openEdit(t)}
                       className="p-1.5 rounded-lg transition-colors"
                       style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#1a2828' : '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#edf7f5'; e.currentTarget.style.color = '#0f766e'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                       title="Edit">
                       <Edit2 size={13} />
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
                     <button onClick={() => openDelete(t)}
                       className="p-1.5 rounded-lg transition-colors"
                       style={{ color: subClr }}
-                      onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#fff0f0'; e.currentTarget.style.color = '#2563eb'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}
                       title="Remove">
                       <Trash2 size={13} />
@@ -285,7 +285,7 @@ export default function AdminDashboard() {
                     <p className="text-[11px]" style={{ color: subClr }}>{s.studentId} · Sem {s.semester}</p>
                   </div>
                   <span className="text-[10px] px-2 py-0.5 rounded-full border shrink-0"
-                    style={{ background: dark ? '#1a2828' : '#f5f0ed', color: subClr, borderColor: border }}>
+                    style={{ background: '#f5f0ed', color: subClr, borderColor: border }}>
                     §{s.section || '—'}
                   </span>
                 </div>
@@ -313,9 +313,9 @@ export default function AdminDashboard() {
           )}
           {data?.recentNotices?.map((n, i) => {
             const noticeColors = [
-              { bg: dark ? '#1a1a0d' : '#fef9ec', border: dark ? '#2a2808' : '#f5e8c0', icon: '#d97706' },
-              { bg: dark ? '#1a1414' : '#fef0f0', border: dark ? '#2e1a1a' : '#f5d0d0', icon: '#2563eb' },
-              { bg: dark ? '#0d1a1a' : '#edf7f5', border: dark ? '#122828' : '#c5e8e2', icon: '#0f766e' },
+              { bg: '#fef9ec', border: '#f5e8c0', icon: '#d97706' },
+              { bg: '#fef0f0', border: '#f5d0d0', icon: '#2563eb' },
+              { bg: '#edf7f5', border: '#c5e8e2', icon: '#0f766e' },
             ];
             const nc = noticeColors[i % noticeColors.length];
             return (
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
         <Modal title="Remove Faculty Member" onClose={() => setModal(null)}>
           <div className="space-y-4">
             <div className="flex items-center gap-4 p-4 rounded-xl"
-              style={{ background: dark ? '#2a1414' : '#fff0f0', border: '1px solid #fca5a5' }}>
+              style={{ background: '#fff0f0', border: '1px solid #fca5a5' }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold text-white shrink-0"
                 style={{ background: '#2563eb' }}>
                 {selected?.name?.[0]?.toUpperCase()}

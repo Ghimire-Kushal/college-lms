@@ -1,23 +1,31 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law'];
+
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true },
+  name:     { type: String, required: true, trim: true },
+  email:    { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['admin', 'teacher', 'student'], required: true },
-  studentId: String,
-  teacherId: String,
-  semester: Number,
-  section: String,
-  phone: String,
-  address: String,
-  avatar: String,
-  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
-  // Teacher-specific fields
-  department:    { type: String },
-  qualification: { type: String },
+  role:     { type: String, enum: ['admin', 'teacher', 'student'], required: true },
+
+  // Student-specific
+  rollNo:   String,
+  grade:    { type: Number, enum: [11, 12] },   // Class 11 or 12
+  stream:   { type: String, enum: STREAMS },     // Science / Management / Humanities…
+  section:  String,                              // A, B, C
+
+  // Teacher-specific
+  teacherId:     String,
+  department:    String,
+  qualification: String,
   subjects:      [{ type: String }],
+
+  // Shared
+  phone:   String,
+  address: String,
+  avatar:  String,
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
