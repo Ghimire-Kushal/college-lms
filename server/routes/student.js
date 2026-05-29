@@ -173,8 +173,8 @@ router.post('/assignments/:id/submit', ...studentAuth, upload.single('file'), as
 router.get('/results', ...studentAuth, async (req, res) => {
   try {
     const results = await Result.find({ student: req.user.id })
-      .populate('course', 'name code credits')
-      .sort({ semester: 1, createdAt: -1 });
+      .populate('course', 'name code grade stream')
+      .sort({ grade: 1, createdAt: -1 });
     res.json(results);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -185,7 +185,7 @@ router.get('/results', ...studentAuth, async (req, res) => {
 router.get('/timetable', ...studentAuth, async (req, res) => {
   try {
     const student = await User.findById(req.user.id);
-    const timetable = await Timetable.find({ semester: student.semester, section: student.section })
+    const timetable = await Timetable.find({ grade: student.grade, section: student.section })
       .populate('course', 'name code')
       .populate('teacher', 'name')
       .sort({ startTime: 1 });
@@ -241,7 +241,7 @@ router.get('/feedback', ...studentAuth, async (req, res) => {
 router.get('/profile', ...studentAuth, async (req, res) => {
   try {
     const student = await User.findById(req.user.id)
-      .populate('enrolledCourses', 'name code credits semester')
+      .populate('enrolledCourses', 'name code grade stream')
       .select('-password');
     res.json(student);
   } catch (err) { res.status(500).json({ message: err.message }); }

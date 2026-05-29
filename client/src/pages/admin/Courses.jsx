@@ -5,7 +5,8 @@ import { PrimaryBtn, SecondaryBtn, Card, FormField, ModalActions, IconBtn, PageH
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
-const emptyForm = { name: '', code: '', description: '', credits: 3, semester: '', section: '' };
+const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law', 'Computer Science', 'Hotel Management'];
+const emptyForm = { name: '', code: '', description: '', grade: '', stream: '', section: '' };
 
 const COURSE_COLORS = [
   'from-indigo-500 to-indigo-600',
@@ -83,7 +84,8 @@ export default function Courses() {
                   <h3 className="font-bold text-slate-800 text-[15px] truncate">{c.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge color="indigo">{c.code}</Badge>
-                    <Badge color="slate">Sem {c.semester}</Badge>
+                    <Badge color="blue">Class {c.grade}</Badge>
+                    <Badge color="green">{c.stream}</Badge>
                     {c.section && <Badge color="slate">§{c.section}</Badge>}
                   </div>
                 </div>
@@ -100,9 +102,6 @@ export default function Courses() {
 
               <div className="flex items-center justify-between text-[12px] text-slate-500 pt-3 border-t border-slate-100">
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-700">{c.credits}</span> credits
-                  </span>
                   <span className="flex items-center gap-1">
                     <span className="font-semibold text-slate-700">{c.students?.length || 0}</span> students
                   </span>
@@ -131,14 +130,21 @@ export default function Courses() {
               <FormField label="Course Code">
                 <input required type="text" value={form.code} onChange={f('code')} className={inputCls} placeholder="CS101" />
               </FormField>
-              <FormField label="Semester">
-                <input required type="number" value={form.semester} onChange={f('semester')} className={inputCls} placeholder="1" />
+              <FormField label="Class">
+                <select required value={form.grade} onChange={f('grade')} className={inputCls}>
+                  <option value="">Select class…</option>
+                  <option value="11">Class 11</option>
+                  <option value="12">Class 12</option>
+                </select>
               </FormField>
-              <FormField label="Section">
+              <FormField label="Stream">
+                <select required value={form.stream} onChange={f('stream')} className={inputCls}>
+                  <option value="">Select stream…</option>
+                  {STREAMS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </FormField>
+              <FormField label="Section (optional)">
                 <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="A" />
-              </FormField>
-              <FormField label="Credits">
-                <input type="number" value={form.credits} onChange={f('credits')} className={inputCls} placeholder="3" />
               </FormField>
               <div className="col-span-2">
                 <FormField label="Description">

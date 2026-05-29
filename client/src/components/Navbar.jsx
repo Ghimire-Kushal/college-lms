@@ -113,7 +113,7 @@ export default function Navbar({ onMenuToggle }) {
   const dropRef = useRef(null);
   const bellRef = useRef(null);
 
-  const label  = routeLabels[pathname] || 'Apollo LMS';
+  const label  = routeLabels[pathname] || 'Canvas LMS';
   const unread = notifs.filter(n => !n.read).length;
 
   const fetchNotifs = useCallback(async () => {

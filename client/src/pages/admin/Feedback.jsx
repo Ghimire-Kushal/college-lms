@@ -207,8 +207,8 @@ export default function AdminFeedback() {
                           </div>
                           <p className="text-[12px]" style={{ color: subClr }}>
                             {fb.student?.name}
-                            {fb.student?.studentId && <span className="ml-1 opacity-60">· {fb.student.studentId}</span>}
-                            {fb.student?.semester && <span className="ml-1 opacity-60">· Sem {fb.student.semester}</span>}
+                            {fb.student?.rollNo && <span className="ml-1 opacity-60">· {fb.student.rollNo}</span>}
+                            {fb.student?.grade && <span className="ml-1 opacity-60">· Sem {fb.student.grade}</span>}
                             {fb.student?.section && <span className="opacity-60">/{fb.student.section}</span>}
                           </p>
                         </div>

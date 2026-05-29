@@ -5,7 +5,7 @@ import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalA
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
-const emptyForm = { student: '', course: '', semester: '', internalMarks: '', externalMarks: '', totalMarks: '', grade: '', remarks: '' };
+const emptyForm = { student: '', course: '', internalMarks: '', externalMarks: '', totalMarks: '', grade: '', remarks: '' };
 
 const gradeInfo = {
   'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue',
@@ -55,7 +55,7 @@ export default function AdminResults() {
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <TableHead cols={['Student', 'Course', 'Semester', 'Internal', 'External', 'Total', 'Grade', 'Actions']} />
+            <TableHead cols={['Student', 'Course', 'Class', 'Internal', 'External', 'Total', 'Grade', 'Actions']} />
             <tbody>
               {results.length === 0 && <EmptyRow cols={8} message="No results yet" />}
               {results.map((r, i) => (
@@ -65,12 +65,12 @@ export default function AdminResults() {
                       <Avatar name={r.student?.name} index={i} size="sm" />
                       <div>
                         <p className="font-semibold text-slate-700 text-[13px]">{r.student?.name}</p>
-                        <p className="text-[11px] text-slate-400">{r.student?.studentId}</p>
+                        <p className="text-[11px] text-slate-400">{r.student?.rollNo}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3.5 text-[13px] text-slate-600">{r.course?.name}</td>
-                  <td className="px-4 py-3.5"><Badge color="indigo">Sem {r.semester}</Badge></td>
+                  <td className="px-4 py-3.5"><Badge color="indigo">Class {r.grade}</Badge></td>
                   <td className="px-4 py-3.5 text-[13px] text-slate-700 font-medium">{r.internalMarks}</td>
                   <td className="px-4 py-3.5 text-[13px] text-slate-700 font-medium">{r.externalMarks}</td>
                   <td className="px-4 py-3.5 text-[15px] font-bold text-slate-800">{r.totalMarks}</td>
@@ -106,7 +106,7 @@ export default function AdminResults() {
                   {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                 </select>
               </FormField>
-              <FormField label="Semester">      <input type="number" value={form.semester      || ''} onChange={f('semester')}      className={inputCls} /></FormField>
+              <FormField label="Class (11 or 12)">      <input type="number" value={form.grade      || ''} onChange={f('grade')}      className={inputCls} /></FormField>
               <FormField label="Internal Marks"><input type="number" value={form.internalMarks || ''} onChange={f('internalMarks')} className={inputCls} /></FormField>
               <FormField label="External Marks"><input type="number" value={form.externalMarks || ''} onChange={f('externalMarks')} className={inputCls} /></FormField>
               <FormField label="Total Marks">   <input type="number" value={form.totalMarks    || ''} onChange={f('totalMarks')}    className={inputCls} /></FormField>

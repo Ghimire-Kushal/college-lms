@@ -71,7 +71,7 @@ export default function StudentProgress() {
 
   // Compute per-semester stats
   const bySemester = results.reduce((acc, r) => {
-    const key = r.semester;
+    const key = r.grade;
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
     return acc;
@@ -79,30 +79,30 @@ export default function StudentProgress() {
 
   const semStats = Object.entries(bySemester).sort(([a], [b]) => +a - +b).map(([sem, items]) => {
     const graded = items.filter(r => r.grade && GRADE_POINTS[r.grade] !== undefined);
-    const totalCredits = graded.reduce((s, r) => s + (r.course?.credits || 3), 0);
-    const weightedPoints = graded.reduce((s, r) => s + (GRADE_POINTS[r.grade] || 0) * (r.course?.credits || 3), 0);
-    const gpa = totalCredits > 0 ? weightedPoints / totalCredits : 0;
+    const totalMarks = graded.reduce((s, r) => s + (r.course?.marks || 3), 0);
+    const weightedPoints = graded.reduce((s, r) => s + (GRADE_POINTS[r.grade] || 0) * (r.course?.marks || 3), 0);
+    const gpa = totalMarks > 0 ? weightedPoints / totalMarks : 0;
     const passed = items.filter(r => r.grade !== 'F').length;
     const avgTotal = items.length ? (items.reduce((s, r) => s + (r.totalMarks || 0), 0) / items.length) : 0;
-    return { sem: +sem, items, gpa, passed, total: items.length, avgTotal, totalCredits };
+    return { sem: +sem, items, gpa, passed, total: items.length, avgTotal, totalMarks };
   });
 
   // CGPA
   const allGraded = results.filter(r => r.grade && GRADE_POINTS[r.grade] !== undefined);
-  const totalCredits = allGraded.reduce((s, r) => s + (r.course?.credits || 3), 0);
-  const totalPoints  = allGraded.reduce((s, r) => s + (GRADE_POINTS[r.grade] || 0) * (r.course?.credits || 3), 0);
-  const cgpa = totalCredits > 0 ? (totalPoints / totalCredits) : 0;
+  const totalMarks = allGraded.reduce((s, r) => s + (r.course?.marks || 3), 0);
+  const totalPoints  = allGraded.reduce((s, r) => s + (GRADE_POINTS[r.grade] || 0) * (r.course?.marks || 3), 0);
+  const cgpa = totalMarks > 0 ? (totalPoints / totalMarks) : 0;
 
   const totalPassed  = results.filter(r => r.grade !== 'F').length;
   const passRate     = results.length > 0 ? Math.round((totalPassed / results.length) * 100) : 0;
   const enrolledSems = Object.keys(bySemester).length;
 
   const TOTAL_SEMESTERS = 8;
-  const progressPct = Math.round(((user?.semester || 1) / TOTAL_SEMESTERS) * 100);
+  const progressPct = Math.round(((user?.grade || 1) / TOTAL_SEMESTERS) * 100);
 
   if (loading) return (
     <div className="space-y-5">
-      <PageHeader title="Academic Progress" subtitle="Track your GPA, credits, and overall academic journey." />
+      <PageHeader title="Academic Progress" subtitle="Track your GPA, marks, and overall academic journey." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[...Array(4)].map((_, i) => <div key={i} className="h-28 animate-pulse rounded-2xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />)}
       </div>
@@ -114,15 +114,15 @@ export default function StudentProgress() {
 
   return (
     <div className="space-y-5">
-      <PageHeader title="Academic Progress" subtitle="Track your GPA, credits earned, and overall academic journey." />
+      <PageHeader title="Academic Progress" subtitle="Track your GPA, marks earned, and overall academic journey." />
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { icon: Award,        label: 'CGPA',            value: cgpa.toFixed(2),        sub: 'out of 4.00',              color: '#2563eb' },
-          { icon: BookOpen,     label: 'Credits Earned',  value: totalCredits,           sub: 'total credit hours',       color: '#0f766e' },
+          { icon: BookOpen,     label: 'Marks Earned',  value: totalMarks,           sub: 'total credit hours',       color: '#0f766e' },
           { icon: TrendingUp,   label: 'Pass Rate',       value: `${passRate}%`,         sub: `${totalPassed}/${results.length} subjects`, color: '#d97706' },
-          { icon: GraduationCap, label: 'Current Semester', value: user?.semester ? `Sem ${user.semester}` : 'N/A', sub: `of ${TOTAL_SEMESTERS} semesters`, color: '#4338ca' },
+          { icon: GraduationCap, label: 'Current Semester', value: user?.grade ? `Sem ${user.grade}` : 'N/A', sub: `of ${TOTAL_SEMESTERS} semesters`, color: '#4338ca' },
         ].map(({ icon: Icon, label, value, sub, color }) => (
           <div key={label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
             <div className="flex items-center justify-between mb-2">
@@ -143,10 +143,10 @@ export default function StudentProgress() {
           <div>
             <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Program Progress</h2>
             <p className="text-[12px] mt-0.5" style={{ color: subClr }}>
-              Semester {user?.semester || 1} of {TOTAL_SEMESTERS} · {user?.section ? `Section ${user.section}` : ''}
+              Semester {user?.grade || 1} of {TOTAL_SEMESTERS} · {user?.section ? `Section ${user.section}` : ''}
             </p>
           </div>
-          <Badge color="indigo">Sem {user?.semester || 1}</Badge>
+          <Badge color="indigo">Class {user?.grade || 1}</Badge>
         </div>
         <div className="flex items-center gap-4 mb-3">
           <ProgressRing pct={progressPct} color="#8B3030" size={80} />
@@ -154,8 +154,8 @@ export default function StudentProgress() {
             <div className="flex gap-2 mb-3 flex-wrap">
               {[...Array(TOTAL_SEMESTERS)].map((_, i) => {
                 const sem = i + 1;
-                const done = sem < (user?.semester || 1);
-                const current = sem === (user?.semester || 1);
+                const done = sem < (user?.grade || 1);
+                const current = sem === (user?.grade || 1);
                 return (
                   <div key={sem} className="flex flex-col items-center gap-1">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold transition-all"
@@ -195,7 +195,7 @@ export default function StudentProgress() {
             </div>
           ) : (
             <div className="p-5 space-y-4">
-              {semStats.map(({ sem, gpa, passed, total, avgTotal, totalCredits: tc }) => {
+              {semStats.map(({ sem, gpa, passed, total, avgTotal, totalMarks: tc }) => {
                 const pct = (gpa / 4.0) * 100;
                 const clr = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#0f766e' : gpa >= 2.5 ? '#d97706' : '#2563eb';
                 return (
@@ -215,7 +215,7 @@ export default function StudentProgress() {
                         style={{ width: `${Math.min(pct, 100)}%`, background: clr }} />
                     </div>
                     <p className="text-[10px] mt-1" style={{ color: subClr }}>
-                      {passed}/{total} passed · {tc} credits
+                      {passed}/{total} passed · {tc} marks
                     </p>
                   </div>
                 );
@@ -254,7 +254,7 @@ export default function StudentProgress() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{c.name}</p>
-                    <p className="text-[11px]" style={{ color: subClr }}>{c.code} · {c.credits || 3} credits</p>
+                    <p className="text-[11px]" style={{ color: subClr }}>{c.code} · {c.marks || 3} marks</p>
                   </div>
                   {latest?.grade ? (
                     <Badge color={GRADE_COLOR[latest.grade] || 'slate'}>{latest.grade}</Badge>
@@ -277,8 +277,8 @@ export default function StudentProgress() {
               <div className="px-5 py-3.5 border-b flex items-center justify-between"
                 style={{ borderColor: border, background: dark ? '#1a2828' : '#f8fafc' }}>
                 <h3 className="font-bold text-[14px]" style={{ color: headClr }}>Semester {sem}</h3>
-                <Badge color={sem === (user?.semester || 1) ? 'red' : 'slate'}>
-                  {sem === (user?.semester || 1) ? 'Current' : 'Completed'}
+                <Badge color={sem === (user?.grade || 1) ? 'red' : 'slate'}>
+                  {sem === (user?.grade || 1) ? 'Current' : 'Completed'}
                 </Badge>
               </div>
               <div className="overflow-x-auto">

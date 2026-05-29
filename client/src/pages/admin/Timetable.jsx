@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_COLORS = ['bg-indigo-50 text-indigo-700 border-indigo-100', 'bg-sky-50 text-sky-700 border-sky-100', 'bg-emerald-50 text-emerald-700 border-emerald-100', 'bg-violet-50 text-violet-700 border-violet-100', 'bg-amber-50 text-amber-700 border-amber-100', 'bg-rose-50 text-rose-700 border-rose-100'];
-const emptyForm = { course: '', teacher: '', dayOfWeek: 'Monday', startTime: '', endTime: '', room: '', semester: '', section: '' };
+const emptyForm = { course: '', teacher: '', dayOfWeek: 'Monday', startTime: '', endTime: '', room: '', grade: '', section: '' };
 
 export default function Timetable() {
   const [entries, setEntries]   = useState([]);
@@ -131,10 +131,10 @@ export default function Timetable() {
               </FormField>
             </div>
 
-            {/* Semester + Section */}
+            {/* Class + Section */}
             <div className="grid grid-cols-2 gap-4">
-              <FormField label="Semester">
-                <input type="number" min="1" max="8" value={form.semester} onChange={f('semester')} className={inputCls} placeholder="e.g. 1" />
+              <FormField label="Class (11 or 12)">
+                <input type="number" value={form.grade} onChange={f('grade')} className={inputCls} placeholder="e.g. 1" />
               </FormField>
               <FormField label="Section">
                 <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="e.g. A" />

@@ -13,9 +13,11 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 
+const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law', 'Computer Science', 'Hotel Management'];
+
 const emptyForm = {
-  name: '', email: '', password: '', studentId: '',
-  semester: '', section: '', phone: '', address: '',
+  name: '', email: '', password: '', rollNo: '',
+  grade: '', stream: '', section: '', phone: '', address: '',
 };
 
 // ── Sync Result Banner ────────────────────────────────────
@@ -242,7 +244,7 @@ export default function Students() {
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <TableHead cols={['Student', 'ID', 'Semester', 'Section', 'Courses', 'Actions']} />
+            <TableHead cols={['Student', 'Roll No.', 'Class', 'Stream', 'Section', 'Subjects', 'Actions']} />
             <tbody>
               {students.length === 0 && <EmptyRow cols={7} message="No students found" />}
               {students.map((s, i) => (
@@ -256,10 +258,11 @@ export default function Students() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3.5"><Badge color="slate">{s.studentId || '—'}</Badge></td>
-                  <td className="px-4 py-3.5"><Badge color="indigo">Sem {s.semester || '—'}</Badge></td>
+                  <td className="px-4 py-3.5"><Badge color="slate">{s.rollNo || '—'}</Badge></td>
+                  <td className="px-4 py-3.5"><Badge color="indigo">Class {s.grade || '—'}</Badge></td>
+                  <td className="px-4 py-3.5"><Badge color="blue">{s.stream || '—'}</Badge></td>
                   <td className="px-4 py-3.5 text-[13px] text-slate-500">{s.section || '—'}</td>
-                  <td className="px-4 py-3.5"><Badge color="purple">{s.enrolledCourses?.length || 0} courses</Badge></td>
+                  <td className="px-4 py-3.5"><Badge color="purple">{s.enrolledCourses?.length || 0} subjects</Badge></td>
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-1">
                       <IconBtn icon={Edit2}     onClick={() => openEdit(s)}          color="slate" title="Edit" />
@@ -288,14 +291,24 @@ export default function Students() {
               <FormField label={modal === 'add' ? 'Password' : 'New Password (optional)'}>
                 <input type="password" required={modal === 'add'} value={form.password} onChange={f('password')} className={inputCls} placeholder="••••••••" />
               </FormField>
-              <FormField label="Student ID">
-                <input type="text"   value={form.studentId} onChange={f('studentId')} className={inputCls} placeholder="STU001" />
+              <FormField label="Roll No.">
+                <input type="text" value={form.rollNo} onChange={f('rollNo')} className={inputCls} placeholder="11-SCI-001" />
               </FormField>
-              <FormField label="Semester">
-                <input type="number" value={form.semester}  onChange={f('semester')}  className={inputCls} placeholder="1" />
+              <FormField label="Class">
+                <select value={form.grade} onChange={f('grade')} className={inputCls}>
+                  <option value="">Select class…</option>
+                  <option value="11">Class 11</option>
+                  <option value="12">Class 12</option>
+                </select>
+              </FormField>
+              <FormField label="Stream">
+                <select value={form.stream} onChange={f('stream')} className={inputCls}>
+                  <option value="">Select stream…</option>
+                  {STREAMS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
               </FormField>
               <FormField label="Section">
-                <input type="text"   value={form.section}   onChange={f('section')}   className={inputCls} placeholder="A" />
+                <input type="text" value={form.section} onChange={f('section')} className={inputCls} placeholder="A" />
               </FormField>
               <FormField label="Phone">
                 <input type="text"   value={form.phone}     onChange={f('phone')}     className={inputCls} placeholder="+1 555 0100" />

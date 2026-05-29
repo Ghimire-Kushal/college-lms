@@ -264,7 +264,7 @@ export default function TeacherAssignments() {
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold" style={{ color: headClr }}>{s.student?.name}</p>
                   <p className="text-[11px]" style={{ color: subClr }}>
-                    {s.student?.studentId} · {new Date(s.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    {s.student?.rollNo} · {new Date(s.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                   {s.content && <p className="text-[11px] mt-0.5 line-clamp-1" style={{ color: subClr }}>{s.content}</p>}
                 </div>

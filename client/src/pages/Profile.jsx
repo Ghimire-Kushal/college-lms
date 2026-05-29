@@ -162,9 +162,9 @@ export default function Profile() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
                   {profile?.role}
                 </span>
-                {profile?.studentId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.studentId}</span>}
+                {profile?.rollNo && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>Roll No: {profile.rollNo}</span>}
                 {profile?.teacherId && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>ID: {profile.teacherId}</span>}
-                {profile?.semester  && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>Sem {profile.semester} · {profile.section}</span>}
+                {profile?.grade  && <span className="text-[11px] px-2 py-0.5 rounded-full border" style={{ borderColor: border, color: subClr }}>Class {profile.grade} {profile.stream} · §{profile.section}</span>}
                 <span className="text-[11px]" style={{ color: subClr }}>
                   Since {new Date(profile?.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </span>

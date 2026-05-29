@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law'];
+const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law', 'Computer Science', 'Hotel Management'];
 
 const userSchema = new mongoose.Schema({
   name:     { type: String, required: true, trim: true },

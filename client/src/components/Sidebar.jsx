@@ -83,8 +83,8 @@ export default function Sidebar({ isOpen, onClose }) {
             <img src="/logo.svg" alt="" className="w-5 h-5 object-contain brightness-0 invert" />
           </div>
           <div className="min-w-0">
-            <p className="font-semibold text-slate-800 text-[13px] leading-tight truncate">Apollo International</p>
-            <p className="text-[11px] text-slate-500 truncate">College LMS</p>
+            <p className="font-semibold text-slate-800 text-[13px] leading-tight truncate">Canvas Academy</p>
+            <p className="text-[11px] text-slate-500 truncate">+2 College LMS</p>
           </div>
         </div>
         <button onClick={onClose} className="lg:hidden p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100">

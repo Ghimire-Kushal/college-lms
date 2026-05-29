@@ -12,6 +12,14 @@ const Feedback = require('../models/Feedback');
 const adminOnly = [auth, authorize('admin')];
 
 // Dashboard
+const FACULTIES = [
+  { name: 'Science',          icon: '🔬', color: '#2563eb' },
+  { name: 'Management',       icon: '📊', color: '#059669' },
+  { name: 'Law',              icon: '⚖️',  color: '#7c3aed' },
+  { name: 'Computer Science', icon: '💻', color: '#0891b2' },
+  { name: 'Hotel Management', icon: '🏨', color: '#d97706' },
+];
+
 router.get('/dashboard', ...adminOnly, async (req, res) => {
   try {
     const [totalStudents, totalTeachers, totalCourses, totalNotices] = await Promise.all([
@@ -21,10 +29,22 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
       Notice.countDocuments({ isActive: true }),
     ]);
 
+    // Faculty-wise stats
+    const faculties = await Promise.all(
+      FACULTIES.map(async (f) => {
+        const [students11, students12, courses] = await Promise.all([
+          User.countDocuments({ role: 'student', isActive: true, stream: f.name, grade: 11 }),
+          User.countDocuments({ role: 'student', isActive: true, stream: f.name, grade: 12 }),
+          Course.countDocuments({ isActive: true, stream: f.name }),
+        ]);
+        return { ...f, students11, students12, total: students11 + students12, courses };
+      })
+    );
+
     const recentStudents = await User.find({ role: 'student', isActive: true })
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('name email studentId semester section createdAt');
+      .select('name email rollNo grade stream section createdAt');
 
     const recentNotices = await Notice.find({ isActive: true })
       .sort({ createdAt: -1 })
@@ -33,9 +53,9 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
 
     const teachers = await User.find({ role: 'teacher', isActive: true })
       .sort({ createdAt: -1 })
-      .select('name email employeeId department qualification createdAt');
+      .select('name email teacherId department qualification createdAt');
 
-    res.json({ totalStudents, totalTeachers, totalCourses, totalNotices, recentStudents, recentNotices, teachers });
+    res.json({ totalStudents, totalTeachers, totalCourses, totalNotices, faculties, recentStudents, recentNotices, teachers });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -44,14 +64,14 @@ router.get('/dashboard', ...adminOnly, async (req, res) => {
 // ===== STUDENTS =====
 router.get('/students', ...adminOnly, async (req, res) => {
   try {
-    const { search, semester, section } = req.query;
+    const { search, grade, section } = req.query;
     const query = { role: 'student' };
     if (search) query.$or = [
       { name: { $regex: search, $options: 'i' } },
       { email: { $regex: search, $options: 'i' } },
-      { studentId: { $regex: search, $options: 'i' } },
+      { rollNo: { $regex: search, $options: 'i' } },
     ];
-    if (semester) query.semester = semester;
+    if (grade) query.grade = grade;
     if (section) query.section = section;
 
     const students = await User.find(query)
@@ -149,7 +169,7 @@ router.get('/teachers', ...adminOnly, async (req, res) => {
     // Attach assigned courses to each teacher
     const teacherIds = teachers.map(t => t._id);
     const courses = await Course.find({ teacher: { $in: teacherIds }, isActive: true })
-      .select('name code semester teacher');
+      .select('name code grade teacher');
 
     const teachersWithCourses = teachers.map(t => {
       const assigned = courses.filter(c => c.teacher?.toString() === t._id.toString());
@@ -203,7 +223,7 @@ router.get('/courses', ...adminOnly, async (req, res) => {
   try {
     const courses = await Course.find()
       .populate('teacher', 'name email')
-      .populate('students', 'name studentId')
+      .populate('students', 'name rollNo')
       .sort({ createdAt: -1 });
     res.json(courses);
   } catch (err) {
@@ -257,9 +277,9 @@ router.patch('/courses/:id/assign-teacher', ...adminOnly, async (req, res) => {
 // ===== TIMETABLE =====
 router.get('/timetable', ...adminOnly, async (req, res) => {
   try {
-    const { semester, section } = req.query;
+    const { grade, section } = req.query;
     const query = {};
-    if (semester) query.semester = semester;
+    if (grade) query.grade = grade;
     if (section) query.section = section;
 
     const timetable = await Timetable.find(query)
@@ -356,7 +376,7 @@ router.get('/attendance', ...adminOnly, async (req, res) => {
     const attendance = await Attendance.find(query)
       .populate('course', 'name code')
       .populate('takenBy', 'name')
-      .populate('records.student', 'name studentId')
+      .populate('records.student', 'name rollNo')
       .sort({ date: -1 });
     res.json(attendance);
   } catch (err) {
@@ -364,13 +384,13 @@ router.get('/attendance', ...adminOnly, async (req, res) => {
   }
 });
 
-router.get('/attendance/summary/:studentId', ...adminOnly, async (req, res) => {
+router.get('/attendance/summary/:rollNo', ...adminOnly, async (req, res) => {
   try {
-    const student = await User.findById(req.params.studentId)
+    const student = await User.findById(req.params.rollNo)
       .select('-password')
       .populate('enrolledCourses', 'name code');
 
-    const attendanceRecords = await Attendance.find({ 'records.student': req.params.studentId })
+    const attendanceRecords = await Attendance.find({ 'records.student': req.params.rollNo })
       .populate('course', 'name code');
 
     const summary = {};
@@ -379,7 +399,7 @@ router.get('/attendance/summary/:studentId', ...adminOnly, async (req, res) => {
       if (!summary[courseId]) {
         summary[courseId] = { course: record.course, total: 0, present: 0, absent: 0, late: 0 };
       }
-      const sr = record.records.find(r => r.student.toString() === req.params.studentId);
+      const sr = record.records.find(r => r.student.toString() === req.params.rollNo);
       if (sr) {
         summary[courseId].total++;
         summary[courseId][sr.status]++;
@@ -395,13 +415,13 @@ router.get('/attendance/summary/:studentId', ...adminOnly, async (req, res) => {
 // ===== RESULTS =====
 router.get('/results', ...adminOnly, async (req, res) => {
   try {
-    const { semester, courseId } = req.query;
+    const { grade, courseId } = req.query;
     const query = {};
-    if (semester) query.semester = semester;
+    if (grade) query.grade = grade;
     if (courseId) query.course = courseId;
 
     const results = await Result.find(query)
-      .populate('student', 'name studentId semester section')
+      .populate('student', 'name rollNo grade section')
       .populate('course', 'name code')
       .sort({ createdAt: -1 });
     res.json(results);
@@ -414,7 +434,7 @@ router.post('/results', ...adminOnly, async (req, res) => {
   try {
     const result = new Result({ ...req.body, publishedBy: req.user.id });
     await result.save();
-    await result.populate([{ path: 'student', select: 'name studentId' }, { path: 'course', select: 'name code' }]);
+    await result.populate([{ path: 'student', select: 'name rollNo' }, { path: 'course', select: 'name code' }]);
     res.status(201).json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -424,7 +444,7 @@ router.post('/results', ...adminOnly, async (req, res) => {
 router.put('/results/:id', ...adminOnly, async (req, res) => {
   try {
     const result = await Result.findByIdAndUpdate(req.params.id, req.body, { new: true })
-      .populate('student', 'name studentId')
+      .populate('student', 'name rollNo')
       .populate('course', 'name code');
     res.json(result);
   } catch (err) {
@@ -449,7 +469,7 @@ router.get('/feedback', ...adminOnly, async (req, res) => {
     if (status) query.status = status;
     if (category) query.category = category;
     const feedbacks = await Feedback.find(query)
-      .populate('student', 'name studentId semester section')
+      .populate('student', 'name rollNo grade section')
       .sort({ createdAt: -1 });
     res.json(feedbacks);
   } catch (err) {
@@ -466,7 +486,7 @@ router.patch('/feedback/:id', ...adminOnly, async (req, res) => {
       req.params.id,
       { status },
       { new: true }
-    ).populate('student', 'name studentId semester section');
+    ).populate('student', 'name rollNo grade section');
     if (!fb) return res.status(404).json({ message: 'Feedback not found' });
     res.json(fb);
   } catch (err) {

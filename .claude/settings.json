@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs kill -9)"
+      "Bash(xargs kill -9)",
+      "Bash(npm run *)",
+      "Bash(node -e ' *)"
     ]
   }
 }

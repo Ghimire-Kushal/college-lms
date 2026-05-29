@@ -131,10 +131,49 @@ export default function AdminDashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard title="Total Students" value={data?.totalStudents ?? 0} icon={GraduationCap} color="maroon" gradient />
-        <StatCard title="Total Teachers" value={data?.totalTeachers ?? 0} icon={Users}         color="teal"   gradient />
-        <StatCard title="Active Courses" value={data?.totalCourses ?? 0}  icon={BookOpen}      color="green"  gradient />
-        <StatCard title="Notices Posted" value={data?.totalNotices ?? 0}  icon={Bell}          color="gold"   gradient />
+        <StatCard title="Total Students" value={data?.totalStudents ?? 0} icon={GraduationCap} color="maroon" />
+        <StatCard title="Total Teachers" value={data?.totalTeachers ?? 0} icon={Users}         color="teal"  />
+        <StatCard title="Active Subjects" value={data?.totalCourses ?? 0}  icon={BookOpen}     color="green" />
+        <StatCard title="Notices Posted" value={data?.totalNotices ?? 0}  icon={Bell}          color="gold"  />
+      </div>
+
+      {/* ── Faculties ── */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[15px] font-semibold text-slate-800">Faculties</h2>
+          <span className="text-[12px] text-slate-400">{(data?.faculties || []).filter(f => f.total > 0).length} active</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {(data?.faculties || []).map(f => (
+            <div key={f.name} className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-2xl">{f.icon}</span>
+                <div className="w-2 h-2 rounded-full" style={{ background: f.total > 0 ? f.color : '#e2e8f0' }} />
+              </div>
+              <p className="text-[13px] font-bold text-slate-800 leading-tight">{f.name}</p>
+              <div className="mt-2 space-y-1">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-500">Class 11</span>
+                  <span className="font-semibold" style={{ color: f.color }}>{f.students11}</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-500">Class 12</span>
+                  <span className="font-semibold" style={{ color: f.color }}>{f.students12}</span>
+                </div>
+                <div className="h-px bg-slate-100 my-1" />
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-500">Subjects</span>
+                  <span className="font-semibold text-slate-700">{f.courses}</span>
+                </div>
+              </div>
+              <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div className="h-full rounded-full transition-all"
+                  style={{ width: `${data?.totalStudents ? Math.min(100, (f.total / data.totalStudents) * 100) : 0}%`, background: f.color }} />
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1.5 text-right">{f.total} students total</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Faculty + Recent Students */}
@@ -282,7 +321,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{s.name}</p>
-                    <p className="text-[11px]" style={{ color: subClr }}>{s.studentId} · Sem {s.semester}</p>
+                    <p className="text-[11px]" style={{ color: subClr }}>{s.rollNo} · Class {s.grade} {s.stream}</p>
                   </div>
                   <span className="text-[10px] px-2 py-0.5 rounded-full border shrink-0"
                     style={{ background: '#f5f0ed', color: subClr, borderColor: border }}>

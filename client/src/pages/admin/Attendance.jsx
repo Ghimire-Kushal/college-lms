@@ -98,7 +98,7 @@ export default function AdminAttendance() {
                       {r.records?.map(rec => (
                         <tr key={rec._id} className="border-b border-slate-50 hover:bg-slate-50/40 last:border-0">
                           <td className="px-4 py-2.5 font-medium text-slate-700 text-[13px]">{rec.student?.name}</td>
-                          <td className="px-4 py-2.5 text-slate-400 text-[12px]">{rec.student?.studentId}</td>
+                          <td className="px-4 py-2.5 text-slate-400 text-[12px]">{rec.student?.rollNo}</td>
                           <td className="px-4 py-2.5">
                             <Badge color={statusMap[rec.status]?.color || 'slate'}>
                               {statusMap[rec.status]?.label || rec.status}

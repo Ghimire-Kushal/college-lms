@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law'];
+const STREAMS = ['Science', 'Management', 'Humanities', 'Education', 'Law', 'Computer Science', 'Hotel Management'];
 
 const courseSchema = new mongoose.Schema({
   name:        { type: String, required: true },

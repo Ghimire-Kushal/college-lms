@@ -68,7 +68,7 @@ export default function TeacherAttendance() {
   const openTake = (course) => {
     setDate(new Date().toISOString().split('T')[0]);
     setAttendance(
-      course.students?.map(s => ({ student: s._id, status: 'present', name: s.name, studentId: s.studentId, remarks: '' })) || []
+      course.students?.map(s => ({ student: s._id, status: 'present', name: s.name, rollNo: s.rollNo, remarks: '' })) || []
     );
     setActivePanel({ courseId: course._id, courseName: course.name, mode: 'take' });
     setTimeout(() => document.getElementById('attendance-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -77,7 +77,7 @@ export default function TeacherAttendance() {
   const openEdit = (record) => {
     setActivePanel({ courseId: record.course?._id, courseName: record.course?.name, mode: 'edit', record });
     setAttendance(record.records.map(r => ({
-      student: r.student._id, status: r.status, name: r.student.name, studentId: r.student.studentId, remarks: r.remarks || '',
+      student: r.student._id, status: r.status, name: r.student.name, rollNo: r.student.rollNo, remarks: r.remarks || '',
     })));
     setDate(new Date(record.date).toISOString().split('T')[0]);
     setTimeout(() => document.getElementById('attendance-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -288,7 +288,7 @@ export default function TeacherAttendance() {
 
                           <div className="flex-1 min-w-0">
                             <p className="text-[14px] font-semibold" style={{ color: isPresent ? headClr : '#dc2626' }}>{s.name}</p>
-                            <p className="text-[11px] mt-0.5 font-mono" style={{ color: subClr }}>{s.studentId}</p>
+                            <p className="text-[11px] mt-0.5 font-mono" style={{ color: subClr }}>{s.rollNo}</p>
                           </div>
 
                           {/* Present checkbox */}
@@ -626,7 +626,7 @@ export default function TeacherAttendance() {
                           <span className="font-semibold text-[13px]" style={{ color: headClr }}>{s.student.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-[12px] font-mono" style={{ color: subClr }}>{s.student.studentId}</td>
+                      <td className="px-4 py-3 text-[12px] font-mono" style={{ color: subClr }}>{s.student.rollNo}</td>
                       <td className="px-4 py-3 font-bold text-emerald-500">{s.present}</td>
                       <td className="px-4 py-3 font-bold text-red-500">{s.absent}</td>
                       <td className="px-4 py-3 font-bold text-amber-500">{s.late}</td>

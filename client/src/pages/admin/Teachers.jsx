@@ -153,7 +153,7 @@ export default function Teachers() {
                               <BookOpen size={12} className="text-indigo-400" />
                               <span className="font-semibold text-slate-700">{c.name}</span>
                               <Badge color="indigo">{c.code}</Badge>
-                              <Badge color="slate">Sem {c.semester}</Badge>
+                              <Badge color="slate">Class {c.grade}</Badge>
                             </div>
                           ))}
                         </div>

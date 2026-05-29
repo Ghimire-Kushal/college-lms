@@ -5,7 +5,7 @@ import { PrimaryBtn, Card, TableHead, EmptyRow, Avatar, Badge, FormField, ModalA
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
-const emptyForm = { student: '', course: '', semester: '', internalMarks: '', externalMarks: '', totalMarks: '', grade: '', remarks: '' };
+const emptyForm = { student: '', course: '', internalMarks: '', externalMarks: '', totalMarks: '', grade: '', remarks: '' };
 const gradeColor = { 'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue', 'C+': 'yellow', 'C': 'yellow', 'D': 'yellow', 'F': 'red' };
 
 export default function TeacherResults() {
@@ -69,7 +69,7 @@ export default function TeacherResults() {
                     </div>
                   </td>
                   <td className="px-4 py-3.5"><Badge color="indigo">{r.course?.code}</Badge></td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-600">{r.semester}</td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-600">{r.grade}</td>
                   <td className="px-4 py-3.5 text-[13px] font-medium text-slate-700">{r.internalMarks}</td>
                   <td className="px-4 py-3.5 text-[13px] font-medium text-slate-700">{r.externalMarks}</td>
                   <td className="px-4 py-3.5 text-[15px] font-bold text-slate-800">{r.totalMarks}</td>
@@ -92,7 +92,7 @@ export default function TeacherResults() {
                   {students.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
                 </select>
               </FormField>
-              <FormField label="Semester">      <input type="number" value={form.semester      || ''} onChange={f('semester')}      className={inputCls} /></FormField>
+              <FormField label="Class (11 or 12)">      <input type="number" value={form.grade      || ''} onChange={f('grade')}      className={inputCls} /></FormField>
               <FormField label="Internal Marks"><input type="number" value={form.internalMarks || ''} onChange={f('internalMarks')} className={inputCls} /></FormField>
               <FormField label="External Marks"><input type="number" value={form.externalMarks || ''} onChange={f('externalMarks')} className={inputCls} /></FormField>
               <FormField label="Total Marks">   <input type="number" value={form.totalMarks    || ''} onChange={f('totalMarks')}    className={inputCls} /></FormField>

@@ -45,7 +45,7 @@ export default function TeacherCourses() {
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-bold text-slate-800 text-[15px]">{c.name}</h3>
                     <Badge color="indigo">{c.code}</Badge>
-                    <Badge color="slate">Sem {c.semester}</Badge>
+                    <Badge color="slate">Class {c.grade}</Badge>
                     {c.section && <Badge color="slate">§{c.section}</Badge>}
                   </div>
                   <div className="flex items-center gap-4 mt-2 text-[12px] text-slate-500">
@@ -71,7 +71,7 @@ export default function TeacherCourses() {
                         <Avatar name={s.name} index={si} size="sm" />
                         <div className="flex-1 min-w-0">
                           <p className="text-[12px] font-semibold text-slate-700 truncate">{s.name}</p>
-                          <p className="text-[10px] text-slate-400">{s.studentId}</p>
+                          <p className="text-[10px] text-slate-400">{s.rollNo}</p>
                         </div>
                       </div>
                     ))}

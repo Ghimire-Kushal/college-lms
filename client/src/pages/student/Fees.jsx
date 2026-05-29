@@ -4,16 +4,16 @@ import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 
 const feeStructure = [
-  { label: 'Tuition Fee', amount: 'As per semester', period: 'Per Semester', color: '#2563eb' },
+  { label: 'Tuition Fee', amount: 'As per term', period: 'Per Term', color: '#2563eb' },
   { label: 'Exam Fee', amount: 'As per exam', period: 'Per Exam', color: '#0f766e' },
   { label: 'Library Fee', amount: 'Annual', period: 'Per Year', color: '#d97706' },
   { label: 'Sports & Activities', amount: 'Annual', period: 'Per Year', color: '#2a6648' },
-  { label: 'Lab / Practical Fee', amount: 'As applicable', period: 'Per Semester', color: '#4338ca' },
+  { label: 'Lab / Practical Fee', amount: 'As applicable', period: 'Per Term', color: '#4338ca' },
   { label: 'Administration Fee', amount: 'Annual', period: 'Per Year', color: '#0369a1' },
 ];
 
 const paymentMethods = [
-  { name: 'Bank Transfer', detail: 'Apollo International College Account', icon: '🏦' },
+  { name: 'Bank Transfer', detail: 'Canvas Academy Udayapur Account', icon: '🏦' },
   { name: 'Cash Payment', detail: 'Admin Office · Mon–Fri 10am–4pm', icon: '💵' },
   { name: 'eSewa / Khalti', detail: 'Digital payment coming soon', icon: '📱' },
 ];
@@ -57,8 +57,8 @@ export default function StudentFees() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { label: 'Student Name', value: user?.name },
-            { label: 'Student ID', value: user?.studentId || 'N/A' },
-            { label: 'Current Semester', value: user?.semester ? `Semester ${user.semester}` : 'N/A' },
+            { label: 'Roll No.', value: user?.rollNo || 'N/A' },
+            { label: 'Class / Stream', value: user?.grade ? `Class ${user.grade} – ${user.stream || ''}` : 'N/A' },
             { label: 'Section', value: user?.section || 'N/A' },
           ].map(item => (
             <div key={item.label} className="p-3 rounded-xl" style={{ background: rowBg }}>

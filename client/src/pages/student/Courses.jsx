@@ -19,7 +19,7 @@ export default function StudentCourses() {
 
   if (loading) return (
     <div className="space-y-5">
-      <PageHeader title="My Courses" subtitle="Courses you are enrolled in this semester." />
+      <PageHeader title="My Courses" subtitle="My enrolled subjects this term." />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => <div key={i} className="h-44 animate-pulse bg-slate-100 rounded-2xl" />)}
       </div>
@@ -28,7 +28,7 @@ export default function StudentCourses() {
 
   return (
     <div className="space-y-5">
-      <PageHeader title="My Courses" subtitle="Courses you are enrolled in this semester." />
+      <PageHeader title="My Courses" subtitle="My enrolled subjects this term." />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
       {courses.length === 0 && (
         <div className="col-span-3 bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
@@ -49,7 +49,7 @@ export default function StudentCourses() {
                 <h3 className="font-bold text-slate-800 text-[14px] truncate">{c.name}</h3>
                 <div className="flex items-center gap-1.5 mt-1">
                   <Badge color="indigo">{c.code}</Badge>
-                  <Badge color="slate">Sem {c.semester}</Badge>
+                  <Badge color="slate">Class {c.grade}</Badge>
                 </div>
               </div>
             </div>
@@ -58,7 +58,7 @@ export default function StudentCourses() {
 
             <div className="flex items-center gap-3 text-[12px] text-slate-500 mb-3">
               {c.section && <span>Section {c.section}</span>}
-              <span>{c.credits} credits</span>
+              <span>{c.marks} marks</span>
             </div>
 
             <div className="pt-3 border-t border-slate-100 flex items-center gap-2">

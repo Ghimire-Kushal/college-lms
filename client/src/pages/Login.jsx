@@ -28,20 +28,20 @@ function useCountUp(target, duration = 1600) {
 
 /* ── data ─────────────────────────────────────────────── */
 const ALL_ACTIVITIES = [
-  { icon: ClipboardCheck, label: 'Attendance Marked',  sub: 'DBMS301 • Just now',       color: '#2563eb' },
-  { icon: TrendingUp,     label: 'Result Published',   sub: 'Web Tech • 89% avg',        color: '#059669' },
+  { icon: ClipboardCheck, label: 'Attendance Marked',  sub: 'Physics Class 11 • Just now',       color: '#2563eb' },
+  { icon: TrendingUp,     label: 'Result Published',   sub: 'Accountancy Class 12 • 91% avg',        color: '#059669' },
   { icon: Bell,           label: 'Notice Posted',      sub: 'Exam schedule updated',     color: '#d97706' },
-  { icon: BookOpen,       label: 'Assignment Due',     sub: 'DSA303 • Tomorrow',         color: '#7c3aed' },
-  { icon: GraduationCap,  label: 'Student Enrolled',   sub: 'Priya Shrestha • Sem 3',    color: '#0891b2' },
-  { icon: CheckCircle,    label: 'Grade Released',     sub: 'OS401 • A+ grade',          color: '#8b5cf6' },
+  { icon: BookOpen,       label: 'Assignment Due',     sub: 'Mathematics Class 11 • Tomorrow',         color: '#7c3aed' },
+  { icon: GraduationCap,  label: 'Student Enrolled',   sub: 'Priya Shrestha • Class 11',    color: '#0891b2' },
+  { icon: CheckCircle,    label: 'Grade Released',     sub: 'Chemistry Class 12 • A grade',          color: '#8b5cf6' },
   { icon: Bell,           label: 'Fee Reminder',       sub: 'Due in 3 days',             color: '#ef4444' },
-  { icon: ClipboardCheck, label: 'Class Scheduled',    sub: 'CS101 • 2:00 PM today',     color: '#0f766e' },
+  { icon: ClipboardCheck, label: 'Class Scheduled',    sub: 'English Class 11 • 2:00 PM',     color: '#0f766e' },
 ];
 
 const DEMO = [
-  { role: 'Admin',   email: 'admin@edutrack.com',   pass: 'admin123',   color: '#7c3aed' },
-  { role: 'Teacher', email: 'teacher@edutrack.com', pass: 'teacher123', color: '#0284c7' },
-  { role: 'Student', email: 'student@edutrack.com', pass: 'student123', color: '#059669' },
+  { role: 'Admin',   sub: 'Canvas Academy Udayapur', email: 'admin@edutrack.com',   pass: 'admin123',   color: '#7c3aed' },
+  { role: 'Teacher', sub: 'Science Dept — Mr. Rajesh',    email: 'teacher@edutrack.com', pass: 'teacher123', color: '#0284c7' },
+  { role: 'Student', sub: 'Class 11 · Science · Roll 001', email: 'student@edutrack.com', pass: 'student123', color: '#059669' },
 ];
 
 /* ── component ────────────────────────────────────────── */
@@ -132,8 +132,8 @@ export default function Login() {
                   <img src="/logo.svg" alt="" className="w-6 h-6 brightness-0 invert" />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm leading-tight">Apollo International College</p>
-                  <p className="text-blue-300 text-[11px] tracking-wide">EduTrack LMS</p>
+                  <p className="text-white font-bold text-sm leading-tight">Canvas Academy Udayapur</p>
+                  <p className="text-blue-300 text-[11px] tracking-wide">+2 Management LMS</p>
                 </div>
               </div>
               <div className="text-right">
@@ -204,7 +204,7 @@ export default function Login() {
             </div>
 
             <p className="text-slate-700 text-[11px] mt-6 fade-up" style={{ animationDelay: '0.7s' }}>
-              © {new Date().getFullYear()} Apollo International College
+              © {new Date().getFullYear()} Canvas Academy Udayapur
             </p>
           </div>
         </div>
@@ -225,8 +225,8 @@ export default function Login() {
                 <img src="/logo.svg" alt="" className="w-5 h-5 brightness-0 invert" />
               </div>
               <div>
-                <p className="font-bold text-slate-900 text-sm">Apollo International</p>
-                <p className="text-slate-400 text-xs">EduTrack LMS</p>
+                <p className="font-bold text-slate-900 text-sm">Canvas Academy</p>
+                <p className="text-slate-400 text-xs">+2 Management LMS</p>
               </div>
             </div>
 
@@ -296,7 +296,7 @@ export default function Login() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-slate-800">{d.role}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{d.email}</p>
+                    <p className="text-[11px] text-slate-400 truncate">{d.sub}</p>
                   </div>
                   <code className="text-[11px] font-mono text-slate-400 bg-slate-100 group-hover:bg-slate-200 px-2 py-1 rounded-md transition shrink-0">
                     {d.pass}

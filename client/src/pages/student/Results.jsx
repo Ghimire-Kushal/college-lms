@@ -22,7 +22,7 @@ export default function StudentResults() {
 
   if (loading) return (
     <div className="space-y-5">
-      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by class." />
       <div className="space-y-4">
         {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse bg-slate-100 rounded-2xl" />)}
       </div>
@@ -31,7 +31,7 @@ export default function StudentResults() {
 
   if (results.length === 0) return (
     <div className="space-y-5">
-      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by class." />
       <div className="bg-white rounded-2xl p-12 text-center border border-slate-100 shadow-sm">
         <BarChart3 size={36} className="mx-auto text-slate-200 mb-3" />
         <p className="text-slate-500 font-medium">No results published yet</p>
@@ -41,7 +41,7 @@ export default function StudentResults() {
   );
 
   const bySemester = results.reduce((acc, r) => {
-    const key = r.semester;
+    const key = r.grade;
     if (!acc[key]) acc[key] = [];
     acc[key].push(r);
     return acc;
@@ -49,7 +49,7 @@ export default function StudentResults() {
 
   return (
     <div className="space-y-5">
-      <PageHeader title="My Results" subtitle="Your academic performance and grades by semester." />
+      <PageHeader title="My Results" subtitle="Your academic performance and grades by class." />
       <div className="space-y-6">
       {Object.entries(bySemester).sort(([a], [b]) => a - b).map(([sem, items]) => {
         const avg = items.length
