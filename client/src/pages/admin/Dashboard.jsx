@@ -145,10 +145,10 @@ export default function AdminDashboard() {
           style={{ background: cardBg, borderColor: border }}>
           {/* Header */}
           <div className="px-5 py-4 border-b flex items-center justify-between"
-            style={{ borderColor: border, background: dark ? '#0f1e1e' : '#fafafa' }}>
+            style={{ borderColor: border, background: '#fafafa' }}>
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: dark ? '#1a2828' : '#e8f4f1' }}>
+                style={{ background: '#e8f4f1' }}>
                 <Briefcase size={15} style={{ color: '#0f766e' }} />
               </div>
               <div>
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
               <button
                 onClick={() => navigate('/admin/teachers')}
                 className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
-                style={{ color: subClr, background: dark ? '#1a2828' : '#f1f5f9' }}>
+                style={{ color: subClr, background: '#f1f5f9' }}>
                 View all <ArrowRight size={12} />
               </button>
               <PrimaryBtn onClick={openAdd} className="text-[12px] py-1.5 px-3">
@@ -173,8 +173,8 @@ export default function AdminDashboard() {
           {teachers.length === 0 ? (
             <div className="py-14 text-center">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
-                style={{ background: dark ? '#1a2828' : '#e8f4f1' }}>
-                <Users size={24} style={{ color: dark ? '#5dbfb0' : '#a0c4bb' }} />
+                style={{ background: '#e8f4f1' }}>
+                <Users size={24} style={{ color: '#a0c4bb' }} />
               </div>
               <p className="text-[14px] font-semibold" style={{ color: headClr }}>No faculty members yet</p>
               <p className="text-[12px] mt-1" style={{ color: subClr }}>Click "Add Faculty" to get started.</p>
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
                 <div key={t._id}
                   className="group flex items-center gap-4 px-5 py-3.5 transition-colors"
                   style={{ background: 'transparent' }}
-                  onMouseEnter={e => e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.02)' : '#fafaf9'}
+                  onMouseEnter={e => e.currentTarget.style.background = '#fafaf9'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                   {/* Avatar */}
@@ -200,7 +200,7 @@ export default function AdminDashboard() {
                       <p className="text-[13px] font-bold truncate" style={{ color: headClr }}>{t.name}</p>
                       {t.employeeId && (
                         <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                          style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#0f766e' }}>
+                          style={{ background: '#e8f4f1', color: '#0f766e' }}>
                           {t.employeeId}
                         </span>
                       )}
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
                   {/* Status */}
                   <div className="hidden sm:flex items-center gap-1.5 shrink-0">
                     <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full"
-                      style={{ background: dark ? '#0d2018' : '#ecfdf5', color: '#059669' }}>
+                      style={{ background: '#ecfdf5', color: '#059669' }}>
                       <UserCheck size={10} /> Active
                     </span>
                   </div>

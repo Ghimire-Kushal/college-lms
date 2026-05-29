@@ -77,7 +77,7 @@ export default function TeacherDashboard() {
               const colors = ['#2563eb','#0f766e','#d97706','#2a6648'];
               return (
                 <div key={c._id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors"
-                  style={{ background: dark ? '#1a2828' : '#faf7f5', borderColor: border }}>
+                  style={{ background: '#faf7f5', borderColor: border }}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
                     style={{ background: colors[i % colors.length] }}>
                     {c.code?.slice(0, 2)}
@@ -87,7 +87,7 @@ export default function TeacherDashboard() {
                     <p className="text-[11px]" style={{ color: subClr }}>{c.code}</p>
                   </div>
                   <span className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full"
-                    style={{ background: dark ? '#1a1414' : '#f9e8e8', color: '#2563eb' }}>
+                    style={{ background: '#f9e8e8', color: '#2563eb' }}>
                     {c.students?.length || 0} students
                   </span>
                 </div>
@@ -114,9 +114,9 @@ export default function TeacherDashboard() {
               const overdue = new Date(a.dueDate) < new Date();
               return (
                 <div key={a._id} className="flex items-start gap-3 p-3 rounded-xl border transition-colors"
-                  style={{ background: dark ? '#1a2828' : '#faf7f5', borderColor: border }}>
+                  style={{ background: '#faf7f5', borderColor: border }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: overdue ? (dark ? '#2a1414' : '#fde8e8') : (dark ? '#122828' : '#e8f5f0'), color: overdue ? '#e11d48' : '#0f766e' }}>
+                    style={{ background: overdue ? '#fde8e8' : '#e8f5f0', color: overdue ? '#e11d48' : '#0f766e' }}>
                     {overdue ? <Clock size={15} /> : <CheckCircle size={15} />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -124,7 +124,7 @@ export default function TeacherDashboard() {
                     <p className="text-[11px]" style={{ color: subClr }}>{a.course?.name}</p>
                   </div>
                   <span className="shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ background: overdue ? (dark ? '#2a1414' : '#fde8e8') : (dark ? '#122828' : '#e8f5f0'), color: overdue ? '#e11d48' : '#059669' }}>
+                    style={{ background: overdue ? '#fde8e8' : '#e8f5f0', color: overdue ? '#e11d48' : '#059669' }}>
                     {new Date(a.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </span>
                 </div>
@@ -143,7 +143,7 @@ export default function TeacherDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {data.recentAttendance.map(r => (
               <div key={r._id} className="flex items-center gap-3 p-3 rounded-xl border"
-                style={{ background: dark ? '#0f1e1e' : '#edf7f3', borderColor: dark ? '#1e3535' : '#c8e8dc' }}>
+                style={{ background: '#edf7f3', borderColor: '#c8e8dc' }}>
                 <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: '#0f766e' }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold truncate" style={{ color: headClr }}>{r.course?.name}</p>

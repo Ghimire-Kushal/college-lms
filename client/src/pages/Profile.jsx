@@ -12,7 +12,7 @@ import { useTheme } from '../context/ThemeContext';
 const roleColors = {
   admin:   { gradient: 'linear-gradient(135deg,#1d4ed8,#2563eb)', badge: '#0f766e' },
   teacher: { gradient: 'linear-gradient(135deg,#1d4ed8,#2563eb)', badge: '#2563eb' },
-  student: { gradient: 'linear-gradient(135deg, #b87a00, #8a5a00)', badge: '#d97706' },
+  student: { gradient: 'linear-gradient(135deg,#0f766e,#0d9488)', badge: '#d97706' },
 };
 
 export default function Profile() {
