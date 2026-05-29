@@ -4,7 +4,6 @@ import StatCard from '../../components/StatCard';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 
 function Skeleton({ className = '' }) {
   return <div className={`animate-pulse bg-slate-100 rounded-xl ${className}`} />;
@@ -14,7 +13,6 @@ export default function TeacherDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { dark } = useTheme();
 
   useEffect(() => {
     api.get('/teacher/dashboard')
@@ -36,21 +34,21 @@ export default function TeacherDashboard() {
     </div>
   );
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#ede8e4';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = '#ffffff';
+  const border  = '#e2e8f0';
+  const headClr = '#1e293b';
+  const subClr  = '#64748b';
 
   return (
     <div className="space-y-5">
       {/* Welcome banner */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        >
+        style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'transparent', opacity: 0.18 }} />
-        <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Teacher Portal</p>
+          style={{ background: 'rgba(255,255,255,0.08)' }} />
+        <p className="text-violet-200 text-xs font-semibold uppercase tracking-wider">Teacher Portal</p>
         <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Hello, {user?.name?.split(' ')[0]}! 👋</h2>
-        <p className="text-white/50 text-sm mt-1">Manage your courses, attendance, and student progress.</p>
+        <p className="text-violet-200/70 text-sm mt-1">Manage your courses, attendance, and student progress.</p>
       </div>
 
       {/* Stats */}

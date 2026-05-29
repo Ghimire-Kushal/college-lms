@@ -83,7 +83,7 @@ export default function StudentDashboard() {
           <AlertTriangle size={18} className="shrink-0" style={{ color: '#2563eb' }} />
           <div>
             <p className="text-sm font-semibold" style={{ color: '#2563eb' }}>Attendance Warning</p>
-            <p className="text-xs mt-0.5" style={{ color: dark ? '#f5a0a0' : '#b45309' }}>
+            <p className="text-xs mt-0.5" style={{ color: '#b45309' }}>
               Your attendance is {attPct}% — below the required 75%. Please attend more classes.
             </p>
           </div>
@@ -140,11 +140,11 @@ export default function StudentDashboard() {
               return (
                 <div key={a._id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors"
                   style={{
-                    background: urgent ? (dark ? '#2a1414' : '#fef0f0') : (dark ? '#0f1e1e' : '#f5faf7'),
-                    borderColor: urgent ? (dark ? '#5a2020' : '#fca5a5') : border,
+                    background:  urgent ? '#fef0f0' : '#f5faf7',
+                    borderColor: urgent ? '#fca5a5' : border,
                   }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: urgent ? (dark ? '#3d1515' : '#fde8e8') : (dark ? '#122828' : '#e0f0e8'), color: urgent ? '#2563eb' : '#0f766e' }}>
+                    style={{ background: urgent ? '#fde8e8' : '#e0f0e8', color: urgent ? '#2563eb' : '#0f766e' }}>
                     {urgent ? <Clock size={15} /> : <ClipboardList size={15} />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -152,7 +152,7 @@ export default function StudentDashboard() {
                     <p className="text-[11px]" style={{ color: subClr }}>{a.course?.name}</p>
                   </div>
                   <span className="shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background: urgent ? (dark ? '#3d1515' : '#fde8e8') : (dark ? '#122828' : '#e0f0e8'), color: urgent ? '#2563eb' : '#0f766e' }}>
+                    style={{ background: urgent ? '#fde8e8' : '#e0f0e8', color: urgent ? '#2563eb' : '#0f766e' }}>
                     {daysLeft}d left
                   </span>
                 </div>
@@ -172,7 +172,7 @@ export default function StudentDashboard() {
               const colors = ['#2563eb','#0f766e','#d97706','#2a6648'];
               return (
                 <div key={c._id} className="flex items-center gap-3 p-3 rounded-xl border"
-                  style={{ background: dark ? '#1a2828' : '#faf7f5', borderColor: border }}>
+                  style={{ background: '#faf7f5', borderColor: border }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
                     style={{ background: colors[i % colors.length] }}>
                     {c.code?.slice(0, 2)}
@@ -194,12 +194,12 @@ export default function StudentDashboard() {
             {!data?.notices?.length && <p className="text-sm" style={{ color: subClr }}>No notices</p>}
             {data?.notices?.map((n, i) => {
               const colors = ['#d97706','#2563eb','#0f766e'];
-              const bgs = [dark ? '#1a1a0d' : '#fef9ec', dark ? '#1a1414' : '#fef0f0', dark ? '#0d1a1a' : '#edf7f5'];
+              const bgs = ['#fef9ec', '#fef0f0', '#edf7f5'];
               return (
                 <div key={n._id} className="flex items-start gap-3 p-3 rounded-xl border"
                   style={{ background: bgs[i % bgs.length], borderColor: border }}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                    style={{ background: dark ? '#1e2e2e' : '#f0ebe8' }}>
+                    style={{ background: '#f0ebe8' }}>
                     <Bell size={12} style={{ color: colors[i % colors.length] }} />
                   </div>
                   <div>
