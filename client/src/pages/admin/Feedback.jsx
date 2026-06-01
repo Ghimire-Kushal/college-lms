@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MessageSquare, Clock, Eye, CheckCircle, Trash2, Search } from 'lucide-react';
+import { MessageSquare, Clock, Eye, CheckCircle, Trash2 } from 'lucide-react';
 import { SearchBar, PageHeader } from '../../components/UI';
 import { useTheme } from '../../context/ThemeContext';
 import api from '../../api/axios';
@@ -133,17 +133,7 @@ export default function AdminFeedback() {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: subClr }} />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by subject, message, or student name..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-[13px] border outline-none"
-            style={{ background: cardBg, borderColor: border, color: headClr }}
-          />
-        </div>
+        <SearchBar value={search} onChange={setSearch} placeholder="Search by subject, message, or student..." />
       </div>
 
       {/* List */}
@@ -185,7 +175,7 @@ export default function AdminFeedback() {
                   <div className="flex items-start gap-4">
                     {/* Category emoji */}
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-lg"
-                      style={{ background: dark ? '#1a2828' : '#f0f7f5' }}>
+                      style={{ background: dark ? '#0f172a' : '#f9fafb' }}>
                       {cat?.emoji || '💬'}
                     </div>
 

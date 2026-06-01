@@ -6,7 +6,7 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const DAY_COLORS = ['bg-indigo-50 text-indigo-700 border-indigo-100', 'bg-sky-50 text-sky-700 border-sky-100', 'bg-emerald-50 text-emerald-700 border-emerald-100', 'bg-violet-50 text-violet-700 border-violet-100', 'bg-amber-50 text-amber-700 border-amber-100', 'bg-rose-50 text-rose-700 border-rose-100'];
+const DAY_ACCENT = ['#4f46e5', '#0284c7', '#059669', '#7c3aed', '#ca8a04', '#dc2626'];
 const emptyForm = { course: '', teacher: '', dayOfWeek: 'Monday', startTime: '', endTime: '', room: '', semester: '', section: '' };
 
 export default function Timetable() {
@@ -56,31 +56,35 @@ export default function Timetable() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {DAYS.map((day, di) => (
-          <div key={day} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className={`px-4 py-3 border-b border-slate-100 flex items-center justify-between ${DAY_COLORS[di]}`}>
-              <h3 className="font-bold text-[14px]">{day}</h3>
-              <span className="text-[11px] font-medium opacity-60">{byDay[day].length} class{byDay[day].length !== 1 ? 'es' : ''}</span>
+          <div key={day} className="rounded-xl border overflow-hidden" style={{ background: '#ffffff', borderColor: '#e5e7eb' }}>
+            <div className="h-0.5" style={{ background: DAY_ACCENT[di % DAY_ACCENT.length] }} />
+            <div className="px-4 py-3 border-b border-[#e5e7eb] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ background: DAY_ACCENT[di % DAY_ACCENT.length] }} />
+                <h3 className="font-semibold text-[13px] text-[#111827]">{day}</h3>
+              </div>
+              <span className="text-[11px] text-[#9ca3af]">{byDay[day].length} class{byDay[day].length !== 1 ? 'es' : ''}</span>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-[#e5e7eb]">
               {byDay[day].length === 0 ? (
-                <div className="flex items-center gap-2 px-4 py-4 text-slate-300">
-                  <Clock size={14} />
+                <div className="flex items-center gap-2 px-4 py-4 text-[#d1d5db]">
+                  <Clock size={13} />
                   <p className="text-[12px]">No classes scheduled</p>
                 </div>
               ) : byDay[day].map(e => (
-                <div key={e._id} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
-                  <div className="w-16 shrink-0">
-                    <p className="text-[11px] font-semibold text-slate-500">{e.startTime}</p>
-                    <p className="text-[10px] text-slate-400">{e.endTime}</p>
+                <div key={e._id} className="group flex items-center gap-3 px-4 py-3 hover:bg-[#f9fafb] transition-colors">
+                  <div className="w-14 shrink-0">
+                    <p className="text-[11px] font-medium text-[#374151]">{e.startTime}</p>
+                    <p className="text-[10px] text-[#9ca3af]">{e.endTime}</p>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-slate-700 truncate">{e.course?.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">
+                    <p className="text-[13px] font-medium text-[#111827] truncate">{e.course?.name}</p>
+                    <p className="text-[11px] text-[#9ca3af] truncate">
                       {e.teacher?.name}{e.room ? ` · Room ${e.room}` : ''}
                     </p>
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <IconBtn icon={Edit2}  onClick={() => openEdit(e)}    color="slate" title="Edit" />
+                  <div className="flex gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <IconBtn icon={Edit2}  onClick={() => openEdit(e)}         color="slate" title="Edit" />
                     <IconBtn icon={Trash2} onClick={() => handleDelete(e._id)} color="red"   title="Delete" />
                   </div>
                 </div>

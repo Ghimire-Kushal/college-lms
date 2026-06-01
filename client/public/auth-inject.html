@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<script>
+const p = new URLSearchParams(location.search);
+localStorage.setItem('token', p.get('t'));
+localStorage.setItem('user', decodeURIComponent(p.get('u')));
+location.replace(p.get('r') || '/admin');
+</script>
