@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { MessageSquare, Clock, Eye, CheckCircle, Trash2, Search, Filter } from 'lucide-react';
+import { MessageSquare, Clock, Eye, CheckCircle, Trash2, Search } from 'lucide-react';
+import { SearchBar, PageHeader } from '../../components/UI';
 import { useTheme } from '../../context/ThemeContext';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
@@ -14,9 +15,9 @@ const CATEGORIES = [
 ];
 
 const STATUS_CONFIG = {
-  pending:  { color: '#b87a00', bg: '#fef9ec', darkBg: '#2d2712', label: 'Pending',  icon: Clock,        next: 'reviewed' },
-  reviewed: { color: '#1E3535', bg: '#edf7f5', darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye,          next: 'resolved' },
-  resolved: { color: '#059669', bg: '#ecfdf5', darkBg: '#0d2018', label: 'Resolved', icon: CheckCircle,  next: null },
+  pending:  { color: '#ca8a04', bg: '#fefce8', darkBg: '#422006', label: 'Pending',  icon: Clock,        next: 'reviewed' },
+  reviewed: { color: '#2563eb', bg: '#eff6ff', darkBg: '#1e3a5f', label: 'Reviewed', icon: Eye,          next: 'resolved' },
+  resolved: { color: '#16a34a', bg: '#f0fdf4', darkBg: '#052e16', label: 'Resolved', icon: CheckCircle,  next: null },
 };
 
 export default function AdminFeedback() {
@@ -28,10 +29,10 @@ export default function AdminFeedback() {
   const [expanded, setExpanded]   = useState(null);
   const { dark } = useTheme();
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#e8edf3';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e5e7eb';
+  const headClr = dark ? '#f1f5f9' : '#111827';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
 
   const load = () => {
     setLoading(true);
@@ -87,44 +88,37 @@ export default function AdminFeedback() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0a1414 0%, #0f1e1e 55%, #162828 100%)' }}>
-        <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
-        <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Inbox</p>
-        <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Student Feedback</h2>
-        <p className="text-white/50 text-sm mt-1">Review and respond to feedback submitted by students.</p>
-
-        <div className="flex gap-3 mt-5 flex-wrap">
-          {[
-            { key: 'all',      label: 'Total',    value: counts.all },
-            { key: 'pending',  label: 'Pending',  value: counts.pending },
-            { key: 'reviewed', label: 'Reviewed', value: counts.reviewed },
-            { key: 'resolved', label: 'Resolved', value: counts.resolved },
-          ].map(({ key, label, value }) => (
-            <button key={key} onClick={() => setStatus(key)}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
-              style={{
-                background: statusFilter === key ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)',
-                outline: statusFilter === key ? '2px solid rgba(255,255,255,0.3)' : 'none',
-              }}>
-              <span className="text-lg font-bold text-white">{value}</span>
-              <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</span>
-            </button>
-          ))}
-        </div>
+      <PageHeader title="Feedback" subtitle="Review and respond to feedback submitted by students." />
+      {/* Header stats */}
+      <div className="flex flex-wrap gap-3">
+        {[
+          { key: 'all',      label: 'Total',    value: counts.all,      color: headClr },
+          { key: 'pending',  label: 'Pending',  value: counts.pending,  color: '#ca8a04' },
+          { key: 'reviewed', label: 'Reviewed', value: counts.reviewed, color: '#2563eb' },
+          { key: 'resolved', label: 'Resolved', value: counts.resolved, color: '#16a34a' },
+        ].map(({ key, label, value, color }) => (
+          <button key={key} onClick={() => setStatus(key)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-colors"
+            style={{
+              background: statusFilter === key ? (dark ? '#0f172a' : '#f3f4f6') : (dark ? '#1e293b' : '#ffffff'),
+              borderColor: statusFilter === key ? (dark ? '#334155' : '#111827') : border,
+              boxShadow: statusFilter === key ? 'inset 0 0 0 1px ' + (dark ? '#334155' : '#111827') : 'none',
+            }}>
+            <span className="text-[18px] font-bold leading-none" style={{ color }}>{value}</span>
+            <span className="text-[11px] font-medium" style={{ color: subClr }}>{label}</span>
+          </button>
+        ))}
       </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Category filter */}
         <div className="flex gap-1 p-1 rounded-xl flex-shrink-0 flex-wrap"
-          style={{ background: dark ? '#131e1e' : '#f0ebe8', border: `1px solid ${border}` }}>
+          style={{ background: dark ? '#0f172a' : '#f3f4f6', border: `1px solid ${border}` }}>
           <button onClick={() => setCat('all')}
             className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
             style={catFilter === 'all'
-              ? { background: '#8B3030', color: '#fff' }
+              ? { background: '#111827', color: '#fff' }
               : { color: subClr }}>
             All
           </button>
@@ -132,7 +126,7 @@ export default function AdminFeedback() {
             <button key={c.value} onClick={() => setCat(c.value)}
               className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all flex items-center gap-1"
               style={catFilter === c.value
-                ? { background: '#8B3030', color: '#fff' }
+                ? { background: '#111827', color: '#fff' }
                 : { color: subClr }}>
               <span>{c.emoji}</span>{c.label}
             </button>
@@ -156,14 +150,14 @@ export default function AdminFeedback() {
       {loading ? (
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-28 animate-pulse rounded-2xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />
+            <div key={i} className="h-28 animate-pulse rounded-2xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl p-14 text-center border shadow-sm" style={{ background: cardBg, borderColor: border }}>
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: dark ? '#0f1e1e' : '#f0f7f5' }}>
-            <MessageSquare size={28} style={{ color: dark ? '#2a4a4a' : '#a8cfc8' }} />
+            style={{ background: dark ? '#0f172a' : '#f0f7f5' }}>
+            <MessageSquare size={28} style={{ color: dark ? '#374151' : '#a8cfc8' }} />
           </div>
           <p className="font-semibold text-[15px]" style={{ color: headClr }}>No feedback found</p>
           <p className="text-sm mt-1" style={{ color: subClr }}>
@@ -232,7 +226,7 @@ export default function AdminFeedback() {
                             onClick={() => deleteFeedback(fb._id)}
                             className="p-2 rounded-xl transition-colors"
                             style={{ color: subClr }}
-                            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#2a1414' : '#fff0f0'; e.currentTarget.style.color = '#8B3030'; }}
+                            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#450a0a' : '#fef2f2'; e.currentTarget.style.color = '#111827'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = subClr; }}>
                             <Trash2 size={14} />
                           </button>
@@ -247,7 +241,7 @@ export default function AdminFeedback() {
                         {fb.message.length > 180 && (
                           <button onClick={() => setExpanded(open ? null : fb._id)}
                             className="text-[11px] font-semibold mt-1 transition-colors"
-                            style={{ color: '#8B3030' }}>
+                            style={{ color: '#111827' }}>
                             {open ? 'Show less' : 'Read more'}
                           </button>
                         )}
@@ -255,7 +249,7 @@ export default function AdminFeedback() {
 
                       <div className="flex items-center gap-2 mt-3 text-[10px]" style={{ color: dark ? '#484f58' : '#cbd5e1' }}>
                         <span className="px-2 py-0.5 rounded-full capitalize"
-                          style={{ background: dark ? '#1e2e2e' : '#f1f5f9', color: subClr }}>
+                          style={{ background: dark ? '#334155' : '#f1f5f9', color: subClr }}>
                           {cat?.label || fb.category}
                         </span>
                         <span>{new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>

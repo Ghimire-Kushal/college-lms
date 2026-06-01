@@ -7,14 +7,7 @@ import toast from 'react-hot-toast';
 
 const emptyForm = { name: '', code: '', description: '', credits: 3, semester: '', section: '' };
 
-const COURSE_COLORS = [
-  'from-indigo-500 to-indigo-600',
-  'from-violet-500 to-purple-600',
-  'from-sky-500 to-blue-600',
-  'from-emerald-500 to-teal-600',
-  'from-rose-500 to-pink-600',
-  'from-amber-500 to-orange-500',
-];
+const COURSE_ACCENT = ['#111827', '#2563eb', '#16a34a', '#7c3aed', '#dc2626', '#ca8a04', '#0d9488', '#ea580c'];
 
 export default function Courses() {
   const [courses, setCourses]   = useState([]);
@@ -74,45 +67,38 @@ export default function Courses() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {courses.map((c, i) => (
-          <div key={c._id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden card-hover">
-            {/* Color header */}
-            <div className={`h-2 bg-gradient-to-r ${COURSE_COLORS[i % COURSE_COLORS.length]}`} />
+          <div key={c._id} className="bg-white rounded-xl border border-[#e5e7eb] overflow-hidden transition-colors hover:border-[#d1d5db]">
+            <div className="h-1" style={{ background: COURSE_ACCENT[i % COURSE_ACCENT.length] }} />
             <div className="p-5">
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="min-w-0">
-                  <h3 className="font-bold text-slate-800 text-[15px] truncate">{c.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
+                  <h3 className="font-semibold text-[#111827] text-[14px] truncate">{c.name}</h3>
+                  <div className="flex items-center gap-1.5 mt-1.5">
                     <Badge color="indigo">{c.code}</Badge>
                     <Badge color="slate">Sem {c.semester}</Badge>
                     {c.section && <Badge color="slate">§{c.section}</Badge>}
                   </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
+                <div className="flex gap-0.5 shrink-0">
                   <IconBtn icon={UserPlus} onClick={() => openAssign(c)} color="blue"  title="Assign Teacher" />
                   <IconBtn icon={Edit2}    onClick={() => openEdit(c)}   color="slate" title="Edit" />
                   <IconBtn icon={Trash2}   onClick={() => handleDelete(c._id)} color="red" title="Delete" />
                 </div>
               </div>
-
               {c.description && (
-                <p className="text-[12px] text-slate-500 mb-3 line-clamp-2">{c.description}</p>
+                <p className="text-[12px] text-[#6b7280] mb-3 line-clamp-2">{c.description}</p>
               )}
-
-              <div className="flex items-center justify-between text-[12px] text-slate-500 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-between text-[12px] text-[#6b7280] pt-3 border-t border-[#e5e7eb]">
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-700">{c.credits}</span> credits
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="font-semibold text-slate-700">{c.students?.length || 0}</span> students
-                  </span>
+                  <span><span className="font-medium text-[#111827]">{c.credits}</span> cr.</span>
+                  <span><span className="font-medium text-[#111827]">{c.students?.length || 0}</span> students</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[9px] font-bold">
+                  <div className="w-5 h-5 rounded-md bg-[#f3f4f6] flex items-center justify-center text-[9px] font-semibold text-[#374151]">
                     {c.teacher?.name?.[0] || '?'}
                   </div>
-                  <span className="text-[11px] text-slate-500 truncate max-w-[100px]">
-                    {c.teacher?.name || <span className="text-rose-400 italic">Unassigned</span>}
+                  <span className="text-[11px] truncate max-w-[100px]">
+                    {c.teacher?.name || <em className="text-[#ef4444] not-italic">Unassigned</em>}
                   </span>
                 </div>
               </div>

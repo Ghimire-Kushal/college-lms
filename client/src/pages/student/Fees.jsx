@@ -4,10 +4,10 @@ import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 
 const feeStructure = [
-  { label: 'Tuition Fee', amount: 'As per semester', period: 'Per Semester', color: '#8B3030' },
-  { label: 'Exam Fee', amount: 'As per exam', period: 'Per Exam', color: '#1E3535' },
-  { label: 'Library Fee', amount: 'Annual', period: 'Per Year', color: '#b87a00' },
-  { label: 'Sports & Activities', amount: 'Annual', period: 'Per Year', color: '#2a6648' },
+  { label: 'Tuition Fee', amount: 'As per semester', period: 'Per Semester', color: '#111827' },
+  { label: 'Exam Fee', amount: 'As per exam', period: 'Per Exam', color: '#111827' },
+  { label: 'Library Fee', amount: 'Annual', period: 'Per Year', color: '#ca8a04' },
+  { label: 'Sports & Activities', amount: 'Annual', period: 'Per Year', color: '#16a34a' },
   { label: 'Lab / Practical Fee', amount: 'As applicable', period: 'Per Semester', color: '#4338ca' },
   { label: 'Administration Fee', amount: 'Annual', period: 'Per Year', color: '#0369a1' },
 ];
@@ -22,10 +22,10 @@ export default function StudentFees() {
   const { dark } = useTheme();
   const { user } = useAuth();
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#e8edf3';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e8edf3';
+  const headClr = dark ? '#f1f5f9' : '#111827';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
   const rowBg   = dark ? '#1a2828' : '#f8fafc';
 
   return (
@@ -74,7 +74,7 @@ export default function StudentFees() {
         <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center gap-2">
-              <FileText size={16} style={{ color: '#8B3030' }} />
+              <FileText size={16} style={{ color: '#111827' }} />
               <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Fee Structure</h2>
             </div>
             <p className="text-[12px] mt-1" style={{ color: subClr }}>General fee categories for your program</p>
@@ -82,7 +82,7 @@ export default function StudentFees() {
           <div className="divide-y" style={{ borderColor: border }}>
             {feeStructure.map((fee, i) => (
               <div key={i} className="flex items-center gap-3 px-5 py-3.5 hover:opacity-90 transition-opacity"
-                style={{ background: i % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>
+                style={{ background: i % 2 === 0 ? (dark ? '#0f172a' : '#fafafa') : cardBg }}>
                 <div className="w-2 h-2 rounded-full shrink-0" style={{ background: fee.color }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold" style={{ color: headClr }}>{fee.label}</p>
@@ -99,7 +99,7 @@ export default function StudentFees() {
           <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
             <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
               <div className="flex items-center gap-2">
-                <CreditCard size={16} style={{ color: '#1E3535' }} />
+                <CreditCard size={16} style={{ color: '#111827' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Payment Methods</h2>
               </div>
             </div>

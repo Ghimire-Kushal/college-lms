@@ -16,8 +16,8 @@ const CATEGORIES = [
 ];
 
 const STATUS_CONFIG = {
-  pending:  { color: '#b87a00', bg: 'bg-amber-50',  darkBg: '#2d2712', label: 'Pending',  icon: Clock },
-  reviewed: { color: '#1E3535', bg: 'bg-teal-50',   darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye },
+  pending:  { color: '#ca8a04', bg: 'bg-amber-50',  darkBg: '#2d2712', label: 'Pending',  icon: Clock },
+  reviewed: { color: '#111827', bg: 'bg-teal-50',   darkBg: '#0d1a1a', label: 'Reviewed', icon: Eye },
   resolved: { color: '#059669', bg: 'bg-emerald-50', darkBg: '#1a2e22', label: 'Resolved', icon: CheckCircle },
 };
 
@@ -58,10 +58,10 @@ export default function StudentFeedback() {
     }
   };
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#e8edf3';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e8edf3';
+  const headClr = dark ? '#f1f5f9' : '#111827';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
 
   return (
     <div className="space-y-5">
@@ -73,7 +73,7 @@ export default function StudentFeedback() {
           <div className="rounded-2xl border shadow-sm overflow-hidden sticky top-4" style={{ background: cardBg, borderColor: border }}>
             <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
               <div className="flex items-center gap-2">
-                <MessageSquare size={16} style={{ color: '#8B3030' }} />
+                <MessageSquare size={16} style={{ color: '#111827' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Submit Feedback</h2>
               </div>
               <p className="text-[12px] mt-1" style={{ color: subClr }}>
@@ -90,7 +90,7 @@ export default function StudentFeedback() {
                       onClick={() => setForm(p => ({ ...p, category: cat.value }))}
                       className="flex flex-col items-center gap-1 py-2.5 rounded-xl border text-[11px] font-semibold transition-all"
                       style={form.category === cat.value
-                        ? { background: 'linear-gradient(135deg, #8B3030, #6b2525)', borderColor: '#8B3030', color: '#fff' }
+                        ? { background: '#111827', borderColor: '#111827', color: '#fff' }
                         : { background: dark ? '#1a2828' : '#f8fafc', borderColor: border, color: subClr }
                       }
                     >
@@ -155,7 +155,7 @@ export default function StudentFeedback() {
             {loading ? (
               <div className="p-4 space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-24 animate-pulse rounded-xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />
+                  <div key={i} className="h-24 animate-pulse rounded-xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />
                 ))}
               </div>
             ) : feedbacks.length === 0 ? (
@@ -174,7 +174,7 @@ export default function StudentFeedback() {
                   const cat = CATEGORIES.find(c => c.value === fb.category);
                   return (
                     <div key={fb._id} className="px-5 py-4 hover:opacity-90 transition-opacity"
-                      style={{ background: i % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>
+                      style={{ background: i % 2 === 0 ? (dark ? '#0f172a' : '#fafafa') : cardBg }}>
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2 min-w-0">
                           <span className="text-base shrink-0">{cat?.emoji || '💬'}</span>
@@ -193,7 +193,7 @@ export default function StudentFeedback() {
                         {fb.message.length > 160 ? `${fb.message.slice(0, 160)}…` : fb.message}
                       </p>
                       <div className="flex items-center gap-3 text-[10px]" style={{ color: dark ? '#484f58' : '#cbd5e1' }}>
-                        <span className="capitalize px-2 py-0.5 rounded-full" style={{ background: dark ? '#1e2e2e' : '#f1f5f9', color: subClr }}>
+                        <span className="capitalize px-2 py-0.5 rounded-full" style={{ background: dark ? '#334155' : '#f1f5f9', color: subClr }}>
                           {cat?.label || fb.category}
                         </span>
                         <span>{new Date(fb.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>

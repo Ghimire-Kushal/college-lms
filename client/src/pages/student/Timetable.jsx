@@ -16,7 +16,7 @@ const DAY_STYLES = [
   { light: { bg: '#fff1f2', border: '#fecdd3', text: '#be123c' }, dark: { bg: '#2d1517', border: '#3d1f22', text: '#f87171' } },
 ];
 
-const COURSE_COLORS = ['#8B3030', '#1E3535', '#b87a00', '#2a6648', '#4338ca', '#0369a1'];
+const COURSE_COLORS = ['#111827', '#111827', '#ca8a04', '#16a34a', '#4338ca', '#0369a1'];
 
 function TimeSlot({ entry, idx, dark }) {
   const bg   = dark ? '#161b22' : '#ffffff';
@@ -33,7 +33,7 @@ function TimeSlot({ entry, idx, dark }) {
         <p className="text-[10px]" style={{ color: dark ? '#6e7681' : '#94a3b8' }}>{entry.endTime}</p>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-semibold truncate" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
+        <p className="text-[13px] font-semibold truncate" style={{ color: dark ? '#f1f5f9' : '#111827' }}>
           {entry.course?.name}
         </p>
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
@@ -68,10 +68,10 @@ export default function StudentTimetable() {
       .finally(() => setLoading(false));
   }, []);
 
-  const cardBg   = dark ? '#131e1e' : '#ffffff';
-  const border   = dark ? '#1e2e2e' : '#e8edf3';
-  const subClr   = dark ? '#6e7681' : '#64748b';
-  const headClr  = dark ? '#e2e8f0' : '#1e293b';
+  const cardBg   = dark ? '#1e293b' : '#ffffff';
+  const border   = dark ? '#334155' : '#e8edf3';
+  const subClr   = dark ? '#94a3b8' : '#6b7280';
+  const headClr  = dark ? '#f1f5f9' : '#111827';
 
   const byDay = DAYS.reduce((acc, d) => {
     acc[d] = entries.filter(e => e.dayOfWeek === d).sort((a, b) => a.startTime?.localeCompare(b.startTime));
@@ -84,10 +84,10 @@ export default function StudentTimetable() {
     <div className="space-y-5">
       <PageHeader title="Class Routine" subtitle="Your weekly class schedule and timetable." />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-        {DAYS.map(d => <div key={d} className="h-12 animate-pulse rounded-xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />)}
+        {DAYS.map(d => <div key={d} className="h-12 animate-pulse rounded-xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />)}
       </div>
       <div className="space-y-3">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-16 animate-pulse rounded-xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-16 animate-pulse rounded-xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />)}
       </div>
     </div>
   );
@@ -99,9 +99,9 @@ export default function StudentTimetable() {
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { label: 'Total Classes/Week', value: totalClasses, color: '#8B3030' },
-          { label: 'Active Days', value: DAYS.filter(d => byDay[d].length > 0).length, color: '#1E3535' },
-          { label: 'Free Days', value: DAYS.filter(d => byDay[d].length === 0).length, color: '#b87a00' },
+          { label: 'Total Classes/Week', value: totalClasses, color: '#111827' },
+          { label: 'Active Days', value: DAYS.filter(d => byDay[d].length > 0).length, color: '#111827' },
+          { label: 'Free Days', value: DAYS.filter(d => byDay[d].length === 0).length, color: '#ca8a04' },
         ].map(s => (
           <div key={s.label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
             <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
@@ -124,7 +124,7 @@ export default function StudentTimetable() {
               className="flex-1 min-w-[80px] px-3 py-2.5 rounded-xl text-[12px] font-semibold transition-all border"
               style={isActive
                 ? { background: style.bg, borderColor: style.border, color: style.text, boxShadow: `0 2px 8px ${style.border}` }
-                : { background: dark ? '#0f1e1e' : '#f8fafc', borderColor: dark ? '#1e2e2e' : '#e8edf3', color: dark ? '#6e7681' : '#94a3b8' }
+                : { background: dark ? '#0f172a' : '#f8fafc', borderColor: dark ? '#334155' : '#e8edf3', color: dark ? '#6e7681' : '#94a3b8' }
               }
             >
               <span className="block truncate">{d.slice(0, 3)}</span>

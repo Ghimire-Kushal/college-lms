@@ -9,11 +9,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-const roleColors = {
-  admin:   { gradient: 'linear-gradient(135deg, #1E3535, #2a4a4a)', badge: '#1E3535' },
-  teacher: { gradient: 'linear-gradient(135deg, #8B3030, #6b2525)', badge: '#8B3030' },
-  student: { gradient: 'linear-gradient(135deg, #b87a00, #8a5a00)', badge: '#b87a00' },
-};
+const COURSE_COLORS = ['#111827', '#2563eb', '#16a34a', '#7c3aed', '#ca8a04', '#dc2626'];
 
 export default function Profile() {
   const { user: authUser, updateUser } = useAuth();
@@ -30,12 +26,11 @@ export default function Profile() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#ede8e4';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
-  const inputStyle = { background: dark ? '#0f1e1e' : '#f8f5f3', borderColor: border, color: headClr };
-  const rc = roleColors[authUser?.role] || roleColors.student;
+  const surface  = dark ? '#1e293b' : '#ffffff';
+  const border   = dark ? '#334155' : '#e5e7eb';
+  const headClr  = dark ? '#f1f5f9' : '#111827';
+  const subClr   = dark ? '#94a3b8' : '#6b7280';
+  const inputStyle = { background: dark ? '#0f172a' : '#f9fafb', borderColor: border, color: headClr };
 
   useEffect(() => {
     Promise.all([
@@ -94,42 +89,40 @@ export default function Profile() {
   if (loading) return (
     <div className="space-y-4">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="h-32 rounded-2xl animate-pulse" style={{ background: dark ? '#1a2828' : '#ede8e4' }} />
+        <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: dark ? '#1e293b' : '#f3f4f6' }} />
       ))}
     </div>
   );
 
   const attPct = stats?.attendancePercentage ? parseFloat(stats.attendancePercentage) : null;
-  const courseColors = ['#8B3030','#1E3535','#b87a00','#2a6648'];
 
-  // Stat cards config per role
   const statCards = authUser?.role === 'student' ? [
-    { label: 'Courses',     value: stats?.totalCourses ?? 0,                  icon: BookOpen,    color: '#8B3030' },
-    { label: 'Attendance',  value: `${attPct ?? 0}%`,                         icon: UserCheck,   color: attPct >= 75 ? '#059669' : '#8B3030' },
-    { label: 'Present',     value: stats?.presentClasses ?? 0,                icon: CheckCircle, color: '#059669' },
-    { label: 'Assignments', value: stats?.upcomingAssignments?.length ?? 0,   icon: Clock,       color: '#b87a00' },
+    { label: 'Courses',     value: stats?.totalCourses ?? 0,                icon: BookOpen,     color: '#111827' },
+    { label: 'Attendance',  value: `${attPct ?? 0}%`,                       icon: UserCheck,    color: attPct >= 75 ? '#16a34a' : '#dc2626' },
+    { label: 'Present',     value: stats?.presentClasses ?? 0,              icon: CheckCircle,  color: '#16a34a' },
+    { label: 'Assignments', value: stats?.upcomingAssignments?.length ?? 0, icon: Clock,        color: '#ca8a04' },
   ] : authUser?.role === 'teacher' ? [
-    { label: 'Courses',   value: stats?.totalCourses ?? 0,              icon: BookOpen,     color: '#8B3030' },
-    { label: 'Students',  value: stats?.totalStudents ?? 0,             icon: GraduationCap, color: '#1E3535' },
-    { label: 'Pending',   value: stats?.pendingSubmissions ?? 0,        icon: Clock,        color: '#b87a00' },
-    { label: 'Recorded',  value: stats?.recentAttendance?.length ?? 0,  icon: Award,        color: '#2a6648' },
+    { label: 'Courses',   value: stats?.totalCourses ?? 0,             icon: BookOpen,      color: '#111827' },
+    { label: 'Students',  value: stats?.totalStudents ?? 0,            icon: GraduationCap, color: '#2563eb' },
+    { label: 'Pending',   value: stats?.pendingSubmissions ?? 0,       icon: Clock,         color: '#ca8a04' },
+    { label: 'Recorded',  value: stats?.recentAttendance?.length ?? 0, icon: Award,         color: '#16a34a' },
   ] : [
-    { label: 'Students', value: stats?.totalStudents ?? 0, icon: GraduationCap, color: '#8B3030' },
-    { label: 'Teachers', value: stats?.totalTeachers ?? 0, icon: User,          color: '#1E3535' },
-    { label: 'Courses',  value: stats?.totalCourses  ?? 0, icon: BookOpen,      color: '#b87a00' },
-    { label: 'Notices',  value: stats?.totalNotices  ?? 0, icon: Shield,        color: '#2a6648' },
+    { label: 'Students', value: stats?.totalStudents ?? 0, icon: GraduationCap, color: '#111827' },
+    { label: 'Teachers', value: stats?.totalTeachers ?? 0, icon: User,          color: '#2563eb' },
+    { label: 'Courses',  value: stats?.totalCourses  ?? 0, icon: BookOpen,      color: '#16a34a' },
+    { label: 'Notices',  value: stats?.totalNotices  ?? 0, icon: Shield,        color: '#ca8a04' },
   ];
 
   return (
     <div className="space-y-4">
 
       {/* ── Profile summary ── */}
-      <div className="rounded-2xl shadow-sm border p-5" style={{ background: cardBg, borderColor: border }}>
+      <div className="rounded-2xl shadow-sm border p-5" style={{ background: surface, borderColor: border }}>
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0">
             <div className="relative group shrink-0">
               <div className="w-24 h-24 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-sm border overflow-hidden"
-                style={{ background: rc.gradient, borderColor: border }}>
+                style={{ background: '#111827', borderColor: border }}>
                 {profile?.avatar
                   ? <img src={profile.avatar} alt="avatar" className="w-full h-full object-cover" />
                   : profile?.name?.[0]?.toUpperCase()}
@@ -152,13 +145,13 @@ export default function Profile() {
               {editing ? (
                 <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                   className="text-[22px] font-bold bg-transparent border-b-2 outline-none w-full max-w-xl mb-3"
-                  style={{ color: headClr, borderColor: rc.badge }} />
+                  style={{ color: headClr, borderColor: '#111827' }} />
               ) : (
                 <h2 className="text-[22px] font-bold leading-tight mb-3 truncate" style={{ color: headClr }}>{profile?.name}</h2>
               )}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full text-white"
-                  style={{ background: rc.badge }}>
+                  style={{ background: '#111827' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
                   {profile?.role}
                 </span>
@@ -174,11 +167,11 @@ export default function Profile() {
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 shrink-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="rounded-xl border px-3 py-2 min-w-[180px]" style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
+              <div className="rounded-xl border px-3 py-2 min-w-[180px]" style={{ borderColor: border, background: dark ? '#0f172a' : '#f9fafb' }}>
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: subClr }}>Email</p>
                 <p className="text-[12px] font-semibold truncate mt-0.5" style={{ color: headClr }}>{profile?.email}</p>
               </div>
-              <div className="rounded-xl border px-3 py-2 min-w-[150px]" style={{ borderColor: border, background: dark ? '#0f1e1e' : '#faf7f5' }}>
+              <div className="rounded-xl border px-3 py-2 min-w-[150px]" style={{ borderColor: border, background: dark ? '#0f172a' : '#f9fafb' }}>
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: subClr }}>Phone</p>
                 <p className="text-[12px] font-semibold truncate mt-0.5" style={{ color: profile?.phone ? headClr : subClr }}>
                   {profile?.phone || 'Not set'}
@@ -196,14 +189,14 @@ export default function Profile() {
                   </button>
                   <button onClick={handleSave} disabled={saving}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold text-white disabled:opacity-60"
-                    style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)' }}>
+                    style={{ background: '#111827' }}>
                     <Save size={12} /> {saving ? 'Saving…' : 'Save'}
                   </button>
                 </>
               ) : (
                 <button onClick={() => setEditing(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold border"
-                  style={{ borderColor: border, color: headClr, background: dark ? '#1a2828' : '#f5faf7' }}>
+                  style={{ borderColor: border, color: headClr, background: dark ? '#0f172a' : '#f9fafb' }}>
                   <Edit2 size={12} /> Edit Profile
                 </button>
               )}
@@ -216,9 +209,9 @@ export default function Profile() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {statCards.map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="rounded-2xl p-4 border shadow-sm flex items-center gap-3"
-            style={{ background: cardBg, borderColor: border }}>
+            style={{ background: surface, borderColor: border }}>
             <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background: dark ? '#0f1e1e' : '#f0f7f5' }}>
+              style={{ background: dark ? '#0f172a' : '#f9fafb' }}>
               <Icon size={16} style={{ color }} />
             </div>
             <div className="min-w-0">
@@ -233,9 +226,9 @@ export default function Profile() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Contact Info */}
-        <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: surface, borderColor: border }}>
           <h3 className="text-[13px] font-bold mb-4 flex items-center gap-2" style={{ color: headClr }}>
-            <User size={14} style={{ color: rc.badge }} /> Contact Information
+            <User size={14} style={{ color: '#111827' }} /> Contact Information
           </h3>
           <div className="space-y-4">
             {[
@@ -245,8 +238,8 @@ export default function Profile() {
             ].map(({ icon: Icon, label, value, field, ph }) => (
               <div key={label} className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: dark ? '#0f1e1e' : '#f5faf7' }}>
-                  <Icon size={13} style={{ color: rc.badge }} />
+                  style={{ background: dark ? '#0f172a' : '#f9fafb' }}>
+                  <Icon size={13} style={{ color: '#111827' }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] font-bold uppercase tracking-wider mb-0.5" style={{ color: subClr }}>{label}</p>
@@ -266,7 +259,7 @@ export default function Profile() {
         </div>
 
         {/* Change Password */}
-        <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: surface, borderColor: border }}>
           <h3 className="text-[13px] font-bold mb-4 flex items-center gap-2" style={{ color: headClr }}>
             <KeyRound size={14} style={{ color: '#1E3535' }} /> Change Password
           </h3>
@@ -294,7 +287,7 @@ export default function Profile() {
             ))}
             <button type="submit" disabled={pwLoading}
               className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-white disabled:opacity-60 hover:opacity-90 transition-all mt-1"
-              style={{ background: 'linear-gradient(135deg, #8B3030, #6b2525)' }}>
+              style={{ background: '#111827' }}>
               {pwLoading ? 'Updating…' : 'Update Password'}
             </button>
           </form>
@@ -306,21 +299,21 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Attendance bar */}
           {attPct !== null && (
-            <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
+            <div className="rounded-2xl border shadow-sm p-5" style={{ background: surface, borderColor: border }}>
               <h3 className="text-[13px] font-bold mb-4" style={{ color: headClr }}>Attendance Overview</h3>
               <div className="flex justify-between text-[12px] mb-1.5">
                 <span style={{ color: subClr }}>{stats?.presentClasses} present / {stats?.totalClasses} total</span>
-                <span className="font-bold" style={{ color: attPct >= 75 ? '#059669' : '#8B3030' }}>{attPct}%</span>
+                <span className="font-bold" style={{ color: attPct >= 75 ? '#16a34a' : '#dc2626' }}>{attPct}%</span>
               </div>
               <div className="h-3 rounded-full overflow-hidden" style={{ background: dark ? '#1a2828' : '#e8f5f0' }}>
                 <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${Math.min(attPct, 100)}%`, background: attPct >= 75 ? '#059669' : '#8B3030' }} />
+                  style={{ width: `${Math.min(attPct, 100)}%`, background: attPct >= 75 ? '#16a34a' : '#dc2626' }} />
               </div>
               {attPct < 75 && (
                 <div className="flex items-center gap-2 mt-3 p-3 rounded-xl border"
-                  style={{ background: dark ? '#2a1414' : '#fff0f0', borderColor: dark ? '#5a2020' : '#fca5a5' }}>
-                  <AlertTriangle size={13} style={{ color: '#8B3030' }} />
-                  <p className="text-[12px] font-medium" style={{ color: '#8B3030' }}>
+                  style={{ background: dark ? '#450a0a22' : '#fef2f2', borderColor: dark ? '#7f1d1d' : '#fecaca' }}>
+                  <AlertTriangle size={13} style={{ color: '#dc2626' }} />
+                  <p className="text-[12px] font-medium" style={{ color: '#dc2626' }}>
                     Below 75% — please attend more classes.
                   </p>
                 </div>
@@ -329,15 +322,15 @@ export default function Profile() {
           )}
 
           {/* Enrolled courses */}
-          <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
+          <div className="rounded-2xl border shadow-sm p-5" style={{ background: surface, borderColor: border }}>
             <h3 className="text-[13px] font-bold mb-3" style={{ color: headClr }}>Enrolled Courses</h3>
             <div className="space-y-2">
               {stats?.courses?.length === 0 && <p className="text-sm" style={{ color: subClr }}>No courses yet</p>}
               {stats?.courses?.map((c, i) => (
                 <div key={c._id} className="flex items-center gap-3 p-3 rounded-xl border"
-                  style={{ background: dark ? '#0f1e1e' : '#faf7f5', borderColor: border }}>
+                  style={{ borderColor: border }}>
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-                    style={{ background: courseColors[i % courseColors.length] }}>
+                    style={{ background: COURSE_COLORS[i % COURSE_COLORS.length] }}>
                     {c.code?.slice(0, 2)}
                   </div>
                   <div className="min-w-0">
@@ -352,14 +345,14 @@ export default function Profile() {
       )}
 
       {authUser?.role === 'teacher' && stats?.courses?.length > 0 && (
-        <div className="rounded-2xl border shadow-sm p-5" style={{ background: cardBg, borderColor: border }}>
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: surface, borderColor: border }}>
           <h3 className="text-[13px] font-bold mb-3" style={{ color: headClr }}>My Courses</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {stats.courses.map((c, i) => (
               <div key={c._id} className="flex items-center gap-3 p-3 rounded-xl border"
-                style={{ background: dark ? '#0f1e1e' : '#faf7f5', borderColor: border }}>
+                style={{ borderColor: border }}>
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
-                  style={{ background: courseColors[i % courseColors.length] }}>
+                  style={{ background: COURSE_COLORS[i % COURSE_COLORS.length] }}>
                   {c.code?.slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -367,7 +360,7 @@ export default function Profile() {
                   <p className="text-[11px]" style={{ color: subClr }}>{c.code}</p>
                 </div>
                 <span className="text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0"
-                  style={{ background: dark ? '#1a1414' : '#fef0f0', color: '#8B3030' }}>
+                  style={{ background: dark ? '#1a1414' : '#fef0f0', color: '#dc2626' }}>
                   {c.students?.length || 0} students
                 </span>
               </div>

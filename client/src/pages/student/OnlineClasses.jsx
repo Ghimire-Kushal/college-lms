@@ -8,7 +8,7 @@ const platformInfo = {
   meet:  { label: 'Google Meet', color: '#1E8E3E', bg: '#e6f4ea' },
   zoom:  { label: 'Zoom',        color: '#2D8CFF', bg: '#e8f1ff' },
   teams: { label: 'MS Teams',    color: '#464EB8', bg: '#eceeff' },
-  other: { label: 'Other',       color: '#8B3030', bg: '#fef0f0' },
+  other: { label: 'Other',       color: '#111827', bg: '#fef0f0' },
 };
 
 function CountdownBadge({ scheduledAt }) {
@@ -21,7 +21,7 @@ function CountdownBadge({ scheduledAt }) {
   const urgent = diff < 30 * 60 * 1000;
   return (
     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-      style={{ background: urgent ? '#fef0f0' : '#f0fdf4', color: urgent ? '#8B3030' : '#059669' }}>
+      style={{ background: urgent ? '#fef0f0' : '#f0fdf4', color: urgent ? '#111827' : '#059669' }}>
       {text}
     </span>
   );
@@ -33,10 +33,10 @@ export default function StudentOnlineClasses() {
   const [tab, setTab]         = useState('upcoming');
   const { dark } = useTheme();
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#ede8e4';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e5e7eb';
+  const headClr = dark ? '#f1f5f9' : '#111827';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
 
   useEffect(() => {
     api.get('/student/online-classes')
@@ -54,10 +54,10 @@ export default function StudentOnlineClasses() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-2xl p-5 sm:p-6 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0f1c1c 0%, #1a2e2e 55%, #1e3535 100%)' }}>
+        style={{ background: '#111827' }}>
         <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #F2C04E 0%, transparent 70%)', opacity: 0.18 }} />
-        <p className="text-[#F2C04E] text-xs font-semibold uppercase tracking-wider">Virtual Classroom</p>
+          style={{ background: '', opacity: 0.18 }} />
+        <p className="text-[#f59e0b] text-xs font-semibold uppercase tracking-wider">Virtual Classroom</p>
         <h2 className="text-white text-xl sm:text-2xl font-bold mt-1">Online Classes</h2>
         <p className="text-white/50 text-sm mt-1">Join your scheduled virtual classes here.</p>
         <div className="flex gap-3 mt-5 flex-wrap">
@@ -76,7 +76,7 @@ export default function StudentOnlineClasses() {
 
       {/* Tabs */}
       <div className="flex gap-1 p-1 rounded-xl w-fit"
-        style={{ background: dark ? '#131e1e' : '#f0ebe8', border: `1px solid ${border}` }}>
+        style={{ background: dark ? '#1e293b' : '#f0ebe8', border: `1px solid ${border}` }}>
         {[
           { key: 'upcoming', label: `Upcoming (${upcoming.length})` },
           { key: 'past',     label: `Past (${past.length})` },
@@ -84,7 +84,7 @@ export default function StudentOnlineClasses() {
           <button key={key} onClick={() => setTab(key)}
             className="px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
             style={tab === key
-              ? { background: '#1E3535', color: '#fff', boxShadow: '0 2px 8px rgba(30,53,53,0.4)' }
+              ? { background: '#111827', color: '#fff', boxShadow: '0 2px 8px rgba(30,53,53,0.4)' }
               : { color: subClr }}>
             {label}
           </button>
@@ -101,8 +101,8 @@ export default function StudentOnlineClasses() {
       ) : display.length === 0 ? (
         <div className="rounded-2xl p-14 text-center border shadow-sm" style={{ background: cardBg, borderColor: border }}>
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: dark ? '#0f1e1e' : '#edf7f5' }}>
-            <Video size={28} style={{ color: dark ? '#2a4a4a' : '#a8cfc8' }} />
+            style={{ background: dark ? '#0f172a' : '#edf7f5' }}>
+            <Video size={28} style={{ color: dark ? '#374151' : '#a8cfc8' }} />
           </div>
           <p className="font-semibold text-[15px]" style={{ color: headClr }}>
             {tab === 'upcoming' ? 'No upcoming classes' : 'No past classes'}
@@ -125,8 +125,8 @@ export default function StudentOnlineClasses() {
                 <div className="p-5">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                      style={{ background: isPast ? (dark ? '#1a1a1a' : '#f0f0f0') : (dark ? '#0f1e1e' : '#edf7f5') }}>
-                      <Video size={18} style={{ color: isPast ? subClr : '#1E3535' }} />
+                      style={{ background: isPast ? (dark ? '#1a1a1a' : '#f0f0f0') : (dark ? '#0f172a' : '#edf7f5') }}>
+                      <Video size={18} style={{ color: isPast ? subClr : '#111827' }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
@@ -168,7 +168,7 @@ export default function StudentOnlineClasses() {
                     {!isPast ? (
                       <a href={cls.meetLink} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-xl transition-all hover:opacity-80"
-                        style={{ background: 'linear-gradient(135deg, #1E3535, #2a4a4a)', color: '#fff' }}>
+                        style={{ background: '#111827', color: '#fff' }}>
                         <Link2 size={11} /> Join <ExternalLink size={10} />
                       </a>
                     ) : (

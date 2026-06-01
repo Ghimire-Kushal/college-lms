@@ -9,7 +9,7 @@ import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 
-const COURSE_ACCENTS = ['#8B3030', '#1E3535', '#b87a00', '#2a5080', '#5a3080', '#1a6648'];
+const COURSE_ACCENTS = ['#111827', '#111827', '#ca8a04', '#2a5080', '#5a3080', '#1a6648'];
 
 export default function TeacherAttendance() {
   const [courses, setCourses]         = useState([]);
@@ -26,11 +26,11 @@ export default function TeacherAttendance() {
 
   // ── Tokens ──────────────────────────────────────────────
   const bg      = dark ? '#0d1212' : '#f4f6f8';
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#e2e8f0';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e2e8f0';
   const headClr = dark ? '#e2e8f0' : '#0f172a';
-  const subClr  = dark ? '#6e7681' : '#64748b';
-  const mutedBg = dark ? '#0f1e1e' : '#f8fafc';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
+  const mutedBg = dark ? '#0f172a' : '#f8fafc';
   const inputBg = dark ? '#0a1414' : '#f1f5f9';
 
   const loadCourses    = () => api.get('/teacher/courses').then(r => setCourses(r.data));
@@ -157,7 +157,7 @@ export default function TeacherAttendance() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                    style={{ background: 'rgba(242,192,78,0.2)', color: '#F2C04E' }}>
+                    style={{ background: 'rgba(242,192,78,0.2)', color: '#f59e0b' }}>
                     Teacher Portal
                   </span>
                 </div>
@@ -185,7 +185,7 @@ export default function TeacherAttendance() {
         {/* ── Inline Attendance Panel ───────────────────── */}
         {activePanel && (
           <div id="attendance-panel" className="rounded-2xl border shadow-md overflow-hidden"
-            style={{ background: cardBg, borderColor: '#1E3535', boxShadow: `0 0 0 2px #1E353530` }}>
+            style={{ background: cardBg, borderColor: '#111827', boxShadow: `0 0 0 2px #1E353530` }}>
 
             {/* Panel Header */}
             <div className="px-8 py-5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -193,7 +193,7 @@ export default function TeacherAttendance() {
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
                   style={{ background: dark ? '#1a2e2e' : '#d4ede8' }}>
-                  <UserCheck size={22} style={{ color: '#1E3535' }} />
+                  <UserCheck size={22} style={{ color: '#111827' }} />
                 </div>
                 <div>
                   <p className="text-[18px] font-bold" style={{ color: headClr }}>
@@ -482,7 +482,7 @@ export default function TeacherAttendance() {
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{ background: dark ? '#1a2828' : '#e8f4f1' }}>
-                <Clock size={16} style={{ color: '#1E3535' }} />
+                <Clock size={16} style={{ color: '#111827' }} />
               </div>
               <div>
                 <h2 className="text-[15px] font-bold" style={{ color: headClr }}>Attendance History</h2>
@@ -529,7 +529,7 @@ export default function TeacherAttendance() {
               const p          = total > 0 ? Math.round((present / total) * 100) : 0;
               const isEditing  = activePanel?.mode === 'edit' && activePanel?.record?._id === r._id;
               const accentIdx  = courses.findIndex(c => c._id === r.course?._id);
-              const rowAccent  = COURSE_ACCENTS[accentIdx % COURSE_ACCENTS.length] || '#1E3535';
+              const rowAccent  = COURSE_ACCENTS[accentIdx % COURSE_ACCENTS.length] || '#111827';
 
               return (
                 <div key={r._id}
@@ -576,7 +576,7 @@ export default function TeacherAttendance() {
                       className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
                       style={{
                         background: isEditing ? (dark ? '#2a1010' : '#fee2e2') : (dark ? '#1a2828' : '#e8f4f1'),
-                        color: isEditing ? '#dc2626' : '#1E3535',
+                        color: isEditing ? '#dc2626' : '#111827',
                       }}>
                       {isEditing ? <X size={12} /> : <Edit2 size={12} />}
                       {isEditing ? 'Close' : 'Edit'}
@@ -595,8 +595,8 @@ export default function TeacherAttendance() {
       {showSummary && summary && (
         <Modal title={`Attendance Summary — ${summary.course?.name}`} onClose={() => setShowSummary(false)} size="lg">
           <div className="flex items-center gap-3 mb-5 p-4 rounded-xl border"
-            style={{ background: dark ? '#0f1e1e' : '#f0faf8', borderColor: dark ? '#1e3535' : '#c0ddd6' }}>
-            <UserCheck size={16} style={{ color: '#1E3535' }} />
+            style={{ background: dark ? '#0f172a' : '#f0faf8', borderColor: dark ? '#1e3535' : '#c0ddd6' }}>
+            <UserCheck size={16} style={{ color: '#111827' }} />
             <span className="text-[13px] font-medium" style={{ color: headClr }}>
               Total classes held: <span className="font-bold">{summary.totalClasses}</span>
             </span>

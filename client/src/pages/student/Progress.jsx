@@ -11,7 +11,7 @@ const GRADE_COLOR  = { 'A+': 'green', 'A': 'green', 'B+': 'blue', 'B': 'blue', '
 
 function GpaBar({ gpa }) {
   const pct = (gpa / 4.0) * 100;
-  const color = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#1E3535' : gpa >= 2.5 ? '#b87a00' : '#8B3030';
+  const color = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#111827' : gpa >= 2.5 ? '#ca8a04' : '#111827';
   return (
     <div className="w-full">
       <div className="flex justify-between text-[11px] mb-1.5">
@@ -63,10 +63,10 @@ export default function StudentProgress() {
       .finally(() => setLoading(false));
   }, []);
 
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
-  const border  = dark ? '#1e2e2e' : '#e8edf3';
-  const headClr = dark ? '#e2e8f0' : '#1e293b';
-  const subClr  = dark ? '#6e7681' : '#64748b';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
+  const border  = dark ? '#334155' : '#e8edf3';
+  const headClr = dark ? '#f1f5f9' : '#111827';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
   const rowBg   = dark ? '#1a2828' : '#f8fafc';
 
   // Compute per-semester stats
@@ -104,10 +104,10 @@ export default function StudentProgress() {
     <div className="space-y-5">
       <PageHeader title="Academic Progress" subtitle="Track your GPA, credits, and overall academic journey." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-28 animate-pulse rounded-2xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-28 animate-pulse rounded-2xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />)}
       </div>
       <div className="space-y-4">
-        {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse rounded-2xl" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }} />)}
+        {[...Array(2)].map((_, i) => <div key={i} className="h-40 animate-pulse rounded-2xl" style={{ background: dark ? '#334155' : '#f1f5f9' }} />)}
       </div>
     </div>
   );
@@ -119,9 +119,9 @@ export default function StudentProgress() {
       {/* Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { icon: Award,        label: 'CGPA',            value: cgpa.toFixed(2),        sub: 'out of 4.00',              color: '#8B3030' },
-          { icon: BookOpen,     label: 'Credits Earned',  value: totalCredits,           sub: 'total credit hours',       color: '#1E3535' },
-          { icon: TrendingUp,   label: 'Pass Rate',       value: `${passRate}%`,         sub: `${totalPassed}/${results.length} subjects`, color: '#b87a00' },
+          { icon: Award,        label: 'CGPA',            value: cgpa.toFixed(2),        sub: 'out of 4.00',              color: '#111827' },
+          { icon: BookOpen,     label: 'Credits Earned',  value: totalCredits,           sub: 'total credit hours',       color: '#111827' },
+          { icon: TrendingUp,   label: 'Pass Rate',       value: `${passRate}%`,         sub: `${totalPassed}/${results.length} subjects`, color: '#ca8a04' },
           { icon: GraduationCap, label: 'Current Semester', value: user?.semester ? `Sem ${user.semester}` : 'N/A', sub: `of ${TOTAL_SEMESTERS} semesters`, color: '#4338ca' },
         ].map(({ icon: Icon, label, value, sub, color }) => (
           <div key={label} className="rounded-2xl p-4 border shadow-sm" style={{ background: cardBg, borderColor: border }}>
@@ -160,14 +160,14 @@ export default function StudentProgress() {
                   <div key={sem} className="flex flex-col items-center gap-1">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold transition-all"
                       style={current
-                        ? { background: '#8B3030', color: '#fff', boxShadow: '0 0 0 3px #8B303040' }
+                        ? { background: '#111827', color: '#fff', boxShadow: '0 0 0 3px #8B303040' }
                         : done
-                          ? { background: '#1E3535', color: '#fff' }
-                          : { background: dark ? '#1e2e2e' : '#f1f5f9', color: subClr }
+                          ? { background: '#111827', color: '#fff' }
+                          : { background: dark ? '#334155' : '#f1f5f9', color: subClr }
                       }>
                       {sem}
                     </div>
-                    <span className="text-[9px]" style={{ color: current ? '#8B3030' : subClr }}>
+                    <span className="text-[9px]" style={{ color: current ? '#111827' : subClr }}>
                       {current ? 'Now' : done ? '✓' : ''}
                     </span>
                   </div>
@@ -184,7 +184,7 @@ export default function StudentProgress() {
         <div className="rounded-2xl border shadow-sm overflow-hidden" style={{ background: cardBg, borderColor: border }}>
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center gap-2">
-              <BarChart3 size={15} style={{ color: '#8B3030' }} />
+              <BarChart3 size={15} style={{ color: '#111827' }} />
               <h2 className="text-[14px] font-bold" style={{ color: headClr }}>GPA by Semester</h2>
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function StudentProgress() {
             <div className="p-5 space-y-4">
               {semStats.map(({ sem, gpa, passed, total, avgTotal, totalCredits: tc }) => {
                 const pct = (gpa / 4.0) * 100;
-                const clr = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#1E3535' : gpa >= 2.5 ? '#b87a00' : '#8B3030';
+                const clr = gpa >= 3.5 ? '#059669' : gpa >= 3.0 ? '#111827' : gpa >= 2.5 ? '#ca8a04' : '#111827';
                 return (
                   <div key={sem}>
                     <div className="flex items-center justify-between mb-1.5">
@@ -210,7 +210,7 @@ export default function StudentProgress() {
                         <span style={{ color: subClr }}>Avg {avgTotal.toFixed(0)}%</span>
                       </div>
                     </div>
-                    <div className="w-full rounded-full h-2 overflow-hidden" style={{ background: dark ? '#1e2e2e' : '#f1f5f9' }}>
+                    <div className="w-full rounded-full h-2 overflow-hidden" style={{ background: dark ? '#334155' : '#f1f5f9' }}>
                       <div className="h-2 rounded-full transition-all duration-700"
                         style={{ width: `${Math.min(pct, 100)}%`, background: clr }} />
                     </div>
@@ -229,7 +229,7 @@ export default function StudentProgress() {
           <div className="px-5 py-4 border-b" style={{ borderColor: border }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Target size={15} style={{ color: '#1E3535' }} />
+                <Target size={15} style={{ color: '#111827' }} />
                 <h2 className="text-[14px] font-bold" style={{ color: headClr }}>Current Courses</h2>
               </div>
               <Badge color="teal">{courses.length} courses</Badge>
@@ -244,10 +244,10 @@ export default function StudentProgress() {
             ) : courses.map((c, i) => {
               const courseResults = results.filter(r => r.course?._id === c._id || r.course === c._id);
               const latest = courseResults[courseResults.length - 1];
-              const colors = ['#8B3030','#1E3535','#b87a00','#2a6648','#4338ca','#0369a1'];
+              const colors = ['#111827','#111827','#ca8a04','#16a34a','#4338ca','#0369a1'];
               return (
                 <div key={c._id} className="flex items-center gap-4 px-5 py-3.5"
-                  style={{ background: i % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>
+                  style={{ background: i % 2 === 0 ? (dark ? '#0f172a' : '#fafafa') : cardBg }}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-[11px] font-bold shrink-0"
                     style={{ background: colors[i % colors.length] }}>
                     {c.code?.slice(0, 2)}
@@ -284,7 +284,7 @@ export default function StudentProgress() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ background: dark ? '#0f1e1e' : '#f1f5f9', borderBottom: `1px solid ${border}` }}>
+                    <tr style={{ background: dark ? '#0f172a' : '#f1f5f9', borderBottom: `1px solid ${border}` }}>
                       {['Course', 'Code', 'Internal', 'External', 'Total', 'Grade'].map(h => (
                         <th key={h} className="text-left px-4 py-3 text-[11px] font-bold uppercase tracking-widest"
                           style={{ color: subClr }}>{h}</th>
@@ -294,7 +294,7 @@ export default function StudentProgress() {
                   <tbody>
                     {items.map((r, ri) => (
                       <tr key={r._id} className="border-b last:border-0"
-                        style={{ borderColor: dark ? '#0f1e1e' : '#f8fafc', background: ri % 2 === 0 ? (dark ? '#0f1e1e' : '#fafafa') : cardBg }}>
+                        style={{ borderColor: dark ? '#0f172a' : '#f8fafc', background: ri % 2 === 0 ? (dark ? '#0f172a' : '#fafafa') : cardBg }}>
                         <td className="px-4 py-3 font-semibold text-[13px]" style={{ color: headClr }}>{r.course?.name}</td>
                         <td className="px-4 py-3"><Badge color="slate">{r.course?.code}</Badge></td>
                         <td className="px-4 py-3 text-[13px]" style={{ color: headClr }}>{r.internalMarks ?? '—'}</td>

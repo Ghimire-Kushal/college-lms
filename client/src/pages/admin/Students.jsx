@@ -20,98 +20,93 @@ const emptyForm = {
 
 // ── Sync Result Banner ────────────────────────────────────
 function SyncSummary({ result, onClose, dark }) {
-  const border = dark ? '#1e2e2e' : '#e2e8f0';
-  const cardBg = dark ? '#131e1e' : '#ffffff';
+  const border = dark ? '#334155' : '#e5e7eb';
+  const cardBg = dark ? '#1e293b' : '#ffffff';
+  const textHead = dark ? '#f1f5f9' : '#111827';
+  const textSub  = dark ? '#94a3b8' : '#6b7280';
 
   const stats = [
-    { label: 'Imported', value: result.summary.imported, icon: CheckCircle, color: '#059669', bg: dark ? '#0d2018' : '#ecfdf5' },
-    { label: 'Updated',  value: result.summary.updated,  icon: RefreshCw,   color: '#2563eb', bg: dark ? '#0d1a30' : '#eff6ff' },
-    { label: 'Skipped',  value: result.summary.skipped,  icon: SkipForward, color: '#b87a00', bg: dark ? '#2d2712' : '#fef9ec' },
-    { label: 'Errors',   value: result.summary.errors,   icon: XCircle,     color: '#dc2626', bg: dark ? '#2a1010' : '#fff0f0' },
+    { label: 'Imported', value: result.summary.imported, icon: CheckCircle, color: '#16a34a', bg: dark ? '#052e16' : '#f0fdf4' },
+    { label: 'Updated',  value: result.summary.updated,  icon: RefreshCw,   color: '#2563eb', bg: dark ? '#1e3a5f' : '#eff6ff' },
+    { label: 'Skipped',  value: result.summary.skipped,  icon: SkipForward, color: '#ca8a04', bg: dark ? '#422006' : '#fefce8' },
+    { label: 'Errors',   value: result.summary.errors,   icon: XCircle,     color: '#dc2626', bg: dark ? '#450a0a' : '#fef2f2' },
   ];
 
   const hasIssues =
     (result.skippedDetails?.length || 0) + (result.errorDetails?.length || 0) > 0;
 
   return (
-    <div className="rounded-2xl border overflow-hidden shadow-sm"
-      style={{ background: cardBg, borderColor: border }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b"
-        style={{ borderColor: border, background: dark ? '#0f1e1e' : '#f8fafc' }}>
-        <div className="flex items-center gap-2.5">
-          <CheckCircle size={16} style={{ color: '#059669' }} />
-          <p className="text-[14px] font-bold" style={{ color: dark ? '#e2e8f0' : '#1e293b' }}>
-            Google Sheets Sync Complete
-          </p>
-          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-            style={{ background: dark ? '#1a2828' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
-            {result.summary.total} rows processed
+    <div className="rounded-xl border overflow-hidden" style={{ background: cardBg, borderColor: border }}>
+      <div className="flex items-center justify-between px-5 py-3.5 border-b"
+        style={{ borderColor: border, background: dark ? '#0f172a' : '#f9fafb' }}>
+        <div className="flex items-center gap-2">
+          <CheckCircle size={14} style={{ color: '#16a34a' }} />
+          <p className="text-[13px] font-semibold" style={{ color: textHead }}>Google Sheets Sync Complete</p>
+          <span className="text-[11px] px-2 py-0.5 rounded-md font-medium"
+            style={{ background: dark ? '#0f172a' : '#f3f4f6', color: textSub }}>
+            {result.summary.total} rows
           </span>
         </div>
         <button onClick={onClose}
-          className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:opacity-70"
-          style={{ background: dark ? '#1e2e2e' : '#f1f5f9', color: dark ? '#94a3b8' : '#64748b' }}>
+          className="w-7 h-7 rounded-md flex items-center justify-center transition-colors hover:opacity-70"
+          style={{ color: textSub }}
+          onMouseEnter={e => { e.currentTarget.style.background = dark ? '#0f172a' : '#f3f4f6'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
           <X size={13} />
         </button>
       </div>
 
-      {/* Stat chips */}
       <div className="px-5 py-4 flex flex-wrap gap-3">
         {stats.map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl"
-            style={{ background: bg, border: `1px solid ${color}22` }}>
-            <Icon size={15} style={{ color }} />
+            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg"
+            style={{ background: bg, border: `1px solid ${color}30` }}>
+            <Icon size={14} style={{ color }} />
             <div>
-              <p className="text-[18px] font-bold leading-none" style={{ color }}>{value}</p>
-              <p className="text-[10px] font-semibold mt-0.5 uppercase tracking-wide" style={{ color }}>{label}</p>
+              <p className="text-[16px] font-bold leading-none" style={{ color }}>{value}</p>
+              <p className="text-[10px] font-medium mt-0.5 uppercase tracking-wide" style={{ color }}>{label}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Detail tables (only shown when there are skipped/errored rows) */}
       {hasIssues && (
         <div className="px-5 pb-4 space-y-3">
           {result.skippedDetails?.length > 0 && (
-            <details open className="rounded-xl border overflow-hidden"
-              style={{ borderColor: dark ? '#2d2712' : '#fef0c0' }}>
+            <details open className="rounded-lg border overflow-hidden" style={{ borderColor: '#fde68a' }}>
               <summary className="flex items-center gap-2 px-4 py-2.5 cursor-pointer select-none text-[12px] font-semibold"
-                style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#b87a00' }}>
+                style={{ background: dark ? '#422006' : '#fefce8', color: '#ca8a04' }}>
                 <SkipForward size={13} />
                 {result.skippedDetails.length} skipped row{result.skippedDetails.length !== 1 ? 's' : ''}
               </summary>
-              <div className="divide-y" style={{ borderColor: dark ? '#1e2e2e' : '#f1f5f9' }}>
+              <div className="divide-y" style={{ borderColor: border }}>
                 {result.skippedDetails.map((d, i) => (
                   <div key={i} className="flex items-center gap-3 px-4 py-2">
-                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded"
-                      style={{ background: dark ? '#2d2712' : '#fef9ec', color: '#b87a00' }}>
+                    <span className="text-[11px] font-medium px-1.5 py-0.5 rounded"
+                      style={{ background: dark ? '#422006' : '#fefce8', color: '#ca8a04' }}>
                       Row {d.row}
                     </span>
-                    <span className="text-[12px]" style={{ color: dark ? '#94a3b8' : '#64748b' }}>{d.reason}</span>
+                    <span className="text-[12px]" style={{ color: textSub }}>{d.reason}</span>
                   </div>
                 ))}
               </div>
             </details>
           )}
-
           {result.errorDetails?.length > 0 && (
-            <details open className="rounded-xl border overflow-hidden"
-              style={{ borderColor: dark ? '#2a1010' : '#fca5a5' }}>
+            <details open className="rounded-lg border overflow-hidden" style={{ borderColor: '#fecaca' }}>
               <summary className="flex items-center gap-2 px-4 py-2.5 cursor-pointer select-none text-[12px] font-semibold"
-                style={{ background: dark ? '#2a1010' : '#fff0f0', color: '#dc2626' }}>
+                style={{ background: dark ? '#450a0a' : '#fef2f2', color: '#dc2626' }}>
                 <AlertCircle size={13} />
                 {result.errorDetails.length} error{result.errorDetails.length !== 1 ? 's' : ''}
               </summary>
-              <div className="divide-y" style={{ borderColor: dark ? '#1e2e2e' : '#f1f5f9' }}>
+              <div className="divide-y" style={{ borderColor: border }}>
                 {result.errorDetails.map((d, i) => (
                   <div key={i} className="flex items-center gap-3 px-4 py-2">
-                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded"
-                      style={{ background: dark ? '#2a1010' : '#fff0f0', color: '#dc2626' }}>
+                    <span className="text-[11px] font-medium px-1.5 py-0.5 rounded"
+                      style={{ background: dark ? '#450a0a' : '#fef2f2', color: '#dc2626' }}>
                       Row {d.row}
                     </span>
-                    <span className="text-[12px]" style={{ color: dark ? '#94a3b8' : '#64748b' }}>{d.reason}</span>
+                    <span className="text-[12px]" style={{ color: textSub }}>{d.reason}</span>
                   </div>
                 ))}
               </div>
@@ -208,17 +203,17 @@ export default function Students() {
         <button
           onClick={handleGoogleSync}
           disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-semibold border transition-all disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-md"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            background: syncing
-              ? (dark ? '#1a2828' : '#f0fdf4')
-              : 'linear-gradient(135deg, #16a34a, #15803d)',
-            color: syncing ? (dark ? '#5dbfb0' : '#16a34a') : '#ffffff',
-            borderColor: syncing ? (dark ? '#2a3f3f' : '#bbf7d0') : 'transparent',
-            boxShadow: syncing ? 'none' : '0 4px 12px rgba(22,163,74,0.3)',
-          }}>
+            background: dark ? '#1e293b' : '#ffffff',
+            borderColor: dark ? '#334155' : '#e5e7eb',
+            color: dark ? '#94a3b8' : '#374151',
+          }}
+          onMouseEnter={e => { if (!syncing) { e.currentTarget.style.background = dark ? '#0f172a' : '#f9fafb'; } }}
+          onMouseLeave={e => { e.currentTarget.style.background = dark ? '#1e293b' : '#ffffff'; }}
+        >
           <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-          {syncing ? 'Syncing…' : 'Sync from Google Sheets'}
+          {syncing ? 'Syncing…' : 'Sync Google Sheets'}
         </button>
 
         <PrimaryBtn onClick={openAdd}>
@@ -331,9 +326,7 @@ export default function Students() {
             </FormField>
             <div className="flex gap-3 justify-end pt-2">
               <SecondaryBtn type="button" onClick={() => setModal(null)}>Cancel</SecondaryBtn>
-              <PrimaryBtn type="submit" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
-                Enroll
-              </PrimaryBtn>
+              <PrimaryBtn type="submit">Enroll</PrimaryBtn>
             </div>
           </form>
         </Modal>

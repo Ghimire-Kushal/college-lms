@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import {
   Upload, Trash2, Download, FileText, BookOpen, Search,
@@ -40,10 +41,10 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
   const fileRef = useRef(null);
 
   const border  = dark ? '#2a3f3f' : '#e2e8f0';
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
   const headClr = dark ? '#e2e8f0' : '#0f172a';
-  const subClr  = dark ? '#94a3b8' : '#64748b';
-  const inputBg = dark ? '#0f1e1e' : '#f8fafc';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
+  const inputBg = dark ? '#0f172a' : '#f8fafc';
 
   const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
 
@@ -82,7 +83,7 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
               style={{ background: dark ? '#1a2e2e' : '#d4ede8' }}>
-              <Upload size={18} style={{ color: '#1E3535' }} />
+              <Upload size={18} style={{ color: '#111827' }} />
             </div>
             <div>
               <p className="text-[16px] font-bold" style={{ color: headClr }}>Upload Material</p>
@@ -134,13 +135,13 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
               onClick={() => fileRef.current?.click()}
               className="relative cursor-pointer rounded-xl border-2 border-dashed px-6 py-8 text-center transition-all"
               style={{
-                borderColor: dragOver ? '#1E3535' : border,
-                background: dragOver ? (dark ? '#0f1e1e' : '#f0faf8') : inputBg,
+                borderColor: dragOver ? '#111827' : border,
+                background: dragOver ? (dark ? '#0f172a' : '#f0faf8') : inputBg,
               }}>
               <input ref={fileRef} type="file" className="hidden" onChange={e => setFile(e.target.files[0])} />
               {file ? (
                 <div className="flex items-center justify-center gap-3">
-                  <FileText size={20} style={{ color: '#1E3535' }} />
+                  <FileText size={20} style={{ color: '#111827' }} />
                   <div className="text-left">
                     <p className="text-[13px] font-semibold" style={{ color: headClr }}>{file.name}</p>
                     <p className="text-[11px]" style={{ color: subClr }}>{(file.size / 1024 / 1024).toFixed(2)} MB</p>
@@ -183,8 +184,8 @@ function UploadModal({ onClose, onSuccess, courses, dark }) {
 function NoteCard({ note, dark, onDelete }) {
   const border  = dark ? '#2a3f3f' : '#e2e8f0';
   const headClr = dark ? '#e2e8f0' : '#0f172a';
-  const subClr  = dark ? '#94a3b8' : '#64748b';
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
 
   const { ext, bg, color, darkBg, darkColor, icon: FileIcon } = getFileType(note.fileUrl);
   const iconBg  = dark ? darkBg  : bg;
@@ -212,7 +213,7 @@ function NoteCard({ note, dark, onDelete }) {
           <div className="flex-1 min-w-0 pt-0.5">
             <h3 className="font-bold text-[15px] leading-snug truncate" style={{ color: headClr }}>{note.title}</h3>
             <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold"
-              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#10b981' : '#111827' }}>
               <BookOpen size={10} />
               {note.course?.name}
             </span>
@@ -250,7 +251,7 @@ function NoteCard({ note, dark, onDelete }) {
           {note.fileUrl && (
             <a href={note.fileUrl} target="_blank" rel="noreferrer"
               className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[12px] font-semibold transition-all hover:opacity-80"
-              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+              style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#10b981' : '#111827' }}>
               <Download size={13} /> Download
             </a>
           )}
@@ -285,11 +286,11 @@ export default function TeacherNotes() {
   const { dark } = useTheme();
 
   const bg      = dark ? '#0d1212' : '#f4f6f8';
-  const cardBg  = dark ? '#131e1e' : '#ffffff';
+  const cardBg  = dark ? '#1e293b' : '#ffffff';
   const border  = dark ? '#2a3f3f' : '#e2e8f0';
   const headClr = dark ? '#e2e8f0' : '#0f172a';
-  const subClr  = dark ? '#94a3b8' : '#64748b';
-  const inputBg = dark ? '#0f1e1e' : '#ffffff';
+  const subClr  = dark ? '#94a3b8' : '#6b7280';
+  const inputBg = dark ? '#0f172a' : '#ffffff';
 
   const load = () => api.get('/teacher/notes', { params: { courseId: filterCourse } }).then(r => setNotes(r.data));
   useEffect(() => { api.get('/teacher/courses').then(r => setCourses(r.data)); }, []);
@@ -330,7 +331,7 @@ export default function TeacherNotes() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 relative">
               <div>
                 <span className="inline-block text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
-                  style={{ background: 'rgba(242,192,78,0.2)', color: '#F2C04E' }}>
+                  style={{ background: 'rgba(242,192,78,0.2)', color: '#f59e0b' }}>
                   Teacher Portal
                 </span>
                 <h1 className="text-3xl font-bold text-white tracking-tight">Notes & Materials</h1>
@@ -415,13 +416,13 @@ export default function TeacherNotes() {
             <span>{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
             {search && (
               <span className="px-2 py-0.5 rounded-full font-medium"
-                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#10b981' : '#111827' }}>
                 "{search}"
               </span>
             )}
             {filterCourse && (
               <span className="px-2 py-0.5 rounded-full font-medium"
-                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#5dbfb0' : '#1E3535' }}>
+                style={{ background: dark ? '#1a3535' : '#e8f4f1', color: dark ? '#10b981' : '#111827' }}>
                 {courses.find(c => c._id === filterCourse)?.name}
               </span>
             )}
@@ -434,7 +435,7 @@ export default function TeacherNotes() {
             style={{ background: cardBg, borderColor: border }}>
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
               style={{ background: dark ? '#1a3535' : '#e8f4f1' }}>
-              <FolderOpen size={28} style={{ color: dark ? '#5dbfb0' : '#a0c4bb' }} />
+              <FolderOpen size={28} style={{ color: dark ? '#10b981' : '#a0c4bb' }} />
             </div>
             <p className="font-bold text-[16px]" style={{ color: headClr }}>
               {search || filterCourse ? 'No materials found' : 'No materials uploaded yet'}
