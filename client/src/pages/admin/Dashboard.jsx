@@ -143,48 +143,24 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: border }}>
-              {teachers.map((t, i) => (
+              {teachers.slice(0, 6).map((t, i) => (
                 <div
                   key={t._id}
-                  className="group flex items-center gap-3 px-5 py-3.5 transition-colors"
+                  className="group flex items-center gap-3 px-5 py-3 transition-colors"
                   onMouseEnter={e => { e.currentTarget.style.background = dark ? '#0f172a' : '#f9fafb'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[12px] font-semibold text-white shrink-0"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[12px] font-semibold text-white shrink-0"
                     style={{ background: ['#111827','#1d4ed8','#059669','#7c3aed','#d97706','#dc2626'][i % 6] }}
                   >
                     {t.name?.[0]?.toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-[13px] font-medium truncate" style={{ color: textHead }}>{t.name}</p>
-                      {t.employeeId && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-medium hidden sm:inline"
-                          style={{ background: dark ? '#0f172a' : '#f3f4f6', color: textSub }}>
-                          {t.employeeId}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="flex items-center gap-1 text-[11px]" style={{ color: textSub }}>
-                        <Mail size={10} /> {t.email}
-                      </span>
-                      {t.department && (
-                        <>
-                          <span style={{ color: textSub }}>·</span>
-                          <span className="flex items-center gap-1 text-[11px]" style={{ color: textSub }}>
-                            <Award size={10} /> {t.department}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="hidden sm:flex items-center gap-1 shrink-0">
-                    <span className="text-[10px] font-medium px-2 py-1 rounded-md"
-                      style={{ background: dark ? '#052e16' : '#f0fdf4', color: '#16a34a' }}>
-                      <UserCheck size={10} className="inline mr-1" />Active
-                    </span>
+                    <p className="text-[13px] font-medium truncate" style={{ color: textHead }}>{t.name}</p>
+                    <p className="text-[11px] truncate" style={{ color: textSub }}>
+                      {t.department || t.teacherId || '—'}
+                    </p>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                     <button onClick={() => openEdit(t)}
@@ -204,6 +180,15 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
+              {teachers.length > 6 && (
+                <div className="px-5 py-3">
+                  <button onClick={() => navigate('/admin/teachers')}
+                    className="text-[12px] font-medium transition-opacity hover:opacity-70"
+                    style={{ color: textSub }}>
+                    +{teachers.length - 6} more — View all
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -232,12 +217,8 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium truncate" style={{ color: textHead }}>{s.name}</p>
-                  <p className="text-[11px]" style={{ color: textSub }}>{s.studentId} · Sem {s.semester}</p>
+                  <p className="text-[11px]" style={{ color: textSub }}>Sem {s.semester} · {s.section || '—'}</p>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-md border shrink-0"
-                  style={{ background: dark ? '#0f172a' : '#f9fafb', color: textSub, borderColor: border }}>
-                  {s.section || '—'}
-                </span>
               </div>
             ))}
           </div>

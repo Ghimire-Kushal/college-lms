@@ -8,6 +8,8 @@ const Notice = require('../models/Notice');
 const Result = require('../models/Result');
 const Timetable = require('../models/Timetable');
 const Feedback = require('../models/Feedback');
+const Assignment = require('../models/Assignment');
+const Submission = require('../models/Submission');
 
 const adminOnly = [auth, authorize('admin')];
 
@@ -466,6 +468,29 @@ router.delete('/feedback/:id', ...adminOnly, async (req, res) => {
   try {
     await Feedback.findByIdAndDelete(req.params.id);
     res.json({ message: 'Feedback deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ===== ASSIGNMENTS =====
+router.get('/assignments', ...adminOnly, async (req, res) => {
+  try {
+    const assignments = await Assignment.find()
+      .populate('course', 'name code')
+      .populate('teacher', 'name email')
+      .sort({ createdAt: -1 });
+    res.json(assignments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.delete('/assignments/:id', ...adminOnly, async (req, res) => {
+  try {
+    await Assignment.findByIdAndDelete(req.params.id);
+    await Submission.deleteMany({ assignment: req.params.id });
+    res.json({ message: 'Assignment deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

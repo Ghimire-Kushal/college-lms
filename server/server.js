@@ -5,6 +5,7 @@ const path       = require('path');
 const compression = require('compression');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const connectDB  = require('./config/db');
   
 dotenv.config();
@@ -19,7 +20,18 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map(o => o.trim());
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error(`CORS: ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 
 // ── Body parsing ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));
@@ -50,8 +62,8 @@ app.use('/api/student/assignments', rateLimit({
     try {
       const token = req.headers.authorization?.replace('Bearer ', '');
       const payload = token ? require('jsonwebtoken').decode(token) : null;
-      return payload?.id || req.ip;
-    } catch { return req.ip; }
+      return payload?.id || ipKeyGenerator(req.ip);
+    } catch { return ipKeyGenerator(req.ip); }
   },
   message: { message: 'Submission rate limit reached.' },
 }));
@@ -67,8 +79,8 @@ app.use('/api', rateLimit({
     try {
       const token = req.headers.authorization?.replace('Bearer ', '');
       const payload = token ? require('jsonwebtoken').decode(token) : null;
-      return payload?.id || req.ip;
-    } catch { return req.ip; }
+      return payload?.id || ipKeyGenerator(req.ip);
+    } catch { return ipKeyGenerator(req.ip); }
   },
 }));
 
