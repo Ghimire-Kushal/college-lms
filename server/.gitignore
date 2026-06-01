@@ -1,0 +1,10 @@
+
+# Benchmark / load test files — contain env refs, never commit
+server/benchmark.js
+server/stress-test.js
+server/load-test-suite.js
+server/peak-30m-test.js
+benchmark.js
+stress-test.js
+load-test-suite.js
+peak-30m-test.js

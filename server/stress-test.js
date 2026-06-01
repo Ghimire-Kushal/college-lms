@@ -21,7 +21,7 @@ const jwt = require('jsonwebtoken');
 const http = require('http');
 
 const BASE_URL = 'http://localhost:5001';
-const JWT_SECRET = 'ROTATED_SEE_ENV';
+const JWT_SECRET = process.env.JWT_SECRET || require('dotenv').config({ path: require('path').join(__dirname, '.env') }) && process.env.JWT_SECRET;
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

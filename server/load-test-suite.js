@@ -17,7 +17,7 @@ const os         = require('os');
 
 // ── Config ────────────────────────────────────────────────────────
 const BASE    = 'http://localhost:5001';
-const SECRET  = 'ROTATED_SEE_ENV';
+const SECRET = process.env.JWT_SECRET;
 
 // Real data from the system
 const REAL = {
