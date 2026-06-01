@@ -6,7 +6,7 @@ const compression = require('compression');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const connectDB  = require('./config/db');
-
+  
 dotenv.config();
 connectDB();
 
@@ -25,30 +25,51 @@ app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', creden
 app.use(express.json({ limit: '1mb' }));
 
 // ── Rate limiting ────────────────────────────────────────────────────────────
+// Skip rate limiting in test/development mode (localhost)
+const isLocalhost = (req) => {
+  const ip = req.ip || req.connection?.remoteAddress || '';
+  return ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+};
+
 // Login: max 20 attempts per IP per 15 min — blocks brute force + bcrypt DoS
 app.use('/api/auth/login', rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: isLocalhost,
   message: { message: 'Too many login attempts. Try again in 15 minutes.' },
 }));
 
-// Submission: max 5 per student per hour — prevents deadline spam
+// Submission: max 10 per user per hour (keyed by JWT, not IP)
 app.use('/api/student/assignments', rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 5,
-  keyGenerator: (req) => req.headers.authorization || req.ip,
+  max: 10,
+  skip: isLocalhost,
+  keyGenerator: (req) => {
+    try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      const payload = token ? require('jsonwebtoken').decode(token) : null;
+      return payload?.id || req.ip;
+    } catch { return req.ip; }
+  },
   message: { message: 'Submission rate limit reached.' },
 }));
 
-// Global API: 300 req / min per IP — prevents runaway clients
+// Global API: 500 req/min per user (keyed by JWT sub, not IP)
 app.use('/api', rateLimit({
   windowMs: 60 * 1000,
-  max: 300,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.path === '/health',
+  skip: (req) => req.path === '/health' || isLocalhost(req),
+  keyGenerator: (req) => {
+    try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      const payload = token ? require('jsonwebtoken').decode(token) : null;
+      return payload?.id || req.ip;
+    } catch { return req.ip; }
+  },
 }));
 
 // ── Static files ─────────────────────────────────────────────────────────────

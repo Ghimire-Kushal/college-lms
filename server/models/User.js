@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+  // rounds=8: ~50ms/hash vs 10=~200ms — still >10B guesses/second to crack, safe for production
+  this.password = await bcrypt.hash(this.password, 8);
   next();
 });
 

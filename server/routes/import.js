@@ -231,7 +231,7 @@ router.post(
             // Create new student
             // Default password: value from sheet column OR studentId (raw)
             const rawPassword = obj.password || studentId;
-            const hashed      = await bcrypt.hash(rawPassword, 10);
+            const hashed      = await bcrypt.hash(rawPassword, 8);
 
             await User.create({
               name:      obj.name,
