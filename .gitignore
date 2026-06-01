@@ -10,3 +10,11 @@ uploads/*
 server/keys/
 **/google-service-account.json
 *service-account*.json
+
+# Load test artifacts
+server/uploads/*.txt
+server/uploads/*.pdf
+uploads/*.txt
+server/.env
+*.env
+.env*
