@@ -18,43 +18,44 @@ export default function Modal({ title, children, onClose, size = 'md' }) {
     };
   }, [onClose]);
 
+  const bg     = dark ? '#1e293b' : '#ffffff';
+  const border = dark ? '#334155' : '#e5e7eb';
+  const titleColor = dark ? '#f1f5f9' : '#111827';
+
   return createPortal(
     <div
       className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4"
-      style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
         className={[
           'relative w-full flex flex-col modal-enter',
-          'rounded-t-2xl max-h-[92vh]',
-          `sm:rounded-2xl sm:shadow-2xl sm:max-h-[90vh] ${sizes[size]}`,
+          'rounded-t-xl max-h-[92vh]',
+          `sm:rounded-xl sm:shadow-xl sm:max-h-[88vh] ${sizes[size]}`,
         ].join(' ')}
-        style={{
-          background: dark ? '#161b22' : '#ffffff',
-          border: `1px solid ${dark ? '#30363d' : '#e8edf3'}`,
-        }}
+        style={{ background: bg, border: `1px solid ${border}` }}
       >
         {/* Drag handle (mobile) */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full sm:hidden"
-          style={{ background: dark ? '#30363d' : '#e2e8f0' }} />
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full sm:hidden"
+          style={{ background: border }} />
 
         {/* Header */}
         <div
           className="flex items-center justify-between px-5 sm:px-6 py-4 shrink-0 border-b"
-          style={{ borderColor: dark ? '#21262d' : '#f1f5f9' }}
+          style={{ borderColor: border }}
         >
-          <h2 className="text-[16px] font-bold mt-1 sm:mt-0" style={{ color: dark ? '#e2e8f0' : '#0f172a' }}>
+          <h2 className="text-[15px] font-semibold mt-1 sm:mt-0" style={{ color: titleColor }}>
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-            style={{ color: dark ? '#6e7681' : '#94a3b8' }}
-            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#21262d' : '#f1f5f9'; }}
+            className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
+            style={{ color: dark ? '#64748b' : '#9ca3af' }}
+            onMouseEnter={e => { e.currentTarget.style.background = dark ? '#0f172a' : '#f9fafb'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 

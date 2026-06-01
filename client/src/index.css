@@ -1,94 +1,80 @@
 @import "tailwindcss";
 
-/* Enable class-based dark mode */
-@custom-variant dark (&:where(.dark, .dark *));
+/* ── Design Tokens ─────────────────────────────────── */
+:root {
+  --primary:        #111827;
+  --secondary:      #6b7280;
+  --success:        #10b981;
+  --warning:        #f59e0b;
+  --danger:         #ef4444;
+  --background:     #f9fafb;
+  --surface:        #ffffff;
+  --border:         #e5e7eb;
+  --text-primary:   #111827;
+  --text-secondary: #6b7280;
 
+  --sidebar-width:  240px;
+  --navbar-height:  60px;
+  --radius:         10px;
+}
+
+/* ── Dark mode tokens ──────────────────────────────── */
+html.dark {
+  --background:     #0f172a;
+  --surface:        #1e293b;
+  --border:         #334155;
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+}
+
+/* ── Reset ─────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-:root {
-  --sidebar-width: 272px;
-  --navbar-height: 68px;
-  --radius: 14px;
-  --brand-red:  #7A2E2E;
-  --brand-teal: #1E3535;
-  --brand-gold: #F2C04E;
-}
+html { scroll-behavior: smooth; }
 
-html {
-  scroll-behavior: smooth;
-}
-
-/* ── Light mode ────────────────────────────────────── */
+/* ── Base ──────────────────────────────────────────── */
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #1e293b;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-size: 14px;
   line-height: 1.6;
-  font-size: 15px;
-  background-color: #f0ebe8;
-  background-image: radial-gradient(circle, #d8cbc6 1px, transparent 1px);
-  background-size: 28px 28px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-
-/* ── Dark mode ─────────────────────────────────────── */
-html.dark body {
-  background-color: #0d1212;
-  background-image: radial-gradient(circle, #1a2626 1px, transparent 1px);
-  background-size: 28px 28px;
-  color: #e2e8f0;
-}
-
-/* Dark mode — white surfaces become dark surfaces */
-html.dark .bg-white {
-  background-color: #131e1e !important;
-  background-image: none !important;
-}
-html.dark .border-slate-100 { border-color: #1e2e2e !important; }
-html.dark .border-slate-200 { border-color: #2a3c3c !important; }
-html.dark .text-slate-800   { color: #e2e8f0 !important; }
-html.dark .text-slate-700   { color: #c9d1d9 !important; }
-html.dark .text-slate-600   { color: #b1bac4 !important; }
-html.dark .text-slate-500   { color: #8b949e !important; }
-html.dark .text-slate-400   { color: #6e7681 !important; }
-html.dark .text-slate-300   { color: #555c66 !important; }
-html.dark .bg-slate-50      { background-color: #1a2828 !important; background-image: none !important; }
-html.dark .bg-slate-100     { background-color: #243030 !important; background-image: none !important; }
-html.dark .hover\:bg-slate-50\/60:hover { background-color: rgba(26,40,40,0.6) !important; }
-html.dark .hover\:bg-slate-50\/40:hover { background-color: rgba(26,40,40,0.4) !important; }
 
 #root {
   width: 100%;
   min-height: 100vh;
 }
 
-/* ── Custom scrollbar ──────────────────────────────── */
+/* ── Typography scale ──────────────────────────────── */
+.text-page-title  { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.text-section-title { font-size: 20px; font-weight: 600; }
+.text-body        { font-size: 14px; }
+.text-small       { font-size: 12px; }
+
+/* ── Scrollbar ─────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #a8928e; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #7A2E2E; }
-html.dark ::-webkit-scrollbar-thumb { background: #2a3c3c; }
-html.dark ::-webkit-scrollbar-thumb:hover { background: #1E3535; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
 
 /* ── Focus ring ────────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #7A2E2E;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
-  border-radius: 8px;
-}
-
-/* Input focus ring override (Tailwind ring utility) */
-input:focus, select:focus, textarea:focus {
-  --tw-ring-color: #7A2E2E !important;
+  border-radius: 6px;
 }
 
 /* ── Selection ─────────────────────────────────────── */
-::selection { background: #f5dada; color: #7A2E2E; }
-html.dark ::selection { background: #3d1515; color: #f5a0a0; }
+::selection { background: #e5e7eb; color: var(--primary); }
+html.dark ::selection { background: #334155; color: #f1f5f9; }
 
 /* ── Transitions ───────────────────────────────────── */
 button, a, input, select, textarea {
@@ -97,54 +83,33 @@ button, a, input, select, textarea {
 
 /* ── Page enter animation ──────────────────────────── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-enter {
-  animation: fadeInUp 0.28s ease forwards;
+  animation: fadeInUp 0.2s ease forwards;
 }
-.page-enter > *:nth-child(1) { animation: fadeInUp 0.28s ease forwards; }
-.page-enter > *:nth-child(2) { animation: fadeInUp 0.28s ease 0.05s both; }
-.page-enter > *:nth-child(3) { animation: fadeInUp 0.28s ease 0.10s both; }
-.page-enter > *:nth-child(4) { animation: fadeInUp 0.28s ease 0.15s both; }
-.page-enter > *:nth-child(5) { animation: fadeInUp 0.28s ease 0.20s both; }
 
 /* ── Modal animation ───────────────────────────────── */
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+  from { opacity: 0; transform: scale(0.97) translateY(-6px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 .modal-enter {
-  animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @media (max-width: 639px) {
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(100%); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .modal-enter { animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .modal-enter { animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 }
 
-/* ── Card hover lift ───────────────────────────────── */
-.card-hover {
-  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
-}
-.card-hover:hover {
-  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.12), 0 4px 10px -6px rgba(0,0,0,0.1);
-  transform: translateY(-2px);
-}
-html.dark .card-hover:hover {
-  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);
-  border-color: #2a3c3c !important;
-}
-
-/* ── Progress bar ──────────────────────────────────── */
-@keyframes progressFill {
-  from { width: 0; }
-}
-.progress-fill {
-  animation: progressFill 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+/* ── Table ─────────────────────────────────────────── */
+tbody tr { position: relative; }
+tbody tr:hover { background-color: var(--background); }
+html.dark tbody tr:hover { background-color: #0f172a; }
 
 /* ── Pulse dot ─────────────────────────────────────── */
 @keyframes pulseDot {
@@ -153,48 +118,22 @@ html.dark .card-hover:hover {
 }
 .pulse-dot { animation: pulseDot 2s ease infinite; }
 
-/* ── Table row left accent ─────────────────────────── */
-tbody tr { position: relative; }
-tbody tr td:first-child {
-  border-left: 3px solid transparent;
-  transition: border-color 0.15s ease;
+/* ── Progress fill ─────────────────────────────────── */
+@keyframes progressFill {
+  from { width: 0; }
 }
-tbody tr:hover td:first-child { border-left-color: #7A2E2E; }
-html.dark tbody tr:hover td:first-child { border-left-color: #b56b6b; }
-
-/* ── White bg override for dark ────────────────────── */
-html.dark .bg-white, html.dark [class*="bg-white"] {
-  background-color: #131e1e !important;
-  background-image: none !important;
+.progress-fill {
+  animation: progressFill 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Theme transition */
-html {
-  transition: background-color 0.3s ease;
-}
-html.dark, html.dark body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* ── Bordered theme ────────────────────────────────────── */
-html[data-theme="bordered"] .rounded-2xl.border,
-html[data-theme="bordered"] .rounded-xl.border {
-  border-width: 2px !important;
-  box-shadow: none !important;
-}
-html[data-theme="bordered"] .shadow-sm,
-html[data-theme="bordered"] .shadow-md,
-html[data-theme="bordered"] .shadow-lg,
-html[data-theme="bordered"] .hover\:shadow-md:hover,
-html[data-theme="bordered"] .hover\:shadow-lg:hover {
-  box-shadow: none !important;
-}
-html[data-theme="bordered"] .rounded-2xl.shadow-sm,
-html[data-theme="bordered"] .rounded-xl.shadow-sm {
-  box-shadow: none !important;
-}
-
-/* ── Customizer panel slide animation ──────────────────── */
-.customizer-panel {
-  will-change: transform;
-}
+/* ── Dark mode Tailwind bg-white overrides ─────────── */
+html.dark .bg-white { background-color: #1e293b !important; }
+html.dark .bg-slate-50 { background-color: #0f172a !important; }
+html.dark .bg-slate-100 { background-color: #1e293b !important; }
+html.dark .border-slate-100 { border-color: #334155 !important; }
+html.dark .border-slate-200 { border-color: #334155 !important; }
+html.dark .text-slate-800 { color: #f1f5f9 !important; }
+html.dark .text-slate-700 { color: #e2e8f0 !important; }
+html.dark .text-slate-600 { color: #cbd5e1 !important; }
+html.dark .text-slate-500 { color: #94a3b8 !important; }
+html.dark .text-slate-400 { color: #64748b !important; }
